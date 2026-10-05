@@ -14,15 +14,17 @@ import { breweryHero as h } from '../data/brewery';
       </div>
     </div>
 
+    <!-- No data-parallax here: the parallax overscales by 1.16 to keep its own
+         edges hidden, which would crop the tanks back out. Same as the
+         distillery hero. -->
     <div class="bhero__media" data-reveal="up">
       <img
         class="bhero__img"
         src={h.image}
         alt={h.alt}
-        width="560"
-        height="400"
+        width="2560"
+        height="1707"
         fetchpriority="high"
-        data-parallax="0.05"
       />
     </div>
   </div>
@@ -38,8 +40,7 @@ import { breweryHero as h } from '../data/brewery';
     min-height: 32.5rem; /* 520px */
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 4rem;
+    gap: 3.5rem;
     padding-block: var(--sec-y);
   }
 
@@ -47,6 +48,7 @@ import { breweryHero as h } from '../data/brewery';
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
+    flex: 1 1 26rem;
     max-width: 40rem;
     min-width: 0;
   }
@@ -71,17 +73,24 @@ import { breweryHero as h } from '../data/brewery';
     flex-wrap: wrap;
   }
 
+  /* The frame carries the photo's own ratio so object-fit has nothing left to
+     crop: the shot shows in full and still meets all four edges. Stated as the
+     source's exact pixel dimensions (2560x1707, a hair off 3:2) rather than a
+     rounded 3/2, so there is no sub-pixel trim. Note this differs from the
+     distillery hero, whose photo is 16:9 — the ratio tracks each image. */
   .bhero__media {
-    width: 35rem; /* 560px */
-    flex-shrink: 0;
+    flex: 1 1 40rem;
+    max-width: 42rem; /* 672px */
+    min-width: 0;
+    aspect-ratio: 2560 / 1707;
     overflow: hidden;
   }
 
   .bhero__img {
+    display: block;
     width: 100%;
-    height: 25rem; /* 400px */
+    height: 100%;
     object-fit: cover;
-    will-change: transform;
   }
 
   @media (max-width: 68.75rem) {
@@ -90,12 +99,16 @@ import { breweryHero as h } from '../data/brewery';
       align-items: stretch;
       gap: 2.5rem;
     }
+
+    .bhero__copy,
     .bhero__media {
+      flex: 0 0 auto;
+      max-width: none;
       width: 100%;
-      order: -1;
     }
-    .bhero__img {
-      height: 17rem;
+
+    .bhero__media {
+      order: -1;
     }
   }
 </style>
