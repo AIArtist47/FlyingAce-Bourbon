@@ -31,6 +31,10 @@ import { months } from '../data/calendar';
             {m.items.map((e, i) => (
               <li class="ev" data-reveal="up" data-stagger={i % 3}>
                 <a class="ev__link" href={e.href} target="_blank" rel="noopener">
+                  {/* A band of light that travels the width of the row on hover.
+                      Its own element so the sweep rides on `transform` alone. */}
+                  <span class="ev__sweep" aria-hidden="true" />
+
                   <span class="ev__date">
                     <span class="ev__wd">{e.weekday}</span>
                     <span class="ev__num display tnum">{e.day}</span>
@@ -136,6 +140,7 @@ import { months } from '../data/calendar';
   }
 
   .ev__link {
+    position: relative;
     display: grid;
     grid-template-columns: 4.5rem minmax(0, 1fr) 13rem;
     gap: 2rem;
@@ -151,6 +156,76 @@ import { months } from '../data/calendar';
     box-shadow:
       -1.25rem 0 0 var(--sand),
       1.25rem 0 0 var(--sand);
+  }
+
+  /* --- Gradient sweep --------------------------------------------------- */
+
+  .ev__sweep {
+    display: none;
+  }
+
+  /* Only where a real pointer exists: on touch `hover` latches after a tap and
+     would leave the sweep parked mid-row on whichever show was pressed last. */
+  @media (hover: hover) and (pointer: fine) {
+    /* The band is wider than the row and starts outside it, so the row has to
+       clip. Its own box-shadow bleed is untouched — overflow clips descendants,
+       not the element's own shadow. */
+    .ev__link {
+      overflow: hidden;
+    }
+
+    .ev__sweep {
+      display: block;
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      /* Brass through to cream: the palette's pale yellow catching the light,
+         angled so it reads as a sheen crossing the row rather than a wipe. */
+      background: linear-gradient(
+        105deg,
+        rgba(217, 185, 122, 0) 32%,
+        rgba(217, 185, 122, 0.42) 46%,
+        rgba(251, 248, 242, 0.58) 52%,
+        rgba(217, 185, 122, 0.42) 58%,
+        rgba(217, 185, 122, 0) 72%
+      );
+      transform: translate3d(-115%, 0, 0);
+      opacity: 0;
+      transition:
+        transform 0.9s var(--ease),
+        opacity 0.3s var(--ease);
+    }
+
+    .ev__link:hover .ev__sweep {
+      transform: translate3d(115%, 0, 0);
+      opacity: 1;
+    }
+
+    /* Leaving drops the band fast. The transform still reverses underneath,
+       but at zero opacity, so the sheen is never seen travelling backwards —
+       and because these are transitions, re-entering retargets from wherever
+       the band had got to instead of snapping back to the start. */
+    .ev__link:not(:hover) .ev__sweep {
+      opacity: 0;
+      transition:
+        transform 0.9s var(--ease),
+        opacity 0.18s var(--ease);
+    }
+
+    /* The row's content sits above the light. */
+    .ev__date,
+    .ev__body,
+    .ev__frame {
+      position: relative;
+    }
+  }
+
+  /* No travelling light for a reader who asked for less movement — the sand
+     wash still marks the row. */
+  @media (prefers-reduced-motion: reduce) {
+    .ev__sweep {
+      display: none;
+    }
   }
 
   .ev__date {
