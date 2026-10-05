@@ -613,6 +613,67 @@ if (canHover && !reduce && !forcedColors) {
 }
 
 /* -------------------------------------------------------------------------- */
+/* Calendar rows — a pale-brass light that tracks the pointer                  */
+/* -------------------------------------------------------------------------- */
+
+/* Nothing to do on a touch screen, where `hover` latches after a tap, or for a
+   reader who has asked for less movement — the sand wash still marks the row. */
+if (canHover && !reduce) {
+  document.querySelectorAll<HTMLElement>('.ev__link').forEach((row) => {
+    const glow = row.querySelector<HTMLElement>('.ev__glow');
+    if (!glow) return;
+
+    let cx = 0;
+    let cy = 0;
+    let frame = 0;
+
+    const draw = () => {
+      frame = 0;
+      /* Measured inside the frame so a row that scrolls under a held pointer
+         stays correct, and read before the write so the two never thrash.
+         The transform goes on the glow itself: a CSS variable on the row
+         would restyle all ten of its children on every move. */
+      const box = row.getBoundingClientRect();
+      glow.style.transform = `translate3d(${cx - box.left}px, ${cy - box.top}px, 0)`;
+    };
+
+    const onMove = (event: PointerEvent) => {
+      cx = event.clientX;
+      cy = event.clientY;
+      /* Pointer events stream faster than the display refreshes; collapse them
+         to one write per frame. */
+      if (!frame) frame = requestAnimationFrame(draw);
+    };
+
+    row.addEventListener('pointerenter', (event) => {
+      if (event.pointerType === 'touch') return;
+      cx = event.clientX;
+      cy = event.clientY;
+      /* Seat the light under the cursor before it fades up, or it visibly
+         slides in from wherever it was left last time. */
+      draw();
+      row.dataset.glow = 'on';
+      glow.style.willChange = 'transform';
+    });
+
+    row.addEventListener('pointermove', onMove);
+
+    row.addEventListener('pointerleave', () => {
+      delete row.dataset.glow;
+      if (frame) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+      }
+      /* Hand the compositor layer back, but only once the fade has actually
+         finished — dropping it mid-fade makes the last frames stutter. */
+      window.setTimeout(() => {
+        if (!row.dataset.glow) glow.style.willChange = '';
+      }, 220);
+    });
+  });
+}
+
+/* -------------------------------------------------------------------------- */
 /* Keep trigger positions honest once webfonts and images settle              */
 /* -------------------------------------------------------------------------- */
 
