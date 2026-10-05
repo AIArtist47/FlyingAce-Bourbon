@@ -17,15 +17,16 @@ import { distilleryHero } from '../data/distillery';
       </div>
     </div>
 
+    <!-- No data-parallax here: the parallax overscales by 1.16 to keep its edges
+         hidden, which would crop the propeller and the barrel racks back out. -->
     <div class="dhero__media" data-reveal="up">
       <img
         class="dhero__img"
         src={distilleryHero}
-        alt="American Ace bottles in the Flying Ace Farm distillery"
-        width="540"
-        height="360"
+        alt="American Ace bottles on the tasting-room bar beneath the hangar propeller, barrel racks behind"
+        width="2560"
+        height="1440"
         fetchpriority="high"
-        data-parallax="0.05"
       />
     </div>
   </div>
@@ -41,8 +42,7 @@ import { distilleryHero } from '../data/distillery';
     min-height: 30rem; /* 480px */
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 4rem;
+    gap: 3.5rem;
     padding-block: var(--sec-y);
   }
 
@@ -50,6 +50,7 @@ import { distilleryHero } from '../data/distillery';
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
+    flex: 1 1 26rem;
     max-width: 43.75rem; /* 700px */
     min-width: 0;
   }
@@ -75,16 +76,16 @@ import { distilleryHero } from '../data/distillery';
     flex-wrap: wrap;
   }
 
+  /* The frame carries the photo's own 16:9 ratio (2560x1440), so object-fit
+     has nothing left to crop: the shot shows in full and still meets all four
+     edges. Sizing the frame by width and letting the ratio set the height is
+     what keeps those two things true together. */
   .dhero__media {
-    width: 33.75rem; /* 540px */
-    flex-shrink: 0;
+    flex: 1 1 45rem;
+    max-width: 48rem; /* 768px */
+    min-width: 0;
+    aspect-ratio: 16 / 9;
     overflow: hidden;
-    /* Fill the row instead of floating a short card inside it. The copy
-       column runs taller than the artboard's 360px frame, which left a band
-       of navy above and below the image; 360px is now the floor, not the
-       fixed height. */
-    align-self: stretch;
-    min-height: 22.5rem; /* 360px */
   }
 
   .dhero__img {
@@ -92,7 +93,6 @@ import { distilleryHero } from '../data/distillery';
     width: 100%;
     height: 100%;
     object-fit: cover;
-    will-change: transform;
   }
 
   @media (max-width: 68.75rem) {
@@ -102,13 +102,15 @@ import { distilleryHero } from '../data/distillery';
       gap: 2.5rem;
     }
 
+    .dhero__copy,
     .dhero__media {
+      flex: 0 0 auto;
+      max-width: none;
       width: 100%;
+    }
+
+    .dhero__media {
       order: -1;
-      /* Stacked: the frame sets its own height and the image fills it, so the
-         desktop 360px floor must not apply here. */
-      height: 17rem;
-      min-height: 0;
     }
   }
 </style>
