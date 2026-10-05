@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import BreweryHero from '../components/BreweryHero.astro';
+import VeteransBand from '../components/VeteransBand.astro';
+import FlagshipList from '../components/FlagshipList.astro';
+import SeasonalTaps from '../components/SeasonalTaps.astro';
+import BeerToGo from '../components/BeerToGo.astro';
+import BreweryGallery from '../components/BreweryGallery.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base
+  title="Flying Ace Farm Brewery — Raise a Glass | Lovettsville, VA"
+  description="15+ rotating beers and seltzers on tap, including a cream ale brewed with our own Bloody Butcher corn. See the draft list, flagships, seasonals and beer to go."
+>
+  <Header />
+
+  <main id="main">
+    <BreweryHero />
+    <VeteransBand />
+    <FlagshipList />
+    <SeasonalTaps />
+    <BeerToGo />
+    <BreweryGallery />
+  </main>
+
+  <Footer />
+</Base>

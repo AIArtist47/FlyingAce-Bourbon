@@ -1,0 +1,101 @@
+---
+import { breweryHero as h } from '../data/brewery';
+---
+
+<section class="bhero on-navy" id="top">
+  <div class="bhero__inner wrap">
+    <div class="bhero__copy">
+      <p class="eyebrow eyebrow--brass" data-reveal="up">{h.eyebrow}</p>
+      <h1 class="display bhero__title" data-reveal="up">{h.title}</h1>
+      <p class="bhero__lede" data-reveal="up">{h.lede}</p>
+      <div class="bhero__cta" data-reveal="up">
+        <a class="btn btn--solid btn--lg" href="#draft">See the Draft List</a>
+        <a class="btn btn--ghost-light btn--lg" href="#to-go">Beer To Go</a>
+      </div>
+    </div>
+
+    <div class="bhero__media" data-reveal="up">
+      <img
+        class="bhero__img"
+        src={h.image}
+        alt={h.alt}
+        width="560"
+        height="400"
+        fetchpriority="high"
+        data-parallax="0.05"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .bhero {
+    background: var(--navy);
+    color: var(--cream);
+  }
+
+  .bhero__inner {
+    min-height: 32.5rem; /* 520px */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4rem;
+    padding-block: var(--sec-y);
+  }
+
+  .bhero__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    max-width: 40rem;
+    min-width: 0;
+  }
+
+  .bhero__title {
+    --cap-spill: 0.155em;
+    font-size: clamp(3rem, 7.7778vw, 7rem); /* 112px @1440 */
+    line-height: var(--lh-hero);
+    color: var(--cream);
+  }
+
+  .bhero__lede {
+    font-size: clamp(1.0625rem, 1.3194vw, 1.1875rem);
+    line-height: var(--lh-body);
+    color: var(--on-navy);
+    max-width: 36rem;
+  }
+
+  .bhero__cta {
+    display: flex;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+  }
+
+  .bhero__media {
+    width: 35rem; /* 560px */
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .bhero__img {
+    width: 100%;
+    height: 25rem; /* 400px */
+    object-fit: cover;
+    will-change: transform;
+  }
+
+  @media (max-width: 68.75rem) {
+    .bhero__inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 2.5rem;
+    }
+    .bhero__media {
+      width: 100%;
+      order: -1;
+    }
+    .bhero__img {
+      height: 17rem;
+    }
+  }
+</style>

@@ -60,9 +60,9 @@ export const site = {
  * cards that share the one grid row.
  */
 export const nav = [
-  // A real page now; the rest are still sections of the home page.
+  // Real pages now; the rest are still sections of the home page.
   { label: 'Distillery', href: '/distillery' },
-  { label: 'Brewery', href: '#brewery' },
+  { label: 'Brewery', href: '/brewery' },
   { label: 'Restaurant', href: '#restaurant' },
   { label: 'Host Your Event', href: '#weddings' },
   { label: 'Calendar', href: '#this-week' },
@@ -95,7 +95,7 @@ export const pillars = [
     lede: 'American Ace bourbon, whiskey and rum — distilled from grain we grow, store and mill on the property.',
     meta: ['Double Gold, 2021', 'Tasting room', 'On-site ABC store'],
     cta: 'Explore the spirits',
-    href: '#spirits',
+    href: '/distillery',
     image: img.distillery,
   },
   {
@@ -105,7 +105,7 @@ export const pillars = [
     lede: 'Fifteen-plus rotating taps and seltzers, five flagships, and a cream ale brewed with our own Bloody Butcher corn.',
     meta: ['Best of Loudoun Beer, 2025', 'Beer to go'],
     cta: 'See the draft list',
-    href: 'https://flyingacefarm.com/beer/',
+    href: '/brewery',
     image: img.brewery,
   },
   {

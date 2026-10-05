@@ -1,0 +1,90 @@
+---
+import Icon from './Icon.astro';
+import { veteransProgram as v } from '../data/brewery';
+---
+
+<section class="vets" aria-labelledby="vets-title">
+  <div class="vets__inner wrap">
+    <div class="vets__copy">
+      <p class="eyebrow" data-reveal="up">{v.eyebrow}</p>
+      <h2 class="display vets__title" id="vets-title" data-reveal="up">
+        <Icon name="flag" size={34} width={1.5} />
+        {v.title}
+      </h2>
+      <p class="vets__body" data-reveal="up">{v.body}</p>
+    </div>
+
+    <div class="vets__media" data-reveal="up">
+      <img class="vets__img" src={v.image} alt={v.alt} loading="lazy" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .vets {
+    background: var(--sand);
+  }
+
+  .vets__inner {
+    min-height: 18.75rem; /* 300px */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4rem;
+    padding-block: 3rem;
+  }
+
+  .vets__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 44rem;
+    min-width: 0;
+  }
+
+  .vets__title {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    font-size: var(--t-44);
+    line-height: var(--lh-display);
+    margin: 0;
+  }
+
+  .vets__title > :global(svg) {
+    flex-shrink: 0;
+  }
+
+  .vets__body {
+    margin: 0;
+    font-size: var(--t-16);
+    line-height: var(--lh-tight);
+    color: var(--muted);
+  }
+
+  .vets__media {
+    width: 20rem; /* 320px */
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .vets__img {
+    width: 100%;
+    height: 13.75rem; /* 220px */
+    object-fit: cover;
+  }
+
+  @media (max-width: 68.75rem) {
+    .vets__inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 2rem;
+    }
+    .vets__media {
+      width: 100%;
+    }
+    .vets__img {
+      height: 15rem;
+    }
+  }
+</style>

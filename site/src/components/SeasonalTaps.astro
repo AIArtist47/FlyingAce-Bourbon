@@ -1,0 +1,118 @@
+---
+import { seasonal } from '../data/brewery';
+---
+
+<section class="seas section section--pad" id="seasonal" aria-labelledby="seas-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-head__title">
+        <p class="eyebrow" data-reveal="up">Currently featured on draft</p>
+        <h2 class="display seas__h2" id="seas-title" data-reveal="up">Seasonal &amp; more</h2>
+      </div>
+      <p class="seas__count" data-reveal="up">{seasonal.length} rotating pours</p>
+    </div>
+
+    <ul class="seas__grid">
+      {
+        seasonal.map((tap, i) => (
+          <li class="tap" data-reveal="up" data-stagger={i % 2}>
+            <div class="tap__copy">
+              <h3 class="tap__name display display--700">{tap.name}</h3>
+              <p class="tap__body">{tap.body}</p>
+            </div>
+            <p class="tap__spec">{tap.spec}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .seas__h2 {
+    font-size: var(--t-h2);
+  }
+
+  .seas__count {
+    margin: 0;
+    font-size: var(--t-14);
+    font-weight: 600;
+    letter-spacing: var(--ls-display);
+    text-transform: uppercase;
+    color: var(--muted-2);
+  }
+
+  .seas__grid {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 3rem;
+  }
+
+  .tap {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1.5rem;
+    padding: 1.125rem 0;
+    border-bottom: 1px solid var(--rule);
+    transition: border-color 0.4s var(--ease);
+  }
+
+  .tap:hover {
+    border-color: var(--accent);
+  }
+
+  .tap__copy {
+    min-width: 0;
+  }
+
+  .tap__name {
+    margin: 0;
+    font-size: var(--t-23);
+    line-height: 1.05;
+    transition: color 0.35s var(--ease);
+  }
+
+  .tap:hover .tap__name {
+    color: var(--accent);
+  }
+
+  .tap__body {
+    margin: 0.25rem 0 0;
+    font-size: var(--t-14);
+    line-height: 1.5;
+    color: var(--muted);
+  }
+
+  /* Quaternary: available on demand, never competing with the name. */
+  .tap__spec {
+    margin: 0;
+    flex-shrink: 0;
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+    color: var(--muted-2);
+    text-align: right;
+  }
+
+  @media (max-width: 68.75rem) {
+    .seas__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .tap {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.375rem;
+    }
+    .tap__spec {
+      text-align: left;
+    }
+  }
+</style>
