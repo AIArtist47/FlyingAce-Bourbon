@@ -1,5 +1,13 @@
 ---
 import { months } from '../data/calendar';
+
+/* Each card opens the panel at the same position in EventDetail's flattened
+   run, so the offsets have to match its months.flatMap() exactly. */
+const offsets: number[] = [];
+months.reduce((acc, m, i) => {
+  offsets[i] = acc;
+  return acc + m.items.length;
+}, 0);
 ---
 
 <section class="cal section section--pad" id="lineup" aria-labelledby="cal-title">
@@ -15,7 +23,7 @@ import { months } from '../data/calendar';
     </div>
 
     {
-      months.map((m) => (
+      months.map((m, mi) => (
         <div class="mon">
           {/* The month pins in the rail and rides along while its own shows pass,
               then hands off to the next — the page's one authored moment. */}
@@ -30,7 +38,14 @@ import { months } from '../data/calendar';
           <ul class="mon__list">
             {m.items.map((e, i) => (
               <li class="ev" data-reveal="up" data-stagger={i % 3}>
-                <a class="ev__link" href={e.href} target="_blank" rel="noopener">
+                {/* A button, not a link: this opens the show's own panel on
+                    this page rather than navigating away. */}
+                <button
+                  class="ev__link"
+                  type="button"
+                  data-ed-open={`show-${offsets[mi] + i}`}
+                  aria-haspopup="dialog"
+                >
                   {/* A band of light that travels the width of the row on hover.
                       Its own element so the sweep rides on `transform` alone. */}
                   <span class="ev__sweep" aria-hidden="true" />
@@ -63,7 +78,7 @@ import { months } from '../data/calendar';
                       decoding="async"
                     />
                   </span>
-                </a>
+                </button>
               </li>
             ))}
           </ul>
@@ -141,6 +156,16 @@ import { months } from '../data/calendar';
 
   .ev__link {
     position: relative;
+    /* Button resets — it carries the row's whole layout, so it has to stop
+       behaving like a control and start behaving like the row. */
+    width: 100%;
+    border: 0;
+    background: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    touch-action: manipulation;
+
     display: grid;
     grid-template-columns: 4.5rem minmax(0, 1fr) 13rem;
     gap: 2rem;

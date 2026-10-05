@@ -613,6 +613,70 @@ if (canHover && !reduce && !forcedColors) {
 }
 
 /* -------------------------------------------------------------------------- */
+/* Calendar — the show panel behind each card                                 */
+/* -------------------------------------------------------------------------- */
+
+{
+  const panels = document.querySelectorAll<HTMLDialogElement>('dialog.ed');
+
+  if (panels.length) {
+    /* Where to put focus back when the panel closes. Native dialog restores it
+       on its own, but stepping from one show to the next closes a different
+       dialog than the one the reader opened, so the origin is tracked here. */
+    let opener: HTMLElement | null = null;
+
+    const open = (id: string) => {
+      const panel = document.getElementById(id);
+      if (!(panel instanceof HTMLDialogElement) || panel.open) return;
+      panel.showModal();
+      /* Lenis keeps driving the page underneath a modal, so the background
+         scrolls while the reader means to scroll the bio. */
+      lenis?.stop();
+      panel.querySelector<HTMLElement>('.ed__scroll')?.scrollTo(0, 0);
+    };
+
+    const close = (panel: HTMLDialogElement) => panel.close();
+
+    document.querySelectorAll<HTMLElement>('[data-ed-open]').forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        opener = trigger;
+        open(trigger.dataset.edOpen!);
+      });
+    });
+
+    panels.forEach((panel) => {
+      panel.querySelector<HTMLElement>('[data-ed-close]')?.addEventListener('click', () => close(panel));
+
+      /* Step to the neighbouring show without dropping back to the list. */
+      panel.querySelectorAll<HTMLElement>('[data-ed-go]').forEach((step) => {
+        step.addEventListener('click', () => {
+          const next = step.dataset.edGo!;
+          panel.close();
+          open(next);
+        });
+      });
+
+      /* Clicking the backdrop dismisses. The click lands on the dialog itself
+         rather than on any child, which is what separates it from a click
+         inside the panel. */
+      panel.addEventListener('click', (event) => {
+        if (event.target === panel) close(panel);
+      });
+
+      panel.addEventListener('close', () => {
+        /* Only hand scrolling back once no panel is left open — stepping
+           between shows closes one while opening the next. */
+        if (!document.querySelector('dialog.ed[open]')) {
+          lenis?.start();
+          opener?.focus();
+          opener = null;
+        }
+      });
+    });
+  }
+}
+
+/* -------------------------------------------------------------------------- */
 /* Keep trigger positions honest once webfonts and images settle              */
 /* -------------------------------------------------------------------------- */
 

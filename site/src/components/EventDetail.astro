@@ -1,0 +1,505 @@
+---
+import { months, type DecoratedEvent } from '../data/calendar';
+import { artistProfiles, eventStandards, eventCategory } from '../data/artists';
+
+/* Flatten back to one ordered run so the panels can step to the next show
+   across a month boundary rather than stopping at the end of each group. */
+const ordered: DecoratedEvent[] = months.flatMap((m) => m.items);
+
+/** "3:00pm" -> "150000", for the Google Calendar template URL. */
+function clock(t: string) {
+  const m = t.trim().toLowerCase().match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/);
+  if (!m) return '000000';
+  let h = Number(m[1]) % 12;
+  if (m[3] === 'pm') h += 12;
+  return `${String(h).padStart(2, '0')}${m[2]}00`;
+}
+
+/* Local floating time, deliberately without a trailing Z: the farm's hours are
+   its own, not the reader's. */
+function gcal(e: DecoratedEvent) {
+  const day = e.date.replace(/-/g, '');
+  const p = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: `${e.artist} — Live Music at Flying Ace Farm`,
+    dates: `${day}T${clock(e.start)}/${day}T${clock(e.end)}`,
+    details: `Live music at Flying Ace Farm. Free to attend.\n\n${e.href}`,
+    location: '40950 Flying Ace Ln, Lovettsville, VA',
+  });
+  return `https://calendar.google.com/calendar/render?${p}`;
+}
+---
+
+{
+  ordered.map((e, i) => {
+    const p = artistProfiles[e.artist];
+    const prev = ordered[i - 1];
+    const next = ordered[i + 1];
+
+    return (
+      <dialog class="ed" id={`show-${i}`} aria-labelledby={`show-${i}-name`}>
+        <article class="ed__panel">
+          <button class="ed__close" type="button" data-ed-close aria-label="Close event details">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+              <path
+                d="M6 6l12 12M18 6L6 18"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+
+          <div class="ed__media">
+            <img class="ed__img" src={e.image} alt={e.alt} width="1200" height="1200" loading="lazy" decoding="async" />
+            <p class="ed__cat">{eventCategory}</p>
+          </div>
+
+          <div class="ed__body">
+            <div class="ed__scroll">
+              <p class="ed__when tnum">
+                <span class="ed__wd">{e.weekday}</span>
+                <span class="ed__day">{e.day}</span>
+                <span class="ed__mo">{e.month}</span>
+                <span class="ed__time">
+                  {e.start} – {e.end}
+                </span>
+              </p>
+
+              <h2 class="display display--700 ed__name" id={`show-${i}-name`}>
+                {e.artist}
+              </h2>
+              {p && <p class="ed__billing">{p.billing}</p>}
+              {p && <p class="ed__intro">{p.intro}</p>}
+
+              {p && (
+                <div class="ed__bio">
+                  {p.bio.map((para) => (
+                    <p>{para}</p>
+                  ))}
+                </div>
+              )}
+
+              <ul class="ed__std">
+                {eventStandards.map((s) => (
+                  <li>{s}</li>
+                ))}
+              </ul>
+
+              {p && p.links.length > 0 && (
+                <div class="ed__links">
+                  <p class="label ed__links-h">More from {e.artist}</p>
+                  <ul>
+                    {p.links.map((l) => (
+                      <li>
+                        <a href={l.href} target="_blank" rel="noopener">
+                          {l.label} <span class="arrow-link__ico">&#8599;</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            <div class="ed__foot">
+              <div class="ed__cta">
+                <a class="btn btn--solid" href={gcal(e)} target="_blank" rel="noopener">
+                  Add to Calendar
+                </a>
+                <a class="btn btn--ghost" href={e.href} target="_blank" rel="noopener">
+                  Full listing
+                </a>
+              </div>
+
+              {/* Step between shows without closing — the reader is browsing a
+                  lineup, not looking up one fact. */}
+              <div class="ed__step">
+                {prev ? (
+                  <button class="ed__nav" type="button" data-ed-go={`show-${i - 1}`}>
+                    <span aria-hidden="true">&#8592;</span>
+                    <span class="ed__nav-t">{prev.artist}</span>
+                  </button>
+                ) : (
+                  <span />
+                )}
+                {next && (
+                  <button class="ed__nav ed__nav--next" type="button" data-ed-go={`show-${i + 1}`}>
+                    <span class="ed__nav-t">{next.artist}</span>
+                    <span aria-hidden="true">&#8594;</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </article>
+      </dialog>
+    );
+  })
+}
+
+<style>
+  .ed {
+    width: min(64rem, calc(100vw - 2.5rem));
+    max-height: min(44rem, calc(100vh - 3rem));
+    padding: 0;
+    border: none;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+  }
+
+  .ed::backdrop {
+    background: rgba(14, 20, 28, 0.62);
+  }
+
+  /* Panel and backdrop share one curve and one duration — mismatched timing
+     between a surface and its overlay is the usual cause of "something feels
+     off". `allow-discrete` is what lets display and overlay animate out
+     instead of the panel vanishing on close. */
+  .ed,
+  .ed::backdrop {
+    opacity: 0;
+    transition:
+      opacity 0.24s var(--ease),
+      transform 0.24s var(--ease),
+      overlay 0.24s var(--ease) allow-discrete,
+      display 0.24s var(--ease) allow-discrete;
+  }
+
+  .ed {
+    transform: scale(0.97);
+  }
+
+  .ed[open],
+  .ed[open]::backdrop {
+    opacity: 1;
+  }
+
+  .ed[open] {
+    transform: scale(1);
+  }
+
+  /* The entry state, for the frame before [open] lands. */
+  @starting-style {
+    .ed[open],
+    .ed[open]::backdrop {
+      opacity: 0;
+    }
+
+    .ed[open] {
+      transform: scale(0.97);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ed,
+    .ed[open] {
+      transform: none;
+    }
+  }
+
+  .ed__panel {
+    display: grid;
+    /* 5/12 to the photograph, 7/12 to the words. */
+    grid-template-columns: 5fr 7fr;
+    max-height: inherit;
+    min-height: 0;
+  }
+
+  /* --- Media ------------------------------------------------------------ */
+
+  .ed__media {
+    position: relative;
+    background: var(--navy);
+    min-height: 0;
+  }
+
+  .ed__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ed__cat {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 0.5rem 0.875rem;
+    background: var(--accent);
+    color: var(--paper);
+    font-size: var(--t-11);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* --- Body ------------------------------------------------------------- */
+
+  .ed__body {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .ed__scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 2.5rem 2.5rem 1.75rem;
+  }
+
+  .ed__when {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 0.625rem;
+    font-size: var(--t-13);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-2);
+  }
+
+  .ed__day {
+    font-family: var(--font-display);
+    font-size: var(--t-26);
+    letter-spacing: var(--ls-display);
+    color: var(--accent);
+  }
+
+  .ed__time {
+    margin-left: auto;
+    letter-spacing: 0.04em;
+    text-transform: none;
+  }
+
+  .ed__name {
+    margin: 0;
+    font-size: var(--t-44);
+    line-height: 0.95;
+  }
+
+  .ed__billing {
+    margin: 0.5rem 0 0;
+    font-family: var(--font-accent);
+    font-style: italic;
+    font-size: var(--t-17);
+    color: var(--accent);
+  }
+
+  .ed__intro {
+    margin: 1.25rem 0 0;
+    font-size: var(--t-17);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+  }
+
+  .ed__bio {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .ed__bio p {
+    /* Inside a 65–75ch measure even at the panel's widest. */
+    max-width: 62ch;
+    margin: 0 0 0.875rem;
+    font-size: var(--t-15);
+    line-height: var(--lh-body);
+    color: var(--muted);
+  }
+
+  .ed__bio p:last-child {
+    margin-bottom: 0;
+  }
+
+  .ed__std {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.375rem;
+  }
+
+  .ed__std li {
+    position: relative;
+    padding-left: 1.125rem;
+    font-size: var(--t-14);
+    color: var(--muted-2);
+  }
+
+  .ed__std li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 0.375rem;
+    height: 0.375rem;
+    background: var(--brass);
+  }
+
+  .ed__links {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .ed__links-h {
+    margin: 0 0 0.625rem;
+  }
+
+  .ed__links ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+  }
+
+  .ed__links a {
+    font-size: var(--t-14);
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.35s var(--ease);
+  }
+
+  .ed__links a:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  /* --- Footer ----------------------------------------------------------- */
+
+  .ed__foot {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    padding: 1.25rem 2.5rem 1.5rem;
+    border-top: 1px solid var(--rule);
+    background: var(--sand);
+  }
+
+  .ed__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .ed__step {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .ed__nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4375rem;
+    min-height: 2.75rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: var(--t-13);
+    color: var(--muted-2);
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: color 0.35s var(--ease);
+  }
+
+  .ed__nav:hover {
+    color: var(--accent);
+  }
+
+  .ed__nav--next {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .ed__nav-t {
+    max-width: 12ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* --- Close ------------------------------------------------------------ */
+
+  .ed__close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    color: var(--ink);
+    cursor: pointer;
+    touch-action: manipulation;
+    transition:
+      background-color 0.35s var(--ease),
+      color 0.35s var(--ease),
+      border-color 0.35s var(--ease);
+  }
+
+  .ed__close:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
+  }
+
+  /* --- Narrow ----------------------------------------------------------- */
+
+  @media (max-width: 56.25rem) {
+    .ed {
+      width: 100vw;
+      max-width: 100vw;
+      max-height: 100vh;
+      height: 100vh;
+      height: 100dvh;
+    }
+
+    .ed__panel {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto 1fr;
+      min-height: 0;
+      height: 100%;
+    }
+
+    /* Tied to viewport height, not a fixed band: on a short window — a phone
+       held sideways, a small desktop window — a fixed 13rem of photograph
+       leaves the biography with nothing to sit in. */
+    .ed__media {
+      height: clamp(6rem, 22vh, 13rem);
+    }
+
+    .ed__scroll {
+      padding: 1.75rem 1.25rem 1.25rem;
+    }
+
+    .ed__name {
+      font-size: var(--t-32);
+    }
+
+    .ed__foot {
+      padding: 1rem 1.25rem 1.25rem;
+    }
+
+    .ed__cta .btn {
+      flex: 1 1 10rem;
+      justify-content: center;
+    }
+  }
+</style>

@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import CalendarHero from '../components/CalendarHero.astro';
 import EventList from '../components/EventList.astro';
+import EventDetail from '../components/EventDetail.astro';
 import Subscribe from '../components/Subscribe.astro';
 import Footer from '../components/Footer.astro';
 import { eventCount, season } from '../data/calendar';
@@ -19,6 +20,11 @@ import { eventCount, season } from '../data/calendar';
     <EventList />
     <Subscribe />
   </main>
+
+  {/* The follow-up detail for every show, opened from its card. Rendered into
+      the page rather than split across 13 routes, so the bios ship in this
+      page's HTML and a reader keeps their place in the lineup. */}
+  <EventDetail />
 
   <Footer />
 </Base>
