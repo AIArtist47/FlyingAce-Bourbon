@@ -69,18 +69,6 @@ export const nav = [
   { label: 'Visit & FAQ', href: '#visit' },
 ];
 
-export const hoursStrip = [
-  { icon: 'clock', label: 'Restaurant & Brewery', value: 'Open Wednesday – Sunday' },
-  { icon: 'bottle', label: 'Distillery & ABC Store', value: 'Open Wednesday – Sunday' },
-  {
-    icon: 'pin',
-    label: '40950 Flying Ace Ln, Lovettsville',
-    value: 'Get directions',
-    href: site.directions,
-  },
-  { icon: 'music', label: 'Live music', value: 'Every Fri · Sat · Sun' },
-];
-
 /**
  * The four accordion panels. `meta` carries two or three hard details that
  * earn the expanded state — every one of them is already stated elsewhere on
