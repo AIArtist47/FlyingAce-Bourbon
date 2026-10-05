@@ -99,6 +99,25 @@ html {
   scroll-behavior: auto; /* Lenis owns scrolling */
 }
 
+/* The surfaces the browser draws for us still belong to the design: left alone
+   they ship Chrome's blue and a grey scrollbar that match nothing on the page. */
+::selection {
+  background: var(--accent);
+  color: var(--paper);
+}
+
+.on-navy ::selection {
+  background: var(--brass);
+  color: var(--navy);
+}
+
+html {
+  scrollbar-color: var(--rule) transparent;
+  scrollbar-width: thin;
+  caret-color: var(--accent);
+  accent-color: var(--accent);
+}
+
 body {
   margin: 0;
   background: var(--cream);
@@ -289,6 +308,13 @@ h3.display {
   letter-spacing: var(--ls-kicker);
   text-transform: uppercase;
   color: var(--brass);
+}
+
+/* Dates, times and prices sit in columns, so their digits need equal widths —
+   proportional numerals make a stack of them visibly ragged. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
 }
 
 .quote {

@@ -1,0 +1,178 @@
+---
+import { nextUp, eventCount, season } from '../data/calendar';
+---
+
+<section class="chero on-navy" id="top">
+  <div class="chero__inner wrap">
+    <div class="chero__copy">
+      <p class="eyebrow eyebrow--brass" data-reveal="up">Flying Ace Farm</p>
+      <h1 class="display chero__title" data-reveal="up">What’s on</h1>
+      <p class="chero__lede" data-reveal="up">
+        Live music every Friday, Saturday and Sunday, with views of Furnace Mountain. {eventCount}
+        shows booked through {season} — no tickets, no cover, just come out.
+      </p>
+      <div class="chero__cta" data-reveal="up">
+        <a class="btn btn--solid btn--lg" href="#lineup">See the Lineup</a>
+        <a class="btn btn--ghost-light btn--lg" href="#subscribe">Add to Your Calendar</a>
+      </div>
+    </div>
+
+    <!-- The hero shows the next act rather than a decorative shot: it is the one
+         thing a visitor checking the calendar actually wants. -->
+    <a class="nextup" href={nextUp.href} target="_blank" rel="noopener" data-reveal="up">
+      <span class="nextup__frame">
+        <img
+          class="nextup__img"
+          src={nextUp.image}
+          alt={nextUp.alt}
+          width="1200"
+          height="900"
+          fetchpriority="high"
+        />
+      </span>
+      <span class="nextup__body">
+        <span class="nextup__kicker kicker">Next up</span>
+        <span class="nextup__date display">
+          <span class="nextup__wd">{nextUp.weekday}</span>
+          <span class="nextup__num tnum">{nextUp.day}</span>
+          <span class="nextup__mo">{nextUp.month}</span>
+        </span>
+        <span class="nextup__artist display display--700">{nextUp.artist}</span>
+        <span class="nextup__time tnum">{nextUp.start} – {nextUp.end}</span>
+      </span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .chero {
+    background: var(--navy);
+    color: var(--cream);
+  }
+
+  .chero__inner {
+    min-height: 30rem;
+    display: flex;
+    align-items: center;
+    gap: 3.5rem;
+    padding-block: var(--sec-y);
+  }
+
+  .chero__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    flex: 1 1 28rem;
+    max-width: 40rem;
+    min-width: 0;
+  }
+
+  .chero__title {
+    --cap-spill: 0.155em;
+    font-size: clamp(3rem, 7.7778vw, 7rem);
+    line-height: var(--lh-hero);
+    color: var(--cream);
+  }
+
+  .chero__lede {
+    font-size: clamp(1.0625rem, 1.3194vw, 1.1875rem);
+    line-height: var(--lh-body);
+    color: var(--on-navy);
+    max-width: 34rem;
+  }
+
+  .chero__cta {
+    display: flex;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+  }
+
+  /* --- Next up ---------------------------------------------------------- */
+
+  .nextup {
+    flex: 1 1 26rem;
+    max-width: 30rem;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--rule-navy);
+    transition: border-color 0.5s var(--ease);
+  }
+
+  .nextup:hover {
+    border-color: var(--brass);
+  }
+
+  .nextup__frame {
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+
+  .nextup__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.01);
+    transition: transform 0.9s var(--ease);
+  }
+
+  .nextup:hover .nextup__img {
+    transform: scale(1.045);
+  }
+
+  .nextup__body {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    border-top: 1px solid var(--rule-navy);
+  }
+
+  .nextup__kicker {
+    color: var(--brass);
+  }
+
+  .nextup__date {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    color: var(--on-navy-2);
+    font-size: var(--t-22);
+    letter-spacing: var(--ls-display);
+    line-height: 1;
+  }
+
+  .nextup__num {
+    font-size: var(--t-34);
+    color: var(--cream);
+  }
+
+  .nextup__artist {
+    font-size: var(--t-30);
+    line-height: 1;
+    color: var(--cream);
+  }
+
+  .nextup__time {
+    font-size: var(--t-15);
+    color: var(--on-navy-3);
+  }
+
+  @media (max-width: 68.75rem) {
+    .chero__inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 2.5rem;
+    }
+
+    .chero__copy,
+    .nextup {
+      flex: 0 0 auto;
+      max-width: none;
+      width: 100%;
+    }
+  }
+</style>

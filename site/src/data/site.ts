@@ -65,7 +65,7 @@ export const nav = [
   { label: 'Brewery', href: '/brewery' },
   { label: 'Restaurant', href: '/restaurant' },
   { label: 'Host Your Event', href: '#weddings' },
-  { label: 'Calendar', href: '#this-week' },
+  { label: 'Calendar', href: '/calendar' },
   { label: 'Visit & FAQ', href: '#visit' },
 ];
 
@@ -149,37 +149,6 @@ export const spirits = [
   { name: 'American Ace Rum', note: 'Bronze medal', price: '$29.99' },
 ];
 
-export const week = [
-  {
-    day: 'Wed',
-    title: '$8 Margaritas & Kids Eat Free',
-    body: 'One free kids’ meal per adult entrée, plus a weekly food special.',
-    time: '3:00 – 8:00pm',
-    accent: false,
-  },
-  {
-    day: 'Thu',
-    title: 'Burger & Beer',
-    body: 'Burger of the Week ($15.99) or Double Smashburger ($13.99) with one side.',
-    time: '11:30am – 8:00pm',
-    accent: false,
-  },
-  {
-    day: 'Fri',
-    title: 'Friday Special & Free Beer',
-    body: 'A food special and free beer from 3pm until sold out — plus live music.',
-    time: '11:30am – 9:00pm',
-    accent: false,
-  },
-  {
-    day: 'Sat–Sun',
-    title: 'Live Music on the Farm',
-    body: 'Live music every Friday, Saturday and Sunday, with views of Furnace Mountain.',
-    time: 'See the lineup on the calendar',
-    accent: true,
-  },
-];
-
 export const experience = [
   {
     icon: 'barn',
@@ -243,7 +212,7 @@ export const distilleryHours = [
 
 export const exploreLinks = [
   { label: 'Visit & FAQ', href: 'https://flyingacefarm.com/faq/' },
-  { label: 'Calendar', href: '#this-week' },
+  { label: 'Calendar', href: '/calendar' },
   { label: 'Gift Cards', href: 'https://flyingacefarm.com/gift-cards/' },
   { label: 'Careers', href: 'https://flyingacefarm.com/apply-now/' },
   { label: 'Live Music Inquiries', href: 'https://flyingacefarm.com/live-music-inquiries/' },

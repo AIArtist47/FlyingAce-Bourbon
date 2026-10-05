@@ -1,0 +1,137 @@
+---
+import Icon from './Icon.astro';
+import { subscribe } from '../data/calendar';
+---
+
+<section class="sub on-navy" id="subscribe" aria-labelledby="sub-title">
+  <div class="sub__inner wrap">
+    <div class="sub__copy" data-reveal="up">
+      <Icon name="calendar" size={30} stroke="var(--brass)" width={1.5} />
+      <h2 class="display sub__h2" id="sub-title">Keep the dates</h2>
+      <p class="sub__body">
+        Subscribe once and new shows land in your own calendar as the farm books them.
+      </p>
+    </div>
+
+    <ul class="sub__list" data-reveal="up" data-stagger="1">
+      {
+        subscribe.map((s) => (
+          <li>
+            <a class="sub__link" href={s.href} target="_blank" rel="noopener">
+              <span>{s.label}</span>
+              <span class="arrow-link__ico" aria-hidden="true">
+                &#8594;
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .sub {
+    background: var(--navy);
+    color: var(--cream);
+  }
+
+  .sub__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3.5rem;
+    padding-block: 4rem;
+  }
+
+  .sub__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 0.75rem;
+    max-width: 30rem;
+    min-width: 0;
+  }
+
+  .sub__h2 {
+    margin: 0;
+    font-size: var(--t-44);
+    line-height: 1;
+  }
+
+  .sub__body {
+    margin: 0;
+    font-size: var(--t-15);
+    line-height: var(--lh-tight);
+    color: var(--on-navy-2);
+  }
+
+  .sub__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+    flex: 0 1 30rem;
+    min-width: 0;
+    border-top: 1px solid var(--rule-navy);
+    border-left: 1px solid var(--rule-navy);
+  }
+
+  .sub__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    /* 56px keeps every target comfortably past the 44px touch minimum. */
+    min-height: 3.5rem;
+    padding: 0 1rem;
+    border-right: 1px solid var(--rule-navy);
+    border-bottom: 1px solid var(--rule-navy);
+    color: var(--on-navy);
+    text-decoration: none;
+    font-size: var(--t-14);
+    letter-spacing: 0.04em;
+    transition:
+      background-color 0.4s var(--ease),
+      color 0.4s var(--ease);
+  }
+
+  .sub__link .arrow-link__ico {
+    color: var(--brass);
+    transition: transform 0.4s var(--ease);
+  }
+
+  .sub__link:hover {
+    background: var(--rule-navy);
+    color: var(--cream);
+  }
+
+  .sub__link:hover .arrow-link__ico {
+    transform: translateX(0.25rem);
+  }
+
+  @media (max-width: 68.75rem) {
+    .sub__inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 2rem;
+      padding-block: 3rem;
+    }
+
+    .sub__copy {
+      max-width: none;
+    }
+
+    .sub__list {
+      flex: 0 0 auto;
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .sub__list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

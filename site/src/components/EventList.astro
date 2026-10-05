@@ -1,0 +1,311 @@
+---
+import { months } from '../data/calendar';
+---
+
+<section class="cal section section--pad" id="lineup" aria-labelledby="cal-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-head__title">
+        <p class="eyebrow" data-reveal="up">The lineup</p>
+        <h2 class="display cal__h2" id="cal-title" data-reveal="up">Every show on the farm</h2>
+      </div>
+      <p class="cal__aside" data-reveal="up">
+        Free to attend. Kitchen and tasting room open throughout — no reservation needed.
+      </p>
+    </div>
+
+    {
+      months.map((m) => (
+        <div class="mon">
+          {/* The month pins in the rail and rides along while its own shows pass,
+              then hands off to the next — the page's one authored moment. */}
+          <h3 class="mon__head">
+            <span class="mon__name display">{m.month}</span>
+            <span class="mon__year tnum">{m.year}</span>
+            <span class="mon__count">
+              {m.items.length} {m.items.length === 1 ? 'show' : 'shows'}
+            </span>
+          </h3>
+
+          <ul class="mon__list">
+            {m.items.map((e, i) => (
+              <li class="ev" data-reveal="up" data-stagger={i % 3}>
+                <a class="ev__link" href={e.href} target="_blank" rel="noopener">
+                  <span class="ev__date">
+                    <span class="ev__wd">{e.weekday}</span>
+                    <span class="ev__num display tnum">{e.day}</span>
+                  </span>
+
+                  <span class="ev__body">
+                    {e.badge && <span class="ev__badge">{e.badge}</span>}
+                    <span class="ev__artist display display--700">{e.artist}</span>
+                    <time class="ev__time tnum" datetime={e.date}>
+                      {e.start} – {e.end}
+                    </time>
+                    <span class="ev__note">{e.note}</span>
+                    <span class="ev__more">
+                      Event details <span class="arrow-link__ico">&#8594;</span>
+                    </span>
+                  </span>
+
+                  <span class="ev__frame">
+                    <img
+                      class="ev__img"
+                      src={e.image}
+                      alt={e.alt}
+                      width="800"
+                      height="600"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .cal__h2 {
+    font-size: var(--t-h2);
+  }
+
+  .cal__aside {
+    margin: 0;
+    max-width: 22rem;
+    font-size: var(--t-15);
+    line-height: var(--lh-tight);
+    color: var(--muted);
+  }
+
+  /* --- Month group ------------------------------------------------------ */
+
+  .mon {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: 0 3rem;
+    margin-top: 3.5rem;
+  }
+
+  .mon__head {
+    position: sticky;
+    top: 7.5rem;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    margin: 0;
+    padding-top: 0.5rem;
+  }
+
+  .mon__name {
+    font-size: var(--t-44);
+    line-height: 0.9;
+    letter-spacing: var(--ls-display);
+    color: var(--ink);
+  }
+
+  .mon__year {
+    font-size: var(--t-15);
+    color: var(--muted-2);
+  }
+
+  .mon__count {
+    margin-top: 0.25rem;
+    font-size: var(--t-12);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .mon__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* --- One show --------------------------------------------------------- */
+
+  .ev + .ev {
+    border-top: 1px solid var(--rule);
+  }
+
+  .ev__link {
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr) 13rem;
+    gap: 2rem;
+    align-items: start;
+    padding: 1.75rem 0;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.4s var(--ease);
+  }
+
+  .ev__link:hover {
+    background-color: var(--sand);
+    box-shadow:
+      -1.25rem 0 0 var(--sand),
+      1.25rem 0 0 var(--sand);
+  }
+
+  .ev__date {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 0.125rem;
+    padding-top: 0.125rem;
+  }
+
+  .ev__wd {
+    font-size: var(--t-12);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-2);
+  }
+
+  .ev__num {
+    font-size: var(--t-44);
+    line-height: 0.85;
+    letter-spacing: var(--ls-display);
+    color: var(--ink);
+    transition: color 0.4s var(--ease);
+  }
+
+  .ev__link:hover .ev__num {
+    color: var(--accent);
+  }
+
+  .ev__body {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  .ev__badge {
+    padding: 0.25rem 0.5rem;
+    background: var(--navy);
+    color: var(--cream);
+    font-size: var(--t-11);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .ev__artist {
+    font-size: var(--t-30);
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  .ev__time {
+    font-size: var(--t-14);
+    color: var(--muted-2);
+  }
+
+  .ev__note {
+    max-width: 44ch;
+    font-size: var(--t-15);
+    line-height: var(--lh-tight);
+    color: var(--muted);
+  }
+
+  .ev__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-top: 0.25rem;
+    font-size: var(--t-13);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .ev__more .arrow-link__ico {
+    transition: transform 0.4s var(--ease);
+  }
+
+  .ev__link:hover .ev__more .arrow-link__ico {
+    transform: translateX(0.25rem);
+  }
+
+  .ev__frame {
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--sand);
+  }
+
+  .ev__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.01);
+    transition: transform 0.9s var(--ease);
+  }
+
+  .ev__link:hover .ev__img {
+    transform: scale(1.05);
+  }
+
+  /* --- Narrow ----------------------------------------------------------- */
+
+  @media (max-width: 68.75rem) {
+    .mon {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+      margin-top: 2.5rem;
+    }
+
+    /* Pinning a heading that is no longer beside its list would just cover the
+       shows, so the rail becomes an ordinary divider. */
+    .mon__head {
+      position: static;
+      flex-direction: row;
+      align-items: baseline;
+      gap: 0.625rem;
+      padding-bottom: 0.875rem;
+    }
+
+    .mon__name {
+      font-size: var(--t-32);
+    }
+
+    .mon__count {
+      margin: 0 0 0 auto;
+    }
+
+    .ev__link {
+      grid-template-columns: 3.5rem minmax(0, 1fr);
+      gap: 0 1.25rem;
+      padding: 1.5rem 0;
+    }
+
+    .ev__link:hover {
+      background: none;
+      box-shadow: none;
+    }
+
+    .ev__num {
+      font-size: var(--t-32);
+    }
+
+    .ev__artist {
+      font-size: var(--t-24);
+    }
+
+    /* The photo drops under the copy and spans both columns rather than
+       squeezing into a third one. */
+    .ev__frame {
+      grid-column: 1 / -1;
+      margin-top: 1rem;
+      aspect-ratio: 16 / 9;
+    }
+  }
+</style>
