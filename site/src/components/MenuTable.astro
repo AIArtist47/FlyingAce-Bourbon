@@ -1,0 +1,168 @@
+---
+import type { MenuGroup } from '../data/restaurant';
+
+interface Props {
+  group: MenuGroup;
+  /** Which ground it sits on, so the rules and muted text stay legible. */
+  tone?: 'cream' | 'navy';
+}
+
+const { group, tone = 'cream' } = Astro.props;
+
+/** A group with one unnamed price column still needs a header for screen
+ *  readers, it just should not be drawn. */
+const namedCols = group.cols.some((c) => c.trim().length > 0);
+---
+
+<div class:list={['mgroup', `mgroup--${tone}`]}>
+  <h3 class="mgroup__title display">{group.title}</h3>
+  {group.intro && <p class="mgroup__intro">{group.intro}</p>}
+
+  <table class="menu">
+    <thead class:list={{ vh: !namedCols }}>
+      <tr>
+        <th scope="col">Item</th>
+        {
+          group.cols.map((c) => (
+            <th scope="col" class="menu__price-head">
+              {c.trim() || 'Price'}
+            </th>
+          ))
+        }
+      </tr>
+    </thead>
+    <tbody>
+      {
+        group.items.map((item) => (
+          <tr class:list={['menu__row', { 'menu__row--indent': item.indent }]}>
+            <th scope="row" class="menu__item">
+              <span class="menu__name">{item.name}</span>
+              {item.note && <span class="menu__note">{item.note}</span>}
+              {item.adds && <span class="menu__adds">{item.adds}</span>}
+            </th>
+            {
+              item.prices.map((p) => (
+                <td class="menu__price">{p ?? ''}</td>
+              ))
+            }
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .mgroup {
+    --m-rule: var(--rule);
+    --m-muted: var(--muted);
+    --m-head: var(--muted-2);
+    min-width: 0;
+  }
+
+  .mgroup--navy {
+    --m-rule: var(--rule-navy);
+    --m-muted: var(--on-navy-2);
+    --m-head: var(--brass);
+  }
+
+  .mgroup__title {
+    margin: 0;
+    font-size: var(--t-34);
+    line-height: 1;
+  }
+
+  .mgroup__intro {
+    margin: 0.625rem 0 0;
+    font-size: var(--t-14);
+    line-height: 1.5;
+    color: var(--m-muted);
+  }
+
+  .menu {
+    width: 100%;
+    margin-top: 1.25rem;
+    border-collapse: collapse;
+    /* Prices read as a column, so they get a fixed track rather than being
+       pushed around by the longest dish name. */
+    table-layout: auto;
+  }
+
+  .menu__price-head {
+    text-align: right;
+    width: 5.5rem;
+    padding-bottom: 0.5rem;
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+    color: var(--m-head);
+    border-bottom: 1px solid var(--m-rule);
+  }
+
+  .menu thead th:first-child {
+    text-align: left;
+    padding-bottom: 0.5rem;
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+    color: var(--m-head);
+    border-bottom: 1px solid var(--m-rule);
+  }
+
+  .menu__row {
+    border-bottom: 1px solid var(--m-rule);
+  }
+
+  .menu__item {
+    text-align: left;
+    font-weight: 400;
+    padding: 0.75rem 1rem 0.75rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1875rem;
+  }
+
+  .menu__row--indent .menu__item {
+    padding-left: 1rem;
+  }
+
+  .menu__name {
+    font-size: var(--t-16);
+    font-weight: 600;
+  }
+
+  .menu__row--indent .menu__name {
+    font-weight: 400;
+    color: var(--m-muted);
+  }
+
+  .menu__note {
+    font-size: var(--t-13);
+    line-height: 1.45;
+    color: var(--m-muted);
+  }
+
+  .menu__adds {
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .mgroup--navy .menu__adds {
+    color: var(--brass);
+  }
+
+  .menu__price {
+    padding: 0.75rem 0;
+    text-align: right;
+    vertical-align: top;
+    white-space: nowrap;
+    font-size: var(--t-16);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

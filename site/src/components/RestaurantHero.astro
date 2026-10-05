@@ -1,0 +1,106 @@
+---
+import { restaurantHero as h, ORDER_ONLINE } from '../data/restaurant';
+---
+
+<section class="rhero" id="top">
+  <div class="rhero__media">
+    <img
+      class="rhero__img"
+      src={h.image}
+      alt={h.alt}
+      width="1440"
+      height="600"
+      fetchpriority="high"
+      data-parallax="0.06"
+    />
+    <span class="rhero__scrim"></span>
+  </div>
+
+  <div class="rhero__body wrap">
+    <img class="rhero__logo" src={h.logo} alt={h.logoAlt} width="140" height="140" data-reveal="up" />
+    <p class="eyebrow eyebrow--brass" data-reveal="up">{h.eyebrow}</p>
+    <h1 class="display rhero__title" data-reveal="up">{h.title}</h1>
+    <p class="rhero__lede" data-reveal="up">{h.lede}</p>
+    <div class="rhero__cta" data-reveal="up">
+      <a class="btn btn--solid btn--xl" href={ORDER_ONLINE} target="_blank" rel="noopener">
+        Order Food Online
+      </a>
+      <a class="btn btn--ghost-light btn--xl" href="#menu">View Menu</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .rhero {
+    position: relative;
+    min-height: 37.5rem; /* 600px */
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    background: var(--navy);
+    isolation: isolate;
+  }
+
+  .rhero__media {
+    position: absolute;
+    inset: -6% 0;
+    z-index: -2;
+    overflow: hidden;
+  }
+
+  .rhero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    will-change: transform;
+  }
+
+  .rhero__scrim {
+    position: absolute;
+    inset: 0;
+    background: var(--hero-scrim);
+  }
+
+  .rhero__body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding-block: var(--sec-y);
+    color: var(--cream);
+  }
+
+  .rhero__logo {
+    width: 8.75rem;
+    height: 8.75rem;
+    object-fit: contain;
+  }
+
+  .rhero__title {
+    --cap-spill: 0.155em;
+    font-size: clamp(3rem, 7.7778vw, 7rem); /* 112px @1440 */
+    line-height: var(--lh-hero);
+    color: var(--cream);
+  }
+
+  .rhero__lede {
+    font-size: var(--t-17);
+    line-height: var(--lh-body);
+    color: var(--hero-copy);
+    max-width: 38rem;
+  }
+
+  .rhero__cta {
+    display: flex;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 36rem) {
+    .rhero__logo {
+      width: 6rem;
+      height: 6rem;
+    }
+  }
+</style>

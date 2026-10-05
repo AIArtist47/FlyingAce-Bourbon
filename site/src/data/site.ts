@@ -63,7 +63,7 @@ export const nav = [
   // Real pages now; the rest are still sections of the home page.
   { label: 'Distillery', href: '/distillery' },
   { label: 'Brewery', href: '/brewery' },
-  { label: 'Restaurant', href: '#restaurant' },
+  { label: 'Restaurant', href: '/restaurant' },
   { label: 'Host Your Event', href: '#weddings' },
   { label: 'Calendar', href: '#this-week' },
   { label: 'Visit & FAQ', href: '#visit' },
@@ -115,7 +115,7 @@ export const pillars = [
     lede: 'Monk’s BBQ, smashburgers and fried chicken, with a different special running every day of the week.',
     meta: ['Open Wed – Sun', 'Order online'],
     cta: 'Menu & ordering',
-    href: 'https://flyingacefarm.com/menu-online-ordering/',
+    href: '/restaurant',
     image: img.restaurant,
   },
   {

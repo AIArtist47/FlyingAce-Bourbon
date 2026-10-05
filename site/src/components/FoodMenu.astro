@@ -1,0 +1,73 @@
+---
+import MenuTable from './MenuTable.astro';
+import { foodMenu, ORDER_ONLINE } from '../data/restaurant';
+---
+
+<section class="food section section--pad on-navy" id="menu" aria-labelledby="food-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-head__title">
+        <p class="eyebrow eyebrow--brass" data-reveal="up">Monk’s on the Farm</p>
+        <h2 class="display food__h2" id="food-title" data-reveal="up">The Menu</h2>
+      </div>
+      <a
+        class="btn btn--solid"
+        href={ORDER_ONLINE}
+        target="_blank"
+        rel="noopener"
+        data-reveal="up"
+      >
+        Order Food Online
+      </a>
+    </div>
+
+    <p class="food__live" data-reveal="up">
+      Online ordering shows what’s available in real time — the kitchen adds and removes items through
+      the day.
+    </p>
+
+    <div class="food__grid">
+      {
+        foodMenu.map((group, i) => (
+          <div data-reveal="up" data-stagger={i % 2}>
+            <MenuTable group={group} tone="navy" />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .food {
+    background: var(--navy);
+    color: var(--cream);
+  }
+
+  .food__h2 {
+    font-size: var(--t-h2);
+  }
+
+  .food__live {
+    margin: 1.25rem 0 0;
+    max-width: 38rem;
+    font-size: var(--t-15);
+    line-height: var(--lh-body);
+    color: var(--on-navy);
+  }
+
+  .food__grid {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3.5rem 4rem;
+    align-items: start;
+  }
+
+  @media (max-width: 68.75rem) {
+    .food__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2.5rem;
+    }
+  }
+</style>

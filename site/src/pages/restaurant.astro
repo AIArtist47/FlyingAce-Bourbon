@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import RestaurantHero from '../components/RestaurantHero.astro';
+import WeeklySpecials from '../components/WeeklySpecials.astro';
+import FoodMenu from '../components/FoodMenu.astro';
+import DrinksMenu from '../components/DrinksMenu.astro';
+import DiningNotes from '../components/DiningNotes.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base
+  title="Monk’s on the Farm — Restaurant & Online Ordering | Flying Ace Farm"
+  description="Monk’s BBQ, smashburgers and fried chicken at Flying Ace Farm in Lovettsville, Virginia. See the full food and cocktail menu, weekly specials, and order online."
+>
+  <Header />
+
+  <main id="main">
+    <RestaurantHero />
+    <WeeklySpecials />
+    <FoodMenu />
+    <DrinksMenu />
+    <DiningNotes />
+  </main>
+
+  <Footer />
+</Base>

@@ -1,0 +1,58 @@
+---
+import MenuTable from './MenuTable.astro';
+import { drinksMenu, drinksIntro } from '../data/restaurant';
+---
+
+<section class="drinks section section--pad" id="drinks" aria-labelledby="drinks-title">
+  <div class="wrap">
+    <div class="drinks__head">
+      <h2 class="display drinks__h2" id="drinks-title" data-reveal="up">Cocktail Menu</h2>
+      <p class="drinks__intro" data-reveal="up">{drinksIntro}</p>
+    </div>
+
+    <div class="drinks__grid">
+      {
+        drinksMenu.map((group, i) => (
+          <div data-reveal="up" data-stagger={i % 2}>
+            <MenuTable group={group} />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .drinks__head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 44rem;
+  }
+
+  .drinks__h2 {
+    font-size: var(--t-h2);
+  }
+
+  .drinks__intro {
+    margin: 0;
+    font-size: var(--t-17);
+    line-height: var(--lh-body);
+    color: var(--muted);
+  }
+
+  .drinks__grid {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3.5rem 4rem;
+    align-items: start;
+  }
+
+  @media (max-width: 68.75rem) {
+    .drinks__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2.5rem;
+    }
+  }
+</style>
