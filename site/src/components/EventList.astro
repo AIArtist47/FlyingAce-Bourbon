@@ -31,12 +31,6 @@ import { months } from '../data/calendar';
             {m.items.map((e, i) => (
               <li class="ev" data-reveal="up" data-stagger={i % 3}>
                 <a class="ev__link" href={e.href} target="_blank" rel="noopener">
-                  {/* Pale-brass light that follows the pointer across the row.
-                      Its own element, so motion.ts can write `transform` straight
-                      to it — setting a CSS variable on the row instead would
-                      restyle all ten children on every pointermove. */}
-                  <span class="ev__glow" aria-hidden="true" />
-
                   <span class="ev__date">
                     <span class="ev__wd">{e.weekday}</span>
                     <span class="ev__num display tnum">{e.day}</span>
@@ -142,7 +136,6 @@ import { months } from '../data/calendar';
   }
 
   .ev__link {
-    position: relative;
     display: grid;
     grid-template-columns: 4.5rem minmax(0, 1fr) 13rem;
     gap: 2rem;
@@ -158,73 +151,6 @@ import { months } from '../data/calendar';
     box-shadow:
       -1.25rem 0 0 var(--sand),
       1.25rem 0 0 var(--sand);
-  }
-
-  /* --- Pointer glow ----------------------------------------------------- */
-
-  .ev__glow {
-    display: none;
-  }
-
-  /* Only where there is a real pointer: on touch, `hover` sticks after a tap
-     and would strand the glow lit on whichever row was last pressed. */
-  @media (hover: hover) and (pointer: fine) {
-    /* The light is wider than the row, so without this it washes over the
-       neighbouring shows and the month rail. Clipping keeps it on the row the
-       pointer is actually on. The row's own box-shadow bleed is unaffected —
-       overflow clips descendants, not the element's own shadow. */
-    .ev__link {
-      overflow: hidden;
-    }
-
-    .ev__glow {
-      display: block;
-      position: absolute;
-      /* Centred on the pointer by its own translate, so left/top stay at 0
-         and nothing but `transform` changes while tracking. */
-      top: 0;
-      left: 0;
-      width: 30rem;
-      height: 30rem;
-      margin: -15rem 0 0 -15rem;
-      border-radius: 50%;
-      pointer-events: none;
-      opacity: 0;
-      background: radial-gradient(
-        circle closest-side,
-        rgba(217, 185, 122, 0.55),
-        rgba(217, 185, 122, 0.22) 45%,
-        rgba(217, 185, 122, 0) 78%
-      );
-      /* Position is never eased — an eased glow lags the cursor and reads
-         broken. Only the fade is timed. */
-      transition: opacity 0.26s var(--ease);
-    }
-
-    /* Driven by motion.ts rather than :hover so the glow is already sitting
-       under the cursor at the moment it fades up. */
-    .ev__link[data-glow='on'] .ev__glow {
-      opacity: 1;
-    }
-
-    /* Leaving is quicker than arriving: a slow fade-out on a row the pointer
-       has already left feels like the page is lagging behind. */
-    .ev__link:not([data-glow='on']) .ev__glow {
-      transition-duration: 0.16s;
-    }
-
-    /* The row's own content has to sit above the light. */
-    .ev__date,
-    .ev__body,
-    .ev__frame {
-      position: relative;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .ev__glow {
-      display: none;
-    }
   }
 
   .ev__date {
