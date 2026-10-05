@@ -1,0 +1,253 @@
+---
+import { featured } from '../data/distillery';
+
+/**
+ * "Take off with our homegrown spirits" — a curated-random trio.
+ *
+ * Deliberately NOT a second copy of the lineup grid directly above it. That
+ * one is a 4-up catalogue: bordered cards, small type, dense. This is a 3-up
+ * showcase: no card chrome, taller plinths, bigger names, more air. Same
+ * tokens, different rhythm, so the eye reads them as two different jobs
+ * rather than the same thing twice.
+ *
+ * Hierarchy, in the order it should be seen:
+ *   1  the headline, split across two type treatments
+ *   2  the bottle itself
+ *   3  its name
+ *   4  the tasting note, then price and availability as fine print
+ */
+---
+
+<section class="grown" aria-labelledby="grown-title">
+  <div class="wrap">
+    <header class="grown__head">
+      <p class="eyebrow" data-reveal="up">Distilled on the farm</p>
+
+      {/* Two levels inside one heading: the shout, then the aside. */}
+      <h2 class="grown__title" id="grown-title" data-reveal="up">
+        <span class="grown__shout display">Take off</span>
+        <span class="grown__aside quote">with our homegrown spirits</span>
+      </h2>
+
+      <p class="grown__lede" data-reveal="up">
+        Grain grown, harvested, stored and milled on the property, then run off our own still.
+        A different three from the lineup every time we rebuild the page.
+      </p>
+    </header>
+
+    <ol class="grown__grid">
+      {
+        featured.map((s, i) => (
+          <li class="pick" data-reveal="up" data-stagger={i}>
+            <span class="pick__plinth">
+              <span class="pick__rule" aria-hidden="true" />
+              <img class="pick__img" src={s.image} alt={s.alt} loading="lazy" />
+            </span>
+
+            <div class="pick__body">
+              <p class="pick__badge">{s.badge}</p>
+              <h3 class="pick__name display">{s.name}</h3>
+              <p class="pick__note">{s.note}</p>
+              <p class="pick__meta">
+                <span class="pick__price">{s.price}</span>
+                <span class="pick__avail">{s.availability}</span>
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <a class="arrow-link grown__all" href="#lineup" data-reveal="up">
+      See the whole lineup <span class="arrow-link__ico">&#8594;</span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .grown {
+    background: var(--sand);
+    padding-block: var(--sec-y);
+  }
+
+  /* --- Head ------------------------------------------------------------- */
+
+  .grown__head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 46rem;
+  }
+
+  .grown__title {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Primary: the largest, heaviest thing in the section. */
+  .grown__shout {
+    font-size: var(--t-h2);
+    line-height: var(--lh-display);
+  }
+
+  /* Secondary: a different face at roughly half the size, so the two read as
+     one sentence at two volumes rather than competing. */
+  .grown__aside {
+    font-size: var(--t-30);
+    color: var(--ink-soft);
+    margin-top: 0.25rem;
+  }
+
+  .grown__lede {
+    margin: 0.5rem 0 0;
+    font-size: var(--t-17);
+    line-height: var(--lh-body);
+    color: var(--muted);
+  }
+
+  /* --- The trio --------------------------------------------------------- */
+
+  .grown__grid {
+    list-style: none;
+    margin: 3.5rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.5rem;
+  }
+
+  .pick {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-width: 0;
+  }
+
+  /* No border, no card: the bottle stands on a plinth instead. */
+  .pick__plinth {
+    position: relative;
+    display: block;
+    background: var(--paper);
+    padding: 2.5rem 2rem;
+    overflow: hidden;
+  }
+
+  .pick__rule {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 3px;
+    background: var(--brass);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.55s var(--ease);
+  }
+
+  .pick:hover .pick__rule {
+    transform: scaleX(1);
+  }
+
+  .pick__img {
+    width: 100%;
+    height: 21.25rem; /* taller than the lineup's 300px — this is the showcase */
+    object-fit: contain;
+    transition: transform 0.7s var(--ease);
+  }
+
+  .pick:hover .pick__img {
+    transform: translateY(-0.5rem) scale(1.03);
+  }
+
+  .pick__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    align-items: flex-start;
+  }
+
+  /* Quaternary, but it earns the top slot by being the shortest line. */
+  .pick__badge {
+    margin: 0;
+    font-size: var(--t-12);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .pick__name {
+    margin: 0;
+    font-size: var(--t-32);
+    line-height: 1;
+    transition: color 0.35s var(--ease);
+  }
+
+  .pick:hover .pick__name {
+    color: var(--accent);
+  }
+
+  .pick__note {
+    margin: 0;
+    font-size: var(--t-15);
+    line-height: var(--lh-tight);
+    color: var(--muted);
+  }
+
+  .pick__meta {
+    margin: 0.375rem 0 0;
+    padding-top: 0.875rem;
+    border-top: 1px solid var(--rule);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .pick__price {
+    font-size: var(--t-lead);
+    font-weight: 700;
+  }
+
+  .pick__avail {
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: var(--ls-display);
+    text-transform: uppercase;
+    color: var(--muted-2);
+  }
+
+  .grown__all {
+    margin-top: 2.5rem;
+  }
+
+  /* --- Breakpoints ------------------------------------------------------ */
+
+  @media (max-width: 68.75rem) {
+    .grown__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2rem;
+    }
+    .pick__img {
+      height: 17rem;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .grown__grid {
+      grid-template-columns: minmax(0, 1fr);
+      margin-top: 2.5rem;
+    }
+    .pick__plinth {
+      padding: 2rem 1.5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pick:hover .pick__img {
+      transform: none;
+    }
+  }
+</style>

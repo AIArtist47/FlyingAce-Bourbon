@@ -1,0 +1,61 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+
+// Social scrapers need an absolute URL, so the local poster is resolved
+// against `site` from astro.config.mjs.
+const ogImage = Astro.site
+  ? new URL('images/hero-farm.jpg', Astro.site).href
+  : '/images/hero-farm.jpg';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#18212C" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Libre+Franklin:wght@400;500;600;700&family=Newsreader:ital,opsz@1,6..72&display=swap"
+    />
+
+    <script is:inline>
+      // Flagging JS before first paint means the reveal start-states apply
+      // without a flash. No-JS visitors never get the flag, so they get the
+      // full page. If the motion bundle fails to arrive, the timer below
+      // drops the flag so no content is ever stranded at opacity 0.
+      (function () {
+        var root = document.documentElement;
+        root.classList.add('js');
+        window.__motionFallback = window.setTimeout(function () {
+          root.classList.remove('js');
+        }, 2500);
+      })();
+    </script>
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <slot />
+    <script>
+      import '../scripts/motion';
+    </script>
+  </body>
+</html>

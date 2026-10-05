@@ -1,0 +1,144 @@
+---
+import Icon from './Icon.astro';
+import { img } from '../data/site';
+---
+
+<section class="celeb" aria-labelledby="celeb-title">
+  <div class="celeb__inner wrap">
+    <div class="celeb__body">
+      <p class="eyebrow" data-reveal="up">A celebration</p>
+      <h2 class="display celeb__h2" id="celeb-title" data-reveal="up">
+        Virginia born &amp; American made
+      </h2>
+      <p class="quote celeb__quote" data-reveal="up">
+        The Flying Ace brand pays tribute to American heroes and the men &amp; women who protect our
+        skies.
+      </p>
+
+      <div class="vet" data-reveal="up">
+        <Icon name="flag" size={34} width={1.5} />
+        <div class="vet__text">
+          <h3 class="vet__title display">Buy a Veteran a Beer</h3>
+          <p class="vet__body">
+            Pay it forward: when a veteran visits, their first beer has already been bought by
+            someone in our community.
+          </p>
+        </div>
+      </div>
+
+      <a class="arrow-link" href="#mission" data-reveal="up">
+        Our mission <span class="arrow-link__ico">&#8594;</span>
+      </a>
+    </div>
+
+    <!-- Reveals here lift vertically: a horizontal start-transform on a
+         full-width block pushes the page a few px wide before it animates. -->
+    <div class="celeb__media" data-reveal="up">
+      <img
+        class="celeb__img"
+        src={img.aircraft}
+        alt="Flying Ace Farm"
+        loading="lazy"
+        data-parallax="0.06"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .celeb {
+    background: var(--sand);
+  }
+
+  .celeb__inner {
+    min-height: 37.5rem; /* 600px */
+    display: flex;
+    gap: 4.5rem; /* 72px */
+    align-items: center;
+    padding-block: var(--sec-y);
+  }
+
+  .celeb__body {
+    flex-grow: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    align-items: flex-start;
+  }
+
+  .celeb__h2 {
+    font-size: var(--t-h2);
+  }
+
+  .celeb__quote {
+    font-size: var(--t-24);
+    color: var(--ink-soft);
+    max-width: 38.75rem; /* 620px */
+  }
+
+  .vet {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 1.375rem 1.5rem;
+    max-width: 40rem; /* 640px */
+    transition: border-color 0.5s var(--ease);
+  }
+
+  .vet:hover {
+    border-color: var(--accent);
+  }
+
+  .vet > :global(svg) {
+    flex-shrink: 0;
+  }
+
+  .vet__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    min-width: 0;
+  }
+
+  .vet__title {
+    font-size: var(--t-26);
+  }
+
+  .vet__body {
+    font-size: var(--t-15);
+    line-height: 1.5;
+    color: var(--muted);
+  }
+
+  .celeb__media {
+    width: 35rem; /* 560px */
+    flex-shrink: 0;
+    overflow: hidden;
+    background: var(--rule);
+  }
+
+  .celeb__img {
+    width: 100%;
+    height: 27.5rem; /* 440px */
+    object-fit: cover;
+    will-change: transform;
+  }
+
+  @media (max-width: 68.75rem) {
+    .celeb__inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 2.5rem;
+    }
+    .celeb__media {
+      width: 100%;
+      order: -1;
+    }
+    .celeb__img {
+      height: 20rem;
+    }
+  }
+</style>

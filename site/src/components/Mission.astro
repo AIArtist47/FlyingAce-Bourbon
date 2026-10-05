@@ -1,0 +1,42 @@
+---
+const mission =
+  'Here at Flying Ace Farm, our mission is to develop, produce, serve and distribute delicious farm-to-table food products and farm-to-bottle beverages produced from crops that we grow, harvest, store and mill on property. These farm products are offered to our customers for consumption as food and beverages in our restaurant, brewery, and distillery and for purchase through our distribution channels.';
+---
+
+<section class="mission" id="mission" aria-labelledby="mission-title">
+  <div class="mission__inner">
+    <p class="eyebrow" id="mission-title" data-reveal="up">The Mission</p>
+    <p class="quote mission__text" data-reveal="fade" data-mission>{mission}</p>
+  </div>
+</section>
+
+<style>
+  .mission {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .mission__inner {
+    min-height: 30rem; /* 480px */
+    box-sizing: border-box;
+    padding: var(--sec-y) clamp(1.25rem, 11.11vw, 10rem); /* 160px inline @1440 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    text-align: center;
+    margin-inline: auto;
+    max-width: var(--maxw);
+  }
+
+  .mission__text {
+    font-size: var(--t-30);
+    color: var(--ink);
+    max-width: 67.5rem; /* 1080px */
+    /* The opposite problem to the display headings: Newsreader's content box
+       is 1.01em but it is set at 1.45, so roughly 0.22em of empty leading
+       sits above the first line and pushed the real gap under the eyebrow out
+       to ~32px. Pull it back so this pair matches the hero's. */
+    margin-top: -0.22em;
+  }
+</style>

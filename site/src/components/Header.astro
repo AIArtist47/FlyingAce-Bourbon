@@ -1,0 +1,363 @@
+---
+import Icon from './Icon.astro';
+import { nav, site, img } from '../data/site';
+
+/**
+ * Most nav items are sections of the home page. On the home page they stay
+ * bare hashes so the Lenis smooth-scroll handler picks them up; anywhere else
+ * they need the leading slash or they would hunt for a section that is not on
+ * this page.
+ */
+const onHome = Astro.url.pathname === '/';
+const href = (h: string) => (h.startsWith('#') && !onHome ? `/${h}` : h);
+const isCurrent = (h: string) => h === Astro.url.pathname;
+---
+
+<header class="hdr" id="site-header" data-header>
+  <div class="hdr__inner wrap">
+    {/* The brand lockup — mark and wordmark together — is the route home from
+        anywhere. It points at "/" rather than an in-page anchor because both
+        pages carry a #top section, so a hash would have kept you where you
+        were instead of taking you to the landing page. */}
+    <a class="brand" href="/" rel="home" aria-label={`${site.name} — home`} data-home>
+      <img class="brand__mark" src={img.logo} alt="" width="52" height="52" />
+      <span class="brand__text">
+        <span class="brand__name display">Flying Ace Farm</span>
+        <span class="brand__place">{site.place}</span>
+      </span>
+    </a>
+
+    <nav class="hdr__nav" aria-label="Main" data-nav>
+      <span class="hdr__island" data-nav-island aria-hidden="true"></span>
+      {
+        nav.map((item) => (
+          <a
+            class:list={['hdr__link', { 'is-active': isCurrent(item.href) }]}
+            href={href(item.href)}
+            aria-current={isCurrent(item.href) ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="hdr__cta">
+      <a class="btn btn--solid" href="https://flyingacefarm.com/menu-online-ordering/">Order Food</a>
+      <a class="btn btn--ghost" href="#spirits">Order Spirits</a>
+    </div>
+
+    <button class="hdr__burger" type="button" aria-label="Open menu" aria-expanded="false" data-menu-open>
+      <Icon name="menu" size={26} stroke="var(--navy)" width={1.8} />
+    </button>
+  </div>
+
+  <div class="hdr__progress" data-progress aria-hidden="true"></div>
+</header>
+
+<div class="drawer" id="menu-drawer" data-drawer hidden>
+  <div class="drawer__panel">
+    <div class="drawer__top">
+      <span class="brand__name display">Flying Ace Farm</span>
+      <button class="drawer__close" type="button" aria-label="Close menu" data-menu-close>
+        <Icon name="close" size={26} stroke="var(--cream)" width={1.8} />
+      </button>
+    </div>
+
+    <nav class="drawer__nav" aria-label="Mobile">
+      {
+        nav.map((item) => (
+          <a
+            class="drawer__link display display--700"
+            href={href(item.href)}
+            aria-current={isCurrent(item.href) ? 'page' : undefined}
+            data-drawer-link
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="drawer__cta">
+      <a class="btn btn--solid btn--xl" href="https://flyingacefarm.com/menu-online-ordering/">Order Food</a>
+      <a class="btn btn--ghost-light btn--xl" href="#spirits" data-drawer-link>Order Spirits</a>
+    </div>
+
+    <a class="drawer__phone" href={site.phoneHref}>{site.phone}</a>
+  </div>
+</div>
+
+<style>
+  .hdr {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--cream);
+    border-bottom: 1px solid var(--rule);
+    transition:
+      box-shadow 0.4s var(--ease),
+      background-color 0.4s var(--ease);
+  }
+
+  .hdr.is-stuck {
+    box-shadow: 0 1px 0 var(--rule), 0 10px 30px -22px rgba(24, 33, 44, 0.5);
+    background: rgba(244, 238, 227, 0.94);
+    backdrop-filter: saturate(140%) blur(10px);
+  }
+
+  .hdr__inner {
+    min-height: 5.5rem; /* 88px */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.75rem;
+    /* Wrapping keeps the bar intact when a reader scales text to 200%:
+       the row stacks instead of pushing the page into horizontal scroll. */
+    flex-wrap: wrap;
+    padding-block: 0.75rem;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    color: var(--ink);
+    min-width: 0;
+  }
+
+  .brand:hover {
+    color: var(--ink);
+  }
+
+  .brand__mark {
+    width: 3.25rem;
+    height: 3.25rem;
+    flex-shrink: 0;
+    object-fit: contain;
+    background: var(--navy);
+    border-radius: 50%;
+    padding: 0.25rem;
+    /* The condense rides on transform, never width/height: the bar keeps a
+       constant 88px box (as drawn on the artboard) so nothing relayouts mid
+       scroll, and the document height stays put for ScrollTrigger. */
+    transition: transform 0.45s var(--ease);
+  }
+
+  .hdr.is-stuck .brand__mark {
+    transform: scale(0.85);
+  }
+
+  .brand:hover .brand__mark {
+    transform: rotate(-8deg) scale(1.05);
+  }
+
+  .hdr.is-stuck .brand:hover .brand__mark {
+    transform: rotate(-8deg) scale(0.9);
+  }
+
+  .brand__text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    min-width: 0;
+  }
+
+  .brand__name {
+    font-size: var(--t-26);
+    letter-spacing: var(--ls-display);
+  }
+
+  .brand__place {
+    font-size: var(--t-11);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted-2);
+    margin-top: 0.25rem;
+  }
+
+  .hdr__nav {
+    position: relative;
+    display: flex;
+    /* Link padding carries most of the spacing now, so the gap shrinks to
+       keep text-to-text distance at the artboard's 28px. */
+    gap: 0.5rem;
+    font-size: var(--t-15);
+    font-weight: 500;
+  }
+
+  /* The island is a 1px block stretched by scaleX, so it never animates
+     width — and with square corners there is nothing for the scale to
+     distort. JS parks it behind whichever link is lit. */
+  .hdr__island {
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 1px;
+    background: var(--navy);
+    transform-origin: left center;
+    transform: translateX(0) scaleX(0);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hdr__link {
+    position: relative;
+    z-index: 1;
+    color: var(--ink);
+    padding: 0.5rem 0.625rem;
+    transition: color 0.25s var(--ease);
+  }
+
+  .hdr__link:hover {
+    color: var(--accent);
+  }
+
+  /* Lit = the island is sitting behind this one. */
+  .hdr__link.is-lit,
+  .hdr__link.is-lit:hover {
+    color: var(--cream);
+  }
+
+  /* Without JS the island never shows, so the active link still needs to
+     read as active on its own. */
+  html:not(.js) .hdr__link.is-active {
+    text-decoration: underline;
+    text-underline-offset: 0.35em;
+    text-decoration-color: var(--accent);
+  }
+
+  .hdr__cta {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .hdr__burger {
+    display: none;
+    background: none;
+    border: 0;
+    padding: 0.625rem;
+    margin-right: -0.625rem;
+    cursor: pointer;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hdr__progress {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    height: 2px;
+    width: 100%;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  /* --- Drawer ---------------------------------------------------------- */
+
+  .drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+  }
+
+  .drawer[hidden] {
+    display: none;
+  }
+
+  .drawer__panel {
+    position: absolute;
+    inset: 0;
+    background: var(--navy);
+    color: var(--cream);
+    padding: 1.5rem var(--gutter) 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    overflow-y: auto;
+  }
+
+  .drawer__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 3.25rem;
+  }
+
+  .drawer__top .brand__name {
+    color: var(--cream);
+  }
+
+  .drawer__close {
+    background: none;
+    border: 0;
+    padding: 0.625rem;
+    cursor: pointer;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .drawer__nav {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--rule-navy);
+  }
+
+  .drawer__link {
+    font-size: var(--t-34);
+    color: var(--cream);
+    padding: 0.875rem 0;
+    border-bottom: 1px solid var(--rule-navy);
+    letter-spacing: var(--ls-display);
+  }
+
+  .drawer__link:hover {
+    color: var(--brass);
+  }
+
+  .drawer__cta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .drawer__phone {
+    font-family: var(--font-display);
+    font-size: var(--t-32);
+    text-transform: uppercase;
+    color: var(--brass);
+    letter-spacing: var(--ls-display);
+    margin-top: auto;
+  }
+
+  /* --- Breakpoints ----------------------------------------------------- */
+
+  @media (max-width: 78.125rem) {
+    /* 1250px — nav would collide with the CTA pair */
+    .hdr__nav {
+      display: none;
+    }
+    .hdr__burger {
+      display: flex;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    /* 576px */
+    .hdr__cta {
+      display: none;
+    }
+    .brand__place {
+      display: none;
+    }
+  }
+</style>

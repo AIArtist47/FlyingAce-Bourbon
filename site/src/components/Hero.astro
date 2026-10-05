@@ -1,0 +1,201 @@
+---
+import { img } from '../data/site';
+
+const headline = 'Take off to Flying Ace Farm';
+const words = headline.split(' ');
+---
+
+<section class="hero" id="top">
+  <div class="hero__media" data-hero-media>
+    <img
+      class="hero__poster"
+      src={img.heroPoster}
+      alt="Flying Ace Farm"
+      width="1440"
+      height="760"
+      fetchpriority="high"
+    />
+    <iframe
+      class="hero__video"
+      data-hero-video
+      title="Flying Ace Farm reel"
+      src={`https://player.vimeo.com/video/${img.heroVimeo}?background=1&autoplay=1&loop=1&muted=1&autopause=0&dnt=1`}
+      allow="autoplay; fullscreen"
+      tabindex="-1"
+      aria-hidden="true"
+      loading="lazy"></iframe>
+  </div>
+
+  <div class="hero__scrim"></div>
+
+  <div class="hero__body wrap">
+    <p class="eyebrow eyebrow--brass" data-reveal="up">
+      Loudoun County’s first farm distillery &amp; brewery
+    </p>
+
+    <h1 class="hero__title display" data-hero-title>
+      {
+        words.map((w, i) => (
+          <>
+            <span class="word"><span class="word__in">{w}</span></span>
+            {i < words.length - 1 ? ' ' : null}
+          </>
+        ))
+      }
+    </h1>
+
+    <p class="hero__lede" data-reveal="up">
+      Award-winning American Ace bourbon, craft beer and Monk’s BBQ on a 200-year-old working
+      farm — with live music every Friday, Saturday and Sunday.
+    </p>
+
+    <div class="hero__cta" data-reveal="up">
+      <a class="btn btn--solid btn--xl" href="#visit">Plan Your Visit</a>
+      <a class="btn btn--ghost-light btn--xl" href="#spirits">Explore Our Spirits</a>
+    </div>
+  </div>
+
+  <div class="hero__cue" aria-hidden="true" data-hero-cue>
+    <span class="hero__cue-line"></span>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 47.5rem; /* 760px */
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    background: var(--navy);
+    isolation: isolate;
+  }
+
+  .hero__media {
+    position: absolute;
+    inset: -8% 0;
+    z-index: -2;
+    will-change: transform;
+  }
+
+  .hero__poster,
+  .hero__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 0;
+  }
+
+  .hero__video {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.2s var(--ease);
+    /* Vimeo's background player keeps 16:9 — overscale so it always covers. */
+    min-width: 177.78vh;
+    min-height: 56.25vw;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .hero__video.is-ready {
+    opacity: 1;
+  }
+
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--hero-scrim);
+  }
+
+  .hero__body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-bottom: 5.5rem; /* 88px */
+    padding-top: 7rem;
+    color: var(--cream);
+  }
+
+  .hero__title {
+    /* Set at 0.88 rather than 0.95, so the caps spill further: (1.19 − 0.88) ÷ 2 */
+    --cap-spill: 0.155em;
+    font-size: var(--t-hero);
+    line-height: var(--lh-hero);
+    color: var(--cream);
+    max-width: 62.5rem; /* 1000px */
+  }
+
+  .word {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+  }
+
+  .word__in {
+    display: inline-block;
+  }
+
+  .hero__lede {
+    font-size: var(--t-lead);
+    line-height: var(--lh-body);
+    color: var(--hero-copy);
+    max-width: 41.25rem; /* 660px */
+  }
+
+  .hero__cta {
+    display: flex;
+    gap: 0.875rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .hero__cue {
+    position: absolute;
+    right: var(--gutter);
+    bottom: 5.5rem;
+    width: 1px;
+    height: 5rem;
+    background: rgba(244, 238, 227, 0.25);
+    overflow: hidden;
+  }
+
+  .hero__cue-line {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--brass);
+    transform: translateY(-100%);
+    animation: cue 2.4s var(--ease) infinite;
+  }
+
+  @keyframes cue {
+    0% {
+      transform: translateY(-100%);
+    }
+    60%,
+    100% {
+      transform: translateY(100%);
+    }
+  }
+
+  @media (max-width: 60rem) {
+    .hero__cue {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__video {
+      display: none;
+    }
+    .hero__cue-line {
+      animation: none;
+      transform: none;
+    }
+  }
+</style>
