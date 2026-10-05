@@ -151,11 +151,11 @@ import { months } from '../data/calendar';
     transition: background-color 0.4s var(--ease);
   }
 
+  /* The highlight stops exactly where the rules between the shows stop. It used
+     to be widened past them with a box-shadow, which read as the colour leaking
+     out of the card on both sides. */
   .ev__link:hover {
     background-color: var(--sand);
-    box-shadow:
-      -1.25rem 0 0 var(--sand),
-      1.25rem 0 0 var(--sand);
   }
 
   /* --- Gradient sweep --------------------------------------------------- */
@@ -168,8 +168,8 @@ import { months } from '../data/calendar';
      would leave the sweep parked mid-row on whichever show was pressed last. */
   @media (hover: hover) and (pointer: fine) {
     /* The band is wider than the row and starts outside it, so the row has to
-       clip. Its own box-shadow bleed is untouched — overflow clips descendants,
-       not the element's own shadow. */
+       clip — which also holds the sweep to the same bounds as the sand
+       highlight and the rules between the shows. */
     .ev__link {
       overflow: hidden;
     }
@@ -364,7 +364,6 @@ import { months } from '../data/calendar';
 
     .ev__link:hover {
       background: none;
-      box-shadow: none;
     }
 
     .ev__num {
