@@ -17,3 +17,6 @@ Thumbs.db
 # local build artefacts & tool caches
 *.zip
 .impeccable/
+
+.vercel
+.env*
