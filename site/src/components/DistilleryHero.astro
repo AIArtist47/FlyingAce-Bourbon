@@ -79,11 +79,18 @@ import { distilleryHero } from '../data/distillery';
     width: 33.75rem; /* 540px */
     flex-shrink: 0;
     overflow: hidden;
+    /* Fill the row instead of floating a short card inside it. The copy
+       column runs taller than the artboard's 360px frame, which left a band
+       of navy above and below the image; 360px is now the floor, not the
+       fixed height. */
+    align-self: stretch;
+    min-height: 22.5rem; /* 360px */
   }
 
   .dhero__img {
+    display: block;
     width: 100%;
-    height: 22.5rem; /* 360px */
+    height: 100%;
     object-fit: cover;
     will-change: transform;
   }
@@ -98,10 +105,10 @@ import { distilleryHero } from '../data/distillery';
     .dhero__media {
       width: 100%;
       order: -1;
-    }
-
-    .dhero__img {
+      /* Stacked: the frame sets its own height and the image fills it, so the
+         desktop 360px floor must not apply here. */
       height: 17rem;
+      min-height: 0;
     }
   }
 </style>
