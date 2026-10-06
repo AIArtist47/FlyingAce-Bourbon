@@ -52,7 +52,6 @@
   --t-28: clamp(1.5rem, 1.9444vw, 1.75rem); /* 28px */
   --t-26: clamp(1.375rem, 1.8056vw, 1.625rem); /* 26px */
   --t-24: clamp(1.25rem, 1.6667vw, 1.5rem); /* 24px */
-  --t-23: clamp(1.25rem, 1.5972vw, 1.4375rem); /* 23px */
   --t-22: clamp(1.25rem, 1.5278vw, 1.375rem); /* 22px */
   --t-lead: clamp(1.125rem, 1.4583vw, 1.3125rem); /* 21px */
   --t-17: clamp(1rem, 1.1806vw, 1.0625rem); /* 17px */
@@ -63,15 +62,43 @@
   --t-12: 0.75rem;
   --t-11: 0.6875rem;
 
+  /* --- The scale by role ------------------------------------------------
+     The steps above are the artboard's pixel values and are what the
+     components actually reference. These name the handful that carry the
+     hierarchy, so new work picks a role rather than hunting for a number
+     that looks about right, which is how the 1px-apart steps got there.
+
+     Seven roles, each a clear jump from the last:
+       caption 12 · body-sm 15 · body 17 · lead 21 · h3 30 · h2 72 · hero 148
+
+     The steps between them (22/23/24, 26/28, 32/34, 44) exist because the
+     artboard used them. Treat them as legacy: reach for a role first, and
+     only drop to a raw step when matching existing artboard work. */
+  --t-caption: var(--t-12);
+  --t-body-sm: var(--t-15);
+  --t-body: var(--t-17);
+  --t-h3: var(--t-30);
+  /* --t-lead, --t-h2 and --t-hero are already role-named. */
+
   --lh-display: 0.95;
   --lh-hero: 0.88;
   --lh-body: 1.6;
   --lh-tight: 1.55;
 
-  --ls-display: 0.06em;
-  --ls-eyebrow: 0.22em;
+  /* --- Tracking ---------------------------------------------------------
+     Components had been setting this by hand in seven different values
+     (0.04 / 0.06 / 0.08 / 0.1 / 0.12 / 0.14 / 0.2em) while four tokens sat
+     unused. These are those values consolidated into one scale, named for
+     the job rather than the number. Uppercase needs tracking opened up;
+     the larger the type, the less it needs. */
+  --ls-display: 0.06em; /* caps at heading sizes */
+  --ls-caps-sm: 0.04em; /* caps at 14px and up, where the size carries it */
+  --ls-caps: 0.08em; /* the default for a small uppercase label */
+  --ls-caps-wide: 0.1em; /* caps under ~13px, which need the help */
   --ls-label: 0.14em;
   --ls-kicker: 0.16em;
+  --ls-wordmark: 0.2em; /* the brand tagline and section eyebrows */
+  --ls-eyebrow: 0.22em;
 
   /* --- Space ----------------------------------------------------------- */
   --gutter: clamp(1.25rem, 4.4444vw, 4rem); /* 64px */

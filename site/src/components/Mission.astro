@@ -32,7 +32,9 @@ const mission =
   .mission__text {
     font-size: var(--t-30);
     color: var(--ink);
-    max-width: 67.5rem; /* 1080px */
+    /* Was 1080px, which ran the line to 84 characters. 62ch keeps the
+       measure inside the 45-75 band without changing the type size. */
+    max-width: 62ch;
     /* The opposite problem to the display headings: Newsreader's content box
        is 1.01em but it is set at 1.45, so roughly 0.22em of empty leading
        sits above the first line and pushed the real gap under the eyebrow out
