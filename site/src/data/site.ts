@@ -220,8 +220,10 @@ export const exploreLinks = [
   { label: 'Contact', href: 'https://flyingacefarm.com/contact-us/' },
 ];
 
+/** `label` is no longer rendered; it names the mark for screen readers. */
 export const social = [
-  { label: 'Instagram', href: 'https://www.instagram.com/flyingacefarm/' },
-  { label: 'Facebook', href: 'https://www.facebook.com/flyingacefarm/' },
-  { label: 'Google', href: site.directions },
+  { label: 'Instagram', icon: 'instagram' as const, href: 'https://www.instagram.com/flyingacefarm/' },
+  { label: 'Facebook', icon: 'facebook' as const, href: 'https://www.facebook.com/flyingacefarm/' },
+  /* The link is a Maps directions URL, so the mark is Maps, not plain Google. */
+  { label: 'Directions on Google Maps', icon: 'googlemaps' as const, href: site.directions },
 ];
