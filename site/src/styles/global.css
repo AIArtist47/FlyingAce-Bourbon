@@ -37,6 +37,8 @@
   --font-display: 'Big Shoulders Display', 'Haettenschweiler', Impact, sans-serif;
   --font-body: 'Libre Franklin', ui-sans-serif, sans-serif;
   --font-accent: 'Newsreader', Georgia, 'Times New Roman', serif;
+  /* The paragraph that sits under a heading, wherever one does. */
+  --font-sub: 'Montserrat', ui-sans-serif, sans-serif;
 
   /* 1440px viewport => 1vw = 14.4px. Each max is the artboard px as rem. */
   --t-hero: clamp(3.5rem, 10.2778vw, 9.25rem); /* 148px */
@@ -327,6 +329,40 @@ h3.display {
   font-size: var(--t-17);
   line-height: var(--lh-body);
   color: var(--muted);
+}
+
+/* ==========================================================================
+   Subtext under a heading — Montserrat Medium
+   ==========================================================================
+
+   The standfirst paragraph beneath a hero or section title, listed by hand
+   because each one is a scoped class in its own component. None of them set
+   a family of their own, so one plain class selector here is enough to win
+   over what they inherit from body.
+
+   Deliberately NOT listed: anything carrying .quote, plus .ed__billing. Those
+   are the Newsreader italic, which is its own voice on this site and stays. */
+.lede,
+.hero__lede,
+.dhero__lede,
+.bhero__lede,
+.chero__lede,
+.rhero__lede,
+.pillars__lede,
+.grown__lede,
+.panel__lede,
+.newsletter__lede,
+.cal__aside,
+.drinks__intro,
+.mgroup__intro,
+.food__live,
+.ed__intro,
+/* Subtitles of an h2-titled block, same role as the ledes above. */
+.sub__body,
+.dnote__body,
+.tile__body {
+  font-family: var(--font-sub);
+  font-weight: 500;
 }
 
 .sec-head {
