@@ -118,6 +118,24 @@ export const enquiryFields = [
   { id: 'hours', label: 'How many hours are you looking to host?', type: 'text', autocomplete: '', required: false },
 ] as const;
 
+/**
+ * The figures under the venues band. Every one is checkable: four spaces are
+ * the four listed above, the pavilion's dimensions come from the artboard and
+ * the farm's own page, and the acreage is that page's own number ("a working
+ * farm sitting on 86 acres"). Nothing here is rounded up for effect.
+ */
+export const venueStats = [
+  { value: '4', suffix: '', label: 'Event spaces' },
+  { value: '50', suffix: '′ × 80′', label: 'Enclosed pavilion' },
+  { value: '86', suffix: '', label: 'Acres of working farm' },
+];
+
+/** The wide shot under the cards. */
+export const venueFeature = {
+  image: `${E}/pavilion-dusk.jpg`,
+  alt: 'The enclosed pavilion at dusk, its glass doors lit from inside',
+};
+
 /* ---------------------------------------------------------------------- */
 /* Hero carousel                                                          */
 /* ---------------------------------------------------------------------- */
