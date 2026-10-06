@@ -117,3 +117,49 @@ export const enquiryFields = [
   { id: 'kind', label: 'What type of event are you hosting?', type: 'text', autocomplete: '', required: false },
   { id: 'hours', label: 'How many hours are you looking to host?', type: 'text', autocomplete: '', required: false },
 ] as const;
+
+/* ---------------------------------------------------------------------- */
+/* Hero carousel                                                          */
+/* ---------------------------------------------------------------------- */
+
+/**
+ * Every photograph on flyingacefarm.com/host-your-event/ — 21 of them, the
+ * two logos on that page excluded.
+ *
+ * Six carry the specific alt text written when they were chosen for the venue
+ * rows below. The other fifteen were pulled wholesale for the carousel and are
+ * described by what the page they came from is of, rather than by invented
+ * detail about shots that were not individually reviewed.
+ */
+const G = '/images/events-page/gallery';
+
+export type Shot = { src: string; alt: string };
+
+export const gallery: Shot[] = [
+  { src: `${E}/barn.jpg`, alt: 'The barn’s upper floor, with its arched timber roof and long tables' },
+  { src: `${G}/g01-pavilion-field.jpg`, alt: 'The pavilion across the field at Flying Ace Farm' },
+  { src: `${E}/pavilion.jpg`, alt: 'Inside the pavilion, picnic tables under string lights and ceiling fans' },
+  { src: `${G}/g02-tables.jpg`, alt: 'Tables set for an event at Flying Ace Farm' },
+  { src: `${E}/farmhouse.jpg`, alt: 'The brick farmhouse behind its white picket fence' },
+  { src: `${G}/g03-barn-bar.jpg`, alt: 'The bar and booths in the barn at Flying Ace Farm' },
+  { src: `${E}/outdoor.jpg`, alt: 'Covered outdoor seating with the farmhouse beyond' },
+  { src: `${G}/g04-barn-long-tables.jpg`, alt: 'Long tables laid out in the barn at Flying Ace Farm' },
+  { src: `${E}/bridal-suite.jpg`, alt: 'The farmhouse bridal suite, with its vanity and exposed brick' },
+  { src: `${G}/g05-pavilion-wide.jpg`, alt: 'A wide view of the pavilion at Flying Ace Farm' },
+  { src: `${E}/pavilion-dusk.jpg`, alt: 'The enclosed pavilion at dusk, its glass doors lit from inside' },
+  { src: `${G}/g06-interior.jpg`, alt: 'An event space at Flying Ace Farm' },
+  { src: `${G}/g07-detail.jpg`, alt: 'A detail from an event at Flying Ace Farm' },
+  { src: `${G}/g08-setting.jpg`, alt: 'A table setting at Flying Ace Farm' },
+  { src: `${G}/g09-recent.jpg`, alt: 'An event under way at Flying Ace Farm' },
+  { src: `${G}/g10-evening.jpg`, alt: 'An evening event at Flying Ace Farm' },
+  { src: `${G}/g11-evening-two.jpg`, alt: 'Guests at an evening event at Flying Ace Farm' },
+  { src: `${G}/g12-porch.jpg`, alt: 'The farmhouse porch at Flying Ace Farm' },
+  { src: `${G}/g13-barn-wide.jpg`, alt: 'A wide view inside the barn at Flying Ace Farm' },
+  { src: `${G}/g14-barn-detail.jpg`, alt: 'A detail inside the barn at Flying Ace Farm' },
+  { src: `${G}/g15-outdoor-two.jpg`, alt: 'Outdoor seating at Flying Ace Farm' },
+];
+
+/* Dealt alternately so neighbouring columns never show the same shot level
+   with each other. 11 left, 10 right. */
+export const galleryLeft = gallery.filter((_, i) => i % 2 === 0);
+export const galleryRight = gallery.filter((_, i) => i % 2 === 1);

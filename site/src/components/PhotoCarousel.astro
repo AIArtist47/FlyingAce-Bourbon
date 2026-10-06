@@ -1,0 +1,182 @@
+---
+import { galleryLeft, galleryRight } from '../data/events';
+
+/**
+ * Two columns of photographs drifting past each other, one up, one down.
+ *
+ * Measured off gridos-template.webflow.io/about rather than eyeballed:
+ *   two columns, 8px gap, the frame clipped and 500px tall
+ *   tiles 352 x 424 (0.83, portrait) with a 6px radius
+ *   left column -20.6 px/s, right column +20.6 px/s
+ *   each column's list duplicated so the loop has no seam
+ *
+ * Theirs runs on script, a transform written every frame. This runs on a CSS
+ * animation instead: the motion is a fixed, repeating sequence, which is the
+ * one case keyframes suit, and it costs no main-thread work at all.
+ *
+ * Durations are set per column from the same 20.6 px/s, so the two columns
+ * match in speed rather than in duration - the left column holds one more
+ * photograph than the right and would otherwise run faster.
+ */
+const SPEED = 20.6; // px per second, measured off the original
+
+/* The tile as this page actually renders it, not as the original renders it.
+   The hero's media column caps at 42rem; less the 8px gap and halved, each
+   column is 332px, and at the original's 352:424 that makes the tile 400 tall.
+   Sizing the constant off their 424 left the loop running 6% slow. */
+const TILE = 400;
+const GAP = 8;
+
+const dur = (count: number) => Math.round((count * (TILE + GAP)) / SPEED);
+
+/* The frame shows roughly the first two tiles of each column straight away.
+   Lazy-loading those delays the hero's largest paint for no saving, so only
+   what starts out of view is deferred. */
+const eager = (copy: number, i: number) =>
+  copy === 0 && i < 2
+    ? { loading: 'eager' as const, fetchpriority: i === 0 ? 'high' : undefined }
+    : { loading: 'lazy' as const };
+---
+
+<div class="vcar" data-carousel>
+  <div class="vcar__col" style={`--dur:${dur(galleryLeft.length)}s`}>
+    <div class="vcar__track vcar__track--up">
+      {
+        [0, 1].map((copy) =>
+          galleryLeft.map((s, i) => (
+            <figure class="vcar__tile" aria-hidden={copy === 1 ? 'true' : undefined}>
+              <img
+                class="vcar__img"
+                src={s.src}
+                alt={copy === 1 ? '' : s.alt}
+                width="352"
+                height="424"
+                {...eager(copy, i)}
+                decoding="async"
+              />
+            </figure>
+          )),
+        )
+      }
+    </div>
+  </div>
+
+  <div class="vcar__col" style={`--dur:${dur(galleryRight.length)}s`}>
+    <div class="vcar__track vcar__track--down">
+      {
+        [0, 1].map((copy) =>
+          galleryRight.map((s, i) => (
+            <figure class="vcar__tile" aria-hidden={copy === 1 ? 'true' : undefined}>
+              <img
+                class="vcar__img"
+                src={s.src}
+                alt={copy === 1 ? '' : s.alt}
+                width="352"
+                height="424"
+                {...eager(copy, i)}
+                decoding="async"
+              />
+            </figure>
+          )),
+        )
+      }
+    </div>
+  </div>
+</div>
+
+<style>
+  .vcar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    /* The original stands 500px tall. Clamped here so a short window crops the
+       band rather than the band pushing the hero's copy off screen. */
+    height: clamp(22rem, 52vh, 31.25rem);
+    overflow: hidden;
+  }
+
+  .vcar__col {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .vcar__track {
+    display: flex;
+    flex-direction: column;
+    will-change: transform;
+  }
+
+  /* The gap lives on the tiles, not the track. With `gap` on a track holding
+     two copies, half of one gap ends up inside the 50% travel and the loop
+     slips by that much every cycle. */
+  .vcar__tile {
+    margin: 0 0 8px;
+    flex: none;
+    aspect-ratio: 352 / 424;
+    overflow: hidden;
+    border-radius: 6px;
+    background: var(--rule-navy);
+  }
+
+  .vcar__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .vcar__track--up {
+    animation: vcar-up var(--dur) linear infinite;
+  }
+
+  .vcar__track--down {
+    animation: vcar-down var(--dur) linear infinite;
+  }
+
+  /* Exactly half the track is one full copy plus its trailing gap, so the
+     frame at 100% is the frame at 0%. */
+  @keyframes vcar-up {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(0, -50%, 0);
+    }
+  }
+
+  @keyframes vcar-down {
+    from {
+      transform: translate3d(0, -50%, 0);
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  /* Paused rather than removed, so it picks up where it left off. */
+  .vcar[data-visible='false'] .vcar__track {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vcar__track {
+      animation: none;
+      will-change: auto;
+    }
+  }
+</style>
+
+<script>
+  /* A loop burns the compositor even with nothing on screen to show for it. */
+  const car = document.querySelector<HTMLElement>('[data-carousel]');
+
+  if (car && 'IntersectionObserver' in window) {
+    car.dataset.visible = 'true';
+    new IntersectionObserver(
+      ([entry]) => {
+        car.dataset.visible = entry.isIntersecting ? 'true' : 'false';
+      },
+      { rootMargin: '120px' },
+    ).observe(car);
+  }
+</script>
