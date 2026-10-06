@@ -72,9 +72,14 @@ import { lineup, lineupFilters } from '../data/distillery';
     border: 1.5px solid var(--navy);
     background: transparent;
     color: var(--navy);
-    font-family: inherit;
-    font-weight: 600;
+    /* Montserrat, set in caps at its regular weight. Caps at this size need
+       the tracking opened a little or the words run together; --ls-caps-sm is
+       the scale's step for exactly that, caps at 14px and up. */
+    font-family: var(--font-sub);
+    font-weight: 400;
     font-size: var(--t-14);
+    letter-spacing: var(--ls-caps-sm);
+    text-transform: uppercase;
     cursor: pointer;
     transition:
       background-color 0.3s var(--ease),
