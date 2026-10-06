@@ -187,7 +187,7 @@ export const eventCards = [
     id: 'private-events',
     eyebrow: 'Private & corporate events',
     title: 'Host your event',
-    body: 'A historic barn, a 50′ × 80′ enclosed pavilion, the farmhouse and open lawns — with custom brewery and distillery packages.',
+    body: 'A historic barn, a 50′ × 80′ enclosed pavilion, the farmhouse and open lawns, with custom brewery and distillery packages.',
     cta: 'Request a date',
     href: 'https://flyingacefarm.com/host-your-event/',
     image: img.privateEvents,

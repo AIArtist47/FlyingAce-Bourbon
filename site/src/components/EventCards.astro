@@ -1,24 +1,47 @@
 ---
 import { eventCards } from '../data/site';
+
+/* Stage order matches card order, so :has() can tie a card to its own shot. */
+const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
 ---
 
-<section class="events section section--pad" aria-label="Weddings and events">
-  <div class="wrap">
-    <div class="grid-2">
+<section class="ec" aria-label="Weddings and events">
+  <div class="ec__inner wrap">
+    {/* Left: the stage. Black until a card is hovered, then that card's
+        photograph fades up and masks back into the black toward the cards. */}
+    <div class="ec__stage" aria-hidden="true">
+      <div class="ec__title">
+        <h2 class="display ec__h2" data-reveal="up">Gather at the farm</h2>
+        <p class="ec__sub" data-reveal="up">Two hundred acres, two ways to take them over.</p>
+      </div>
+
+      <div class="ec__shots">
+        {
+          shots.map((s) => (
+            <img class="ec__shot" data-shot={s.id} src={s.image} alt="" loading="lazy" decoding="async" />
+          ))
+        }
+      </div>
+    </div>
+
+    {/* Right: two square cards, stacked. */}
+    <div class="ec__cards">
       {
         eventCards.map((c, i) => (
-          <article class="ev" id={c.id} data-reveal="up" data-stagger={i}>
-            <span class="ev__media">
-              <img class="ev__img" src={c.image} alt={c.alt} loading="lazy" />
-            </span>
-            <div class="ev__body">
-              <p class="eyebrow">{c.eyebrow}</p>
-              <h2 class="display ev__title">{c.title}</h2>
-              <p class="ev__text">{c.body}</p>
-              <a class="arrow-link" href={c.href}>
-                {c.cta} <span class="arrow-link__ico">&#8594;</span>
-              </a>
+          <article class="ec__card" id={c.id} data-card={c.id} data-reveal="up" data-stagger={i}>
+            {/* The photograph again, inside the card, for touch screens where
+                nothing ever hovers and the stage would stay empty. */}
+            <img class="ec__inline" src={c.image} alt={c.alt} loading="lazy" decoding="async" />
+
+            <div class="ec__copy">
+              <p class="ec__kind">{c.eyebrow}</p>
+              <h3 class="display display--700 ec__name">{c.title}</h3>
+              <p class="ec__text">{c.body}</p>
             </div>
+
+            <a class="ec__cta" href={c.href}>
+              {c.cta} <span class="arrow-link__ico">&#8594;</span>
+            </a>
           </article>
         ))
       }
@@ -27,63 +50,238 @@ import { eventCards } from '../data/site';
 </section>
 
 <style>
-  .ev {
-    display: flex;
-    flex-direction: column;
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    transition:
-      border-color 0.5s var(--ease),
-      transform 0.6s var(--ease);
+  /* A deliberately darker register than the navy sections elsewhere: near-black
+     rather than #000, which goes flat and dead against photography. */
+  .ec {
+    --ec-black: #08090b;
+    --ec-line: rgba(244, 238, 227, 0.16);
+    --ec-text: #f4eee3;
+    --ec-dim: rgba(244, 238, 227, 0.62);
+
+    background: var(--ec-black);
+    color: var(--ec-text);
+    padding-block: var(--sec-y);
   }
 
-  .ev:hover {
-    border-color: var(--accent);
-    transform: translateY(-0.375rem);
+  .ec__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 26rem;
+    gap: 4rem;
+    align-items: start;
   }
 
-  .ev__media {
-    display: block;
+  /* --- Stage ------------------------------------------------------------ */
+
+  .ec__stage {
+    position: relative;
+    align-self: stretch;
+    min-height: 100%;
     overflow: hidden;
-    background: var(--sand);
   }
 
-  .ev__img {
+  .ec__title {
+    position: relative;
+    z-index: 2;
+    max-width: 30rem;
+  }
+
+  .ec__h2 {
+    margin: 0;
+    font-size: var(--t-h2);
+    line-height: 0.95;
+    color: var(--ec-text);
+  }
+
+  .ec__sub {
+    margin: 1rem 0 0;
+    font-size: var(--t-17);
+    line-height: var(--lh-body);
+    color: var(--ec-dim);
+  }
+
+  .ec__shots {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .ec__shot {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: 22.5rem; /* 360px */
+    height: 100%;
     object-fit: cover;
-    transition: transform 0.9s var(--ease);
+    opacity: 0;
+    /* The blend: the photograph dissolves to nothing before it reaches the
+       cards, so there is no edge to see. A mask rather than a dark overlay —
+       an overlay only darkens the picture, a mask actually lets the black
+       through. */
+    -webkit-mask-image: linear-gradient(100deg, #000 30%, transparent 86%);
+    mask-image: linear-gradient(100deg, #000 30%, transparent 86%);
+    transition: opacity 0.65s var(--ease);
+    will-change: opacity;
   }
 
-  .ev:hover .ev__img {
-    transform: scale(1.05);
+  /* Keeps the heading readable over whichever photograph is up. */
+  .ec__stage::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      var(--ec-black) 0%,
+      rgba(8, 9, 11, 0.72) 26%,
+      rgba(8, 9, 11, 0) 60%
+    );
   }
 
-  .ev__body {
-    padding: 2.25rem; /* 36px */
+  /* --- Cards ------------------------------------------------------------ */
+
+  .ec__cards {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .ec__card {
+    position: relative;
+    aspect-ratio: 1 / 1;
     display: flex;
     flex-direction: column;
-    gap: 0.875rem;
-    align-items: flex-start;
+    justify-content: flex-end;
+    gap: 1.25rem;
+    padding: 2rem;
+    border: 1px solid var(--ec-line);
+    background: transparent;
+    transition:
+      border-color 0.45s var(--ease),
+      background-color 0.45s var(--ease);
   }
 
-  .ev__title {
-    font-size: var(--t-44);
-    line-height: var(--lh-display);
+  .ec__card:hover {
+    border-color: var(--brass);
+    background-color: rgba(244, 238, 227, 0.03);
   }
 
-  .ev__text {
-    font-size: var(--t-16);
+  /* Shown only where there is no pointer to hover with. */
+  .ec__inline {
+    display: none;
+  }
+
+  .ec__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .ec__kind {
+    margin: 0;
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brass);
+  }
+
+  .ec__name {
+    margin: 0;
+    font-size: var(--t-34);
+    line-height: 0.95;
+    color: var(--ec-text);
+  }
+
+  .ec__text {
+    margin: 0;
+    max-width: 34ch;
+    font-size: var(--t-15);
     line-height: var(--lh-tight);
-    color: var(--muted);
+    color: var(--ec-dim);
   }
 
-  @media (max-width: 36rem) {
-    .ev__img {
-      height: 15rem;
+  .ec__cta {
+    align-self: flex-start;
+    font-size: var(--t-13);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ec-text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ec-line);
+    padding-bottom: 0.3125rem;
+    transition:
+      color 0.4s var(--ease),
+      border-color 0.4s var(--ease);
+  }
+
+  .ec__cta .arrow-link__ico {
+    display: inline-block;
+    transition: transform 0.4s var(--ease);
+  }
+
+  .ec__card:hover .ec__cta {
+    color: var(--brass);
+    border-bottom-color: var(--brass);
+  }
+
+  .ec__card:hover .ec__cta .arrow-link__ico {
+    transform: translateX(0.25rem);
+  }
+
+  /* --- The tie between a card and its photograph ------------------------ */
+
+  /* :has() drives the whole reveal, the same mechanism the pillars accordion
+     already uses. No script, so nothing to fall out of sync. */
+  @media (hover: hover) and (pointer: fine) {
+    .ec__inner:has([data-card='weddings']:hover) .ec__shot[data-shot='weddings'],
+    .ec__inner:has([data-card='private-events']:hover) .ec__shot[data-shot='private-events'] {
+      opacity: 1;
     }
-    .ev__body {
-      padding: 1.5rem;
+  }
+
+  /* --- Narrow ----------------------------------------------------------- */
+
+  @media (max-width: 68.75rem) {
+    .ec__inner {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2.5rem;
+    }
+
+    /* The stage has no hover to respond to, so it keeps the heading and drops
+       the photographs; each card carries its own instead. */
+    .ec__stage {
+      min-height: 0;
+    }
+
+    .ec__shots,
+    .ec__stage::after {
+      display: none;
+    }
+
+    .ec__card {
+      aspect-ratio: auto;
+      justify-content: flex-start;
+      padding: 0 0 2rem;
+      border: 0;
+      border-bottom: 1px solid var(--ec-line);
+    }
+
+    .ec__card:hover {
+      background: none;
+    }
+
+    .ec__inline {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ec__shot {
+      transition-duration: 0.01ms;
     }
   }
 </style>
