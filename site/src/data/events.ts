@@ -130,12 +130,6 @@ export const venueStats = [
   { value: '86', suffix: '', label: 'Acres of working farm' },
 ];
 
-/** The wide shot under the cards. */
-export const venueFeature = {
-  image: `${E}/pavilion-dusk.jpg`,
-  alt: 'The enclosed pavilion at dusk, its glass doors lit from inside',
-};
-
 /* ---------------------------------------------------------------------- */
 /* Hero carousel                                                          */
 /* ---------------------------------------------------------------------- */

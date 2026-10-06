@@ -1,5 +1,5 @@
 ---
-import { venues, venueStats, venueFeature } from '../data/events';
+import { venues, venueStats } from '../data/events';
 
 /**
  * Composition mirrored from the supplied reference: a centred pill and
@@ -67,36 +67,28 @@ const shown = venues.filter((v) => v.id !== 'outdoors');
                 )}
               </div>
             </div>
+
+            {/* The figures sit in the farmhouse card now rather than in a band
+                of their own beneath it. The wide card had empty frame on its
+                right and the band was a second picture saying the same thing. */}
+            {v.id === 'farmhouse' && (
+              <dl class="vstats">
+                {venueStats.map((st) => (
+                  <div class="vstat">
+                    <dt class="vstat__label">{st.label}</dt>
+                    <dd class="vstat__value display tnum">
+                      {st.value}
+                      {st.suffix && <span class="vstat__suffix">{st.suffix}</span>}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            )}
           </li>
         ))
       }
     </ul>
 
-    <div class="ven__feature" data-reveal="up">
-      <img
-        class="ven__featureimg"
-        src={venueFeature.image}
-        alt={venueFeature.alt}
-        width="980"
-        height="653"
-        loading="lazy"
-        decoding="async"
-      />
-
-      <dl class="vstats">
-        {
-          venueStats.map((s) => (
-            <div class="vstat">
-              <dt class="vstat__label">{s.label}</dt>
-              <dd class="vstat__value display tnum">
-                {s.value}
-                {s.suffix && <span class="vstat__suffix">{s.suffix}</span>}
-              </dd>
-            </div>
-          ))
-        }
-      </dl>
-    </div>
   </div>
 </section>
 
@@ -261,8 +253,9 @@ const shown = venues.filter((v) => v.id !== 'outdoors');
     color: var(--on-navy);
   }
 
+  /* Stops short of the figures rather than running beneath them. */
   .vcard--wide .vcard__text {
-    max-width: 62ch;
+    max-width: 46ch;
   }
 
   .vcard__tour {
@@ -296,34 +289,20 @@ const shown = venues.filter((v) => v.id !== 'outdoors');
     transform: translate(0.125rem, -0.125rem);
   }
 
-  /* --- Feature with the figures panel ----------------------------------- */
-
-  .ven__feature {
-    position: relative;
-    margin-top: 1.25rem;
-    overflow: hidden;
-  }
-
-  /* The reference's band is about 3.5:1 - a letterbox strip rather than a
-     picture, which is what lets the figures panel sit over it without
-     burying anything. */
-  .ven__featureimg {
-    display: block;
-    width: 100%;
-    aspect-ratio: 24 / 7;
-    object-fit: cover;
-  }
-
-  /* Inset from the picture's bottom-right corner, not flush to it, which is
-     how the reference holds it clear of the frame. */
+  /* Seated in the farmhouse card's bottom-right, clear of the words on
+     the left. */
   .vstats {
     position: absolute;
+    z-index: 3;
     right: 1.5rem;
     bottom: 1.5rem;
     margin: 0;
     display: grid;
     grid-auto-flow: column;
+    /* The card's wash is already near-solid navy down here, so the panel
+       needs an edge to read as a panel rather than as a darker patch. */
     background: var(--navy);
+    border: 1px solid var(--rule-navy);
     color: var(--cream);
   }
 
@@ -381,14 +360,23 @@ const shown = venues.filter((v) => v.id !== 'outdoors');
       font-size: var(--t-30);
     }
 
-    .ven__featureimg {
-      aspect-ratio: 16 / 10;
+    /* No width to float in, so the figures join the flow under the words.
+       The card becomes a column for it, since the content block is sized to
+       the card and a static sibling would otherwise sit on top of it. */
+    .vcard--wide {
+      display: flex;
+      flex-direction: column;
     }
 
-    /* The panel stops floating once there is no width to float in. */
+    .vcard--wide .vcard__content {
+      flex: 1 1 auto;
+      height: auto;
+    }
+
     .vstats {
       position: static;
       grid-auto-flow: row;
+      margin: 0 1.5rem 1.5rem;
     }
 
     .vstat + .vstat {
