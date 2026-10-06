@@ -100,6 +100,19 @@ const panels = [
     border-bottom: 1px solid var(--rule-navy);
   }
 
+  /*
+   * Deeper than the --sec-y every other section runs, because this is the one
+   * section whose background is the point. Widening the card gutters alone
+   * barely helps -- the section grows by about what the gutters add, so the
+   * share of collage on show moves a point per rem. Padding adds open ground
+   * without adding card, which is what actually opens the picture up: 50% of
+   * the section visible at the old spacing, 58% at this one. Resolves to 160px
+   * at a 1440 viewport, like every other size in this system.
+   */
+  .story.section--pad {
+    padding-block: clamp(4.5rem, 11.1111vw, 10rem);
+  }
+
   .story__inner {
     position: relative;
     z-index: 2;
@@ -187,7 +200,9 @@ const panels = [
     margin-top: 3rem;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.5rem;
+    /* Wider than the 1.5rem the cards carried on cream: the gutters are the
+       collage's main window now, so they are sized to show it. */
+    gap: 3.5rem;
   }
 
   /* --- Card ------------------------------------------------------------- */
