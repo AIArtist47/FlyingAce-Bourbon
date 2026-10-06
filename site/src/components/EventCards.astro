@@ -22,7 +22,9 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
     <div class="ec__stage">
       <div class="ec__title">
         <h2 class="display ec__h2" data-reveal="up">Gather at the farm</h2>
-        <p class="ec__sub" data-reveal="up">Two hundred acres, two ways to take them over.</p>
+        <p class="quote ec__sub" data-reveal="up">
+          Two hundred acres, two ways to take them over.
+        </p>
       </div>
     </div>
 
@@ -99,10 +101,12 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
     color: var(--ec-text);
   }
 
+  /* Family, italic and line-height come from .quote, the site's one italic
+     treatment, the same way Celebration and Mission take it. Only size and
+     colour are set here. */
   .ec__sub {
     margin: 1rem 0 0;
-    font-size: var(--t-17);
-    line-height: var(--lh-body);
+    font-size: var(--t-lead);
     color: var(--ec-dim);
   }
 
