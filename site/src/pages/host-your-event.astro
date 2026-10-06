@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import EventsHero from '../components/EventsHero.astro';
+import Venues from '../components/Venues.astro';
+import WeddingsBlock from '../components/WeddingsBlock.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base
+  title="Host Your Event — Weddings, Corporate & Private | Flying Ace Farm"
+  description="Weddings, corporate events and private parties at Flying Ace Farm in Lovettsville, Virginia. A historic barn, a 50′ × 80′ enclosed pavilion, a 19th-century farmhouse and outdoor spaces, with brewery and distillery packages and catering by Monk’s."
+>
+  <Header />
+
+  <main id="main">
+    <EventsHero />
+    <Venues />
+    <WeddingsBlock />
+    <EnquiryForm />
+  </main>
+
+  <Footer />
+</Base>
