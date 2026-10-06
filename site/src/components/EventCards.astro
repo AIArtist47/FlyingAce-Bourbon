@@ -228,10 +228,11 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
     transition: transform 0.4s var(--ease);
   }
 
-  /* Cream rather than brass: nothing on the card should pick up a yellow
-     stroke on hover. The underline brightening is enough feedback. */
+  /* Brass on the call to action only. The card's own outline stays put on
+     hover; it is the link that answers. */
   .ec__card:hover .ec__cta {
-    border-bottom-color: var(--ec-text);
+    color: var(--brass);
+    border-bottom-color: var(--brass);
   }
 
   .ec__card:hover .ec__cta .arrow-link__ico {
