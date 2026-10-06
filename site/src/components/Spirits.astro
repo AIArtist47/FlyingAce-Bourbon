@@ -1,19 +1,4 @@
 ---
-/**
- * "First farm distillery and brewery" — four cards describing the farm.
- *
- * Keeps `id="spirits"`: the header's Order Spirits (bar + drawer), the hero's
- * Explore Our Spirits, the Distillery nav item and the Distillery pillar card
- * all point here.
- *
- * Laid out 2×2 rather than 4-across on purpose. Three sections on this page
- * already run a four-column row, so repeating it would blur them together —
- * and the fourth card's copy is far longer than the rest, which a wide-and-
- * shallow column handles badly.
- *
- * Copy is verbatim as supplied.
- */
-
 const cards = [
   {
     num: '01',
@@ -36,63 +21,155 @@ const cards = [
     body: 'Monk’s on the Farm Restaurant is serving up some of American’s best Southern barbeque, including weekly specials and a “Burger & Beer” special every Thursday as well as a Fried Chicken Friday special. Check out our menu located under the menu tab.',
   },
 ];
+
+/**
+ * One photograph per card, in the cards' own order: the farm, what it grows,
+ * what it makes, what it serves. Each is cover-fitted across the whole section
+ * and then a diagonal slice of it is shown, so the four read as one picture cut
+ * into bands rather than as four thumbnails.
+ *
+ * They are decorative -- every word the section carries is in the cards -- so
+ * they take an empty alt and the strip is hidden from the accessibility tree.
+ */
+const panels = [
+  { src: '/images/collage/farm.webp', w: 960, h: 539 },
+  { src: '/images/collage/grain.webp', w: 1440, h: 1920 },
+  { src: '/images/collage/aircraft.webp', w: 1920, h: 1280 },
+  { src: '/images/collage/monks.webp', w: 1920, h: 1080 },
+];
 ---
 
-<section class="story section section--pad" id="spirits" aria-labelledby="story-title">
-  <div class="wrap story__wrap">
-    <div class="story__main">
-      <header class="story__head">
-        <p class="eyebrow" data-reveal="up">Loudoun County’s</p>
-        <h2 class="display story__h2" id="story-title" data-reveal="up">
-          First farm distillery and brewery
-        </h2>
-      </header>
+<section class="story section section--pad on-navy" id="spirits" aria-labelledby="story-title">
+  <div class="collage" aria-hidden="true">
+    {
+      panels.map((p, i) => (
+        <div class="collage__band" style={`--i:${i}`}>
+          <img
+            class="collage__img"
+            src={p.src}
+            alt=""
+            width={p.w}
+            height={p.h}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      ))
+    }
+  </div>
 
-      <div class="story__grid">
-        {
-          cards.map((card, i) => (
-            <article class="facet" data-reveal="up" data-stagger={i}>
-              <span class="facet__rule" aria-hidden="true" />
-              <p class="facet__num display" aria-hidden="true">
-                {card.num}
-              </p>
-              <h3 class="facet__title display display--700">{card.title}</h3>
-              <p class="facet__body">{card.body}</p>
-            </article>
-          ))
-        }
-      </div>
+  {/* The cards are opaque, so their own text never depends on what is behind
+      them. This carries the heading instead, and settles four bright
+      photographs into one tonal field so the cards stay the loudest thing. */}
+  <div class="story__scrim" aria-hidden="true"></div>
+
+  <div class="wrap story__inner">
+    <header class="story__head">
+      <p class="eyebrow eyebrow--brass" data-reveal="up">Loudoun County’s</p>
+      <h2 class="display story__h2" id="story-title" data-reveal="up">
+        First farm distillery and brewery
+      </h2>
+    </header>
+
+    <div class="story__grid">
+      {
+        cards.map((card, i) => (
+          <article class="facet" data-reveal="up" data-stagger={i}>
+            <span class="facet__rule" aria-hidden="true" />
+            <p class="facet__num display" aria-hidden="true">
+              {card.num}
+            </p>
+            <h3 class="facet__title display display--700">{card.title}</h3>
+            <p class="facet__body">{card.body}</p>
+          </article>
+        ))
+      }
     </div>
-
-    {/* Harvest, still, barrel — the same order the four cards read in. The
-        separators are cut out of the file rather than painted white, so the
-        gaps are the page and stay right on any background. */}
-    <figure class="story__figure" data-reveal="up">
-      <img
-        class="story__img"
-        src="/images/grain-to-glass.webp"
-        alt="Bloody Butcher corn coming off the field, the copper still in the distillery, and a barrel rolled across the floor"
-        width="914"
-        height="2000"
-        loading="lazy"
-        decoding="async"
-      />
-    </figure>
   </div>
 </section>
 
 <style>
   .story {
-    border-top: 1px solid var(--rule);
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--navy);
+    /* The Experience section below is navy too, so without this the collage
+       just stops mid-air and the join reads as a glitch. A hairline is what
+       the rest of the site uses to divide dark from dark. */
+    border-bottom: 1px solid var(--rule-navy);
   }
 
-  /* The montage runs the full height of the copy beside it, so the two
-     columns finish level rather than the picture ending early. */
-  .story__wrap {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) clamp(15rem, 25vw, 24rem);
-    gap: clamp(2rem, 3.5vw, 3.5rem);
+  .story__inner {
+    position: relative;
+    z-index: 2;
   }
+
+  /* --- Collage ---------------------------------------------------------- */
+
+  /*
+   * Four bands sheared to a single angle. The shear is a transform rather than
+   * a percentage clip-path on purpose: a polygon in percentages takes its angle
+   * from the box it is in, so the same declaration would stand near-vertical on
+   * a tall phone and near-flat on a wide desktop. skewX holds 16deg everywhere.
+   *
+   * Shearing leaves a triangular void at each end, so the strip is pulled wider
+   * than the section and the section clips it.
+   */
+  .collage {
+    position: absolute;
+    inset: 0 calc(-1 * var(--shear-room));
+    z-index: 0;
+    display: flex;
+    gap: 0.625rem;
+    /* Both voids a shear opens -- the triangle at each end of the strip, and
+       the corner the counter-shear pulls off each photograph -- are
+       (height / 2) * tan(16deg). They grow with the section's height, not its
+       width, and the phone layout is the tall one: four stacked cards run to
+       about 2000px against the desktop's 1030. One value covers both ends of
+       that, so it is set once rather than per breakpoint. */
+    --shear-room: 24rem;
+  }
+
+  .collage__band {
+    flex: 1 1 0;
+    min-width: 0;
+    position: relative;
+    overflow: hidden;
+    transform: skewX(-16deg);
+  }
+
+  /*
+   * Counter-sheared so the photograph itself stands straight. The counter-shear
+   * uncovers the band's corners, so the picture is laid out wider than the band
+   * and centred, which is also what lets object-fit crop rather than squash.
+   */
+  .collage__img {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(-1 * var(--shear-room));
+    width: calc(100% + 2 * var(--shear-room));
+    /* The reset caps every image at max-width: 100%, which would clamp that
+       width straight back to the band and strand the corners the counter-shear
+       pulls off. */
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+    transform: skewX(16deg);
+  }
+
+  .story__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    /* Flat rather than a gradient: the cards sit across the whole height, so
+       there is no one edge the text needs lifting off. 0.84 keeps the heading
+       above 7:1 even where a band is blown out. */
+    background: rgba(24, 33, 44, 0.84);
+  }
+
+  /* --- Head ------------------------------------------------------------- */
 
   .story__head {
     display: flex;
@@ -101,20 +178,9 @@ const cards = [
     max-width: 48rem;
   }
 
-  .story__figure {
-    margin: 0;
-    min-height: 0;
-  }
-
-  .story__img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
   .story__h2 {
     font-size: var(--t-h2);
+    color: var(--cream);
   }
 
   .story__grid {
@@ -142,9 +208,12 @@ const cards = [
       transform 0.45s var(--ease);
   }
 
+  /* The hover state used to take the border to navy with the fill. Against the
+     collage that erased the card's edge, so the border goes to brass instead
+     and the card stays a card. */
   .facet:hover {
     background: var(--navy);
-    border-color: var(--navy);
+    border-color: var(--brass);
     transform: translateY(-0.375rem);
   }
 
@@ -204,24 +273,11 @@ const cards = [
 
   /* --- Breakpoints ------------------------------------------------------ */
 
-  /* One column below the point where the picture would be too narrow to read.
-     It becomes a centred strip under the cards rather than a full-width block:
-     at this aspect a full-width montage would stand 800px tall on a phone. */
+  /* Four bands across a phone would be 80px slivers with nothing readable in
+     them, so the count drops with the width and the survivors widen to fill. */
   @media (max-width: 68.75rem) {
-    .story__wrap {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    .story__figure {
-      margin-top: 2.5rem;
-    }
-
-    .story__img {
-      height: auto;
-      max-height: 30rem;
-      width: auto;
-      max-width: 100%;
-      margin-inline: auto;
+    .collage__band:nth-child(4) {
+      display: none;
     }
   }
 
@@ -234,6 +290,10 @@ const cards = [
     .facet {
       min-height: 0;
       padding: 1.75rem;
+    }
+
+    .collage__band:nth-child(3) {
+      display: none;
     }
   }
 
