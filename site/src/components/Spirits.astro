@@ -39,28 +39,45 @@ const cards = [
 ---
 
 <section class="story section section--pad" id="spirits" aria-labelledby="story-title">
-  <div class="wrap">
-    <header class="story__head">
-      <p class="eyebrow" data-reveal="up">Loudoun County’s</p>
-      <h2 class="display story__h2" id="story-title" data-reveal="up">
-        First farm distillery and brewery
-      </h2>
-    </header>
+  <div class="wrap story__wrap">
+    <div class="story__main">
+      <header class="story__head">
+        <p class="eyebrow" data-reveal="up">Loudoun County’s</p>
+        <h2 class="display story__h2" id="story-title" data-reveal="up">
+          First farm distillery and brewery
+        </h2>
+      </header>
 
-    <div class="story__grid">
-      {
-        cards.map((card, i) => (
-          <article class="facet" data-reveal="up" data-stagger={i}>
-            <span class="facet__rule" aria-hidden="true" />
-            <p class="facet__num display" aria-hidden="true">
-              {card.num}
-            </p>
-            <h3 class="facet__title display display--700">{card.title}</h3>
-            <p class="facet__body">{card.body}</p>
-          </article>
-        ))
-      }
+      <div class="story__grid">
+        {
+          cards.map((card, i) => (
+            <article class="facet" data-reveal="up" data-stagger={i}>
+              <span class="facet__rule" aria-hidden="true" />
+              <p class="facet__num display" aria-hidden="true">
+                {card.num}
+              </p>
+              <h3 class="facet__title display display--700">{card.title}</h3>
+              <p class="facet__body">{card.body}</p>
+            </article>
+          ))
+        }
+      </div>
     </div>
+
+    {/* Harvest, still, barrel — the same order the four cards read in. The
+        separators are cut out of the file rather than painted white, so the
+        gaps are the page and stay right on any background. */}
+    <figure class="story__figure" data-reveal="up">
+      <img
+        class="story__img"
+        src="/images/grain-to-glass.webp"
+        alt="Bloody Butcher corn coming off the field, the copper still in the distillery, and a barrel rolled across the floor"
+        width="914"
+        height="2000"
+        loading="lazy"
+        decoding="async"
+      />
+    </figure>
   </div>
 </section>
 
@@ -69,11 +86,31 @@ const cards = [
     border-top: 1px solid var(--rule);
   }
 
+  /* The montage runs the full height of the copy beside it, so the two
+     columns finish level rather than the picture ending early. */
+  .story__wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(15rem, 25vw, 24rem);
+    gap: clamp(2rem, 3.5vw, 3.5rem);
+  }
+
   .story__head {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
     max-width: 48rem;
+  }
+
+  .story__figure {
+    margin: 0;
+    min-height: 0;
+  }
+
+  .story__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .story__h2 {
@@ -166,6 +203,27 @@ const cards = [
   }
 
   /* --- Breakpoints ------------------------------------------------------ */
+
+  /* One column below the point where the picture would be too narrow to read.
+     It becomes a centred strip under the cards rather than a full-width block:
+     at this aspect a full-width montage would stand 800px tall on a phone. */
+  @media (max-width: 68.75rem) {
+    .story__wrap {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .story__figure {
+      margin-top: 2.5rem;
+    }
+
+    .story__img {
+      height: auto;
+      max-height: 30rem;
+      width: auto;
+      max-width: 100%;
+      margin-inline: auto;
+    }
+  }
 
   @media (max-width: 48rem) {
     .story__grid {
