@@ -171,25 +171,24 @@ import SocialIcon from './SocialIcon.astro';
     flex-wrap: wrap;
   }
 
-  /* One square per mark, so the three sit on an even rhythm however wide
-     each glyph happens to be, and every target clears 44px. */
+  /* Unstroked, so the marks read as marks rather than as boxed buttons. The
+     square is kept as the layout and hit area -- the three sit on an even
+     rhythm however wide each glyph happens to be, and every target clears
+     44px -- and only becomes visible on hover. */
   .ft__soc {
     display: grid;
     place-items: center;
     width: 2.75rem;
     height: 2.75rem;
     color: var(--brass);
-    border: 1px solid var(--rule-navy);
     transition:
       color 0.35s var(--ease),
-      border-color 0.35s var(--ease),
       background-color 0.35s var(--ease);
   }
 
   .ft__soc:hover {
     color: var(--navy);
     background-color: var(--brass);
-    border-color: var(--brass);
   }
 
   .ft__kicker {

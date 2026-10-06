@@ -219,16 +219,14 @@ const panels = [
     border: 1px solid var(--rule);
     transition:
       background-color 0.45s var(--ease),
-      border-color 0.45s var(--ease),
       transform 0.45s var(--ease);
   }
 
-  /* The hover state used to take the border to navy with the fill. Against the
-     collage that erased the card's edge, so the border goes to brass instead
-     and the card stays a card. */
+  /* The border holds the light --rule it starts at rather than following the
+     fill to navy, which is what keeps the card's edge legible against the
+     collage once it darkens. */
   .facet:hover {
     background: var(--navy);
-    border-color: var(--brass);
     transform: translateY(-0.375rem);
   }
 
