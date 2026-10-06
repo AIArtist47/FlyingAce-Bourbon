@@ -6,21 +6,23 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
 ---
 
 <section class="ec" aria-label="Weddings and events">
+  {/* Sits on the section itself, not inside the inner column, so the
+      photograph bleeds to the section's own edges rather than stopping at
+      the gutter. Black until a card is hovered, then that card's shot fades
+      up and masks back into the black before it reaches them. */}
+  <div class="ec__shots" aria-hidden="true">
+    {
+      shots.map((s) => (
+        <img class="ec__shot" data-shot={s.id} src={s.image} alt="" loading="lazy" decoding="async" />
+      ))
+    }
+  </div>
+
   <div class="ec__inner wrap">
-    {/* Left: the stage. Black until a card is hovered, then that card's
-        photograph fades up and masks back into the black toward the cards. */}
-    <div class="ec__stage" aria-hidden="true">
+    <div class="ec__stage">
       <div class="ec__title">
         <h2 class="display ec__h2" data-reveal="up">Gather at the farm</h2>
         <p class="ec__sub" data-reveal="up">Two hundred acres, two ways to take them over.</p>
-      </div>
-
-      <div class="ec__shots">
-        {
-          shots.map((s) => (
-            <img class="ec__shot" data-shot={s.id} src={s.image} alt="" loading="lazy" decoding="async" />
-          ))
-        }
       </div>
     </div>
 
@@ -58,12 +60,17 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
     --ec-text: #f4eee3;
     --ec-dim: rgba(244, 238, 227, 0.62);
 
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     background: var(--ec-black);
     color: var(--ec-text);
     padding-block: var(--sec-y);
   }
 
   .ec__inner {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: minmax(0, 1fr) 26rem;
     gap: 4rem;
@@ -99,10 +106,26 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
     color: var(--ec-dim);
   }
 
+  /* Pinned to the section box, padding included, so the picture reaches every
+     edge of the section rather than the inner column's. */
   .ec__shots {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 0;
+  }
+
+  /* Keeps the heading readable over whichever photograph is up. */
+  .ec__shots::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      var(--ec-black) 0%,
+      rgba(8, 9, 11, 0.7) 22%,
+      rgba(8, 9, 11, 0) 52%
+    );
   }
 
   .ec__shot {
@@ -113,28 +136,15 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
     object-fit: cover;
     opacity: 0;
     /* The blend: the photograph dissolves to nothing before it reaches the
-       cards, so there is no edge to see. A mask rather than a dark overlay —
-       an overlay only darkens the picture, a mask actually lets the black
-       through. */
-    -webkit-mask-image: linear-gradient(100deg, #000 30%, transparent 86%);
-    mask-image: linear-gradient(100deg, #000 30%, transparent 86%);
+       cards, so there is no edge to see. A mask rather than a dark overlay,
+       because an overlay only darkens the picture while a mask actually lets
+       the black through. Measured across the full section now, so the stops
+       land earlier than when it was confined to the left column: the cards
+       begin around 63% across at every width the grid holds. */
+    -webkit-mask-image: linear-gradient(100deg, #000 0%, #000 32%, transparent 66%);
+    mask-image: linear-gradient(100deg, #000 0%, #000 32%, transparent 66%);
     transition: opacity 0.65s var(--ease);
     will-change: opacity;
-  }
-
-  /* Keeps the heading readable over whichever photograph is up. */
-  .ec__stage::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background: linear-gradient(
-      to bottom,
-      var(--ec-black) 0%,
-      rgba(8, 9, 11, 0.72) 26%,
-      rgba(8, 9, 11, 0) 60%
-    );
   }
 
   /* --- Cards ------------------------------------------------------------ */
@@ -154,14 +164,13 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
     padding: 2rem;
     border: 1px solid var(--ec-line);
     background: transparent;
-    transition:
-      border-color 0.45s var(--ease),
-      background-color 0.45s var(--ease);
+    transition: background-color 0.45s var(--ease);
   }
 
+  /* The border stays as it is on hover. The card lifts by filling slightly
+     instead, so the feedback does not read as a highlighted outline. */
   .ec__card:hover {
-    border-color: var(--brass);
-    background-color: rgba(244, 238, 227, 0.03);
+    background-color: rgba(244, 238, 227, 0.045);
   }
 
   /* Shown only where there is no pointer to hover with. */
@@ -219,9 +228,10 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
     transition: transform 0.4s var(--ease);
   }
 
+  /* Cream rather than brass: nothing on the card should pick up a yellow
+     stroke on hover. The underline brightening is enough feedback. */
   .ec__card:hover .ec__cta {
-    color: var(--brass);
-    border-bottom-color: var(--brass);
+    border-bottom-color: var(--ec-text);
   }
 
   .ec__card:hover .ec__cta .arrow-link__ico {
@@ -233,8 +243,10 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
   /* :has() drives the whole reveal, the same mechanism the pillars accordion
      already uses. No script, so nothing to fall out of sync. */
   @media (hover: hover) and (pointer: fine) {
-    .ec__inner:has([data-card='weddings']:hover) .ec__shot[data-shot='weddings'],
-    .ec__inner:has([data-card='private-events']:hover) .ec__shot[data-shot='private-events'] {
+    /* Scoped to the section now rather than the inner column, since the shots
+       are no longer inside it. */
+    .ec:has([data-card='weddings']:hover) .ec__shot[data-shot='weddings'],
+    .ec:has([data-card='private-events']:hover) .ec__shot[data-shot='private-events'] {
       opacity: 1;
     }
   }
@@ -253,8 +265,7 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
       min-height: 0;
     }
 
-    .ec__shots,
-    .ec__stage::after {
+    .ec__shots {
       display: none;
     }
 
