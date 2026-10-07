@@ -38,7 +38,11 @@ import { weddingHero as h } from '../data/weddings';
     isolation: isolate;
     min-height: 40rem; /* 640px */
     display: flex;
-    align-items: flex-end;
+    /* Centred in the banner rather than sitting on its floor, which is where
+       the brewery, distillery, calendar and events heroes put their copy -- the
+       restaurant hero is the one that hangs it off the bottom, and that is what
+       this was copied from. */
+    align-items: center;
     overflow: hidden;
     background: var(--navy);
   }
@@ -61,9 +65,13 @@ import { weddingHero as h } from '../data/weddings';
 
   /* Heavier on the left, where the words are, and clearing on the right so
      the photograph still reads as a photograph. Measured against the worst
-     case -- the brightest 0.1% of the picture under the text, at the weakest
-     scrim any of it sits on -- the headline clears 8.71:1, the lede 6.68 and
-     the brass eyebrow 5.35, against the 4.5 body text needs. */
+     case -- the brightest 0.1% of the picture behind the text, at the weakest
+     scrim any of it sits on -- the headline clears 8.02:1 and the lede 6.15,
+     against the 4.5 body text needs.
+
+     Re-measured after the copy moved to the middle of the banner: centred, it
+     sits over sky rather than field, which costs about 0.7 of a stop. Move it
+     again and this wants checking again. */
   .whero__scrim {
     position: absolute;
     inset: 0;
