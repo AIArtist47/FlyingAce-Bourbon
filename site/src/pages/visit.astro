@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import VisitHero from '../components/VisitHero.astro';
+import VisitHours from '../components/VisitHours.astro';
+import FaqList from '../components/FaqList.astro';
+import FarmRules from '../components/FarmRules.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base
+  title="Visit & FAQ — Flying Ace Farm | Lovettsville, VA"
+  description="Hours, directions and answers for Flying Ace Farm in Lovettsville, Virginia: the restaurant and brewery, the distillery and ABC store, dogs, reservations, live music, private events and the farm rules."
+>
+  <Header />
+
+  <main id="main">
+    <VisitHero />
+    <VisitHours />
+    <FaqList />
+    <FarmRules />
+  </main>
+
+  <Footer />
+</Base>

@@ -1,0 +1,128 @@
+---
+import Icon from './Icon.astro';
+import { visitHero as h, visitAddress as a } from '../data/visit';
+---
+
+<section class="vhero on-navy" id="top">
+  <div class="vhero__inner wrap">
+    <div class="vhero__copy">
+      <p class="eyebrow eyebrow--brass" data-reveal="up">{h.eyebrow}</p>
+      <h1 class="display vhero__title" data-reveal="up">{h.title}</h1>
+      <p class="vhero__lede" data-reveal="up">{h.lede}</p>
+    </div>
+
+    {/* No photograph here on purpose. This page is read, not browsed — what a
+        visitor wants in the first viewport is the address and the way to get
+        there, not another picture of the farm. */}
+    <address class="vhero__card" data-reveal="up">
+      <p class="vhero__kicker kicker">Find us</p>
+      <p class="vhero__addr">
+        {a.street}<br />{a.cityState}
+      </p>
+
+      <a class="btn btn--solid btn--lg vhero__go" href={a.directions} target="_blank" rel="noopener">
+        Get Directions
+      </a>
+
+      <a class="vhero__tel" href={a.phoneHref}>
+        <Icon name="pin" size={18} stroke="var(--brass)" width={1.5} />
+        {a.phone}
+      </a>
+    </address>
+  </div>
+</section>
+
+<style>
+  .vhero {
+    background: var(--navy);
+    color: var(--cream);
+  }
+
+  .vhero__inner {
+    display: flex;
+    align-items: center;
+    gap: 3.5rem;
+    padding-block: var(--sec-y);
+  }
+
+  .vhero__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    flex: 1 1 28rem;
+    max-width: 40rem;
+    min-width: 0;
+  }
+
+  .vhero__title {
+    --cap-spill: 0.3em;
+    font-size: var(--t-hero-sm);
+    line-height: var(--lh-hero);
+    color: var(--cream);
+  }
+
+  .vhero__lede {
+    font-size: var(--t-hero-lede);
+    line-height: var(--lh-body);
+    color: var(--on-navy);
+    max-width: 36rem;
+  }
+
+  .vhero__card {
+    flex: 0 1 20rem;
+    min-width: 0;
+    font-style: normal;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.875rem;
+    padding: 2rem;
+    border: 1px solid var(--rule-navy);
+  }
+
+  .vhero__kicker {
+    margin: 0;
+    color: var(--brass);
+  }
+
+  .vhero__addr {
+    margin: 0;
+    font-size: var(--t-lead);
+    line-height: var(--lh-tight);
+    color: var(--cream);
+  }
+
+  .vhero__go {
+    margin-top: 0.25rem;
+    align-self: stretch;
+  }
+
+  .vhero__tel {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--t-14);
+    font-weight: 600;
+    color: var(--on-navy);
+    text-decoration: none;
+    transition: color 0.35s var(--ease);
+  }
+
+  .vhero__tel:hover {
+    color: var(--cream);
+  }
+
+  @media (max-width: 60rem) {
+    .vhero__inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 2.5rem;
+    }
+
+    .vhero__copy,
+    .vhero__card {
+      flex: 0 0 auto;
+      max-width: none;
+    }
+  }
+</style>

@@ -1,0 +1,125 @@
+---
+import { restaurantHours, distilleryHours } from '../data/site';
+
+/* Read from site.ts, the same two lists the footer and the distillery page
+   use, so opening times cannot drift between the places that state them. */
+const blocks = [
+  { title: 'Restaurant & Brewery', rows: restaurantHours },
+  { title: 'Distillery & ABC Store', rows: distilleryHours },
+];
+---
+
+<section class="vhrs section section--pad" id="hours" aria-labelledby="vhrs-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-head__title">
+        <p class="eyebrow" data-reveal="up">When we are open</p>
+        <h2 class="display vhrs__h2" id="vhrs-title" data-reveal="up">Hours</h2>
+      </div>
+      <p class="vhrs__note" data-reveal="up">Closed Monday & Tuesday</p>
+    </div>
+
+    <div class="vhrs__grid">
+      {
+        blocks.map((b, i) => (
+          <div class="vhrs__card" data-reveal="up" data-stagger={i}>
+            <h3 class="vhrs__kind">{b.title}</h3>
+            <dl class="vhrs__list">
+              {b.rows.map((r) => (
+                <div class="vhrs__row">
+                  <dt class="vhrs__day">{r.day}</dt>
+                  <dd class="vhrs__time tnum">{r.time}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .vhrs {
+    background: var(--sand);
+  }
+
+  .vhrs__h2 {
+    font-size: var(--t-h2);
+  }
+
+  .vhrs__note {
+    margin: 0;
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+    color: var(--muted-2);
+  }
+
+  .vhrs__grid {
+    margin-top: 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .vhrs__card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 2rem 2.25rem 2.25rem;
+  }
+
+  .vhrs__kind {
+    margin: 0 0 1.25rem;
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+    color: var(--award);
+  }
+
+  .vhrs__list {
+    margin: 0;
+  }
+
+  /* A row per day, the day held left and the time right, so the times line up
+     into a column the eye can run down. */
+  .vhrs__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .vhrs__row:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .vhrs__day {
+    margin: 0;
+    font-size: var(--t-body-sm);
+    color: var(--muted);
+  }
+
+  .vhrs__time {
+    margin: 0;
+    font-size: var(--t-body-sm);
+    font-weight: 600;
+    text-align: right;
+    color: var(--ink);
+  }
+
+  @media (max-width: 48rem) {
+    .vhrs__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .vhrs__card {
+      padding: 1.5rem 1.75rem 1.75rem;
+    }
+  }
+</style>

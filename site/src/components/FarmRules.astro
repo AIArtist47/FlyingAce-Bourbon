@@ -1,0 +1,104 @@
+---
+import { farmRules, rulesNote } from '../data/visit';
+---
+
+<section class="rules section section--pad on-navy" id="rules" aria-labelledby="rules-title">
+  <div class="wrap">
+    <div class="rules__head">
+      <p class="eyebrow eyebrow--brass" data-reveal="up">Before you come</p>
+      <h2 class="display rules__h2" id="rules-title" data-reveal="up">Farm rules</h2>
+      <p class="rules__lede sub__body" data-reveal="up">
+        We are a working farm, so a few of these are about the crops and the water
+        rather than about you.
+      </p>
+    </div>
+
+    <ul class="rules__grid">
+      {
+        farmRules.map((r, i) => (
+          <li class="rule" data-reveal="up" data-stagger={i % 4}>
+            <span class="rule__n tnum" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <span class="rule__t">{r}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="rules__sign display" data-reveal="up">{rulesNote}</p>
+  </div>
+</section>
+
+<style>
+  .rules {
+    background: var(--navy);
+  }
+
+  .rules__head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 44rem;
+  }
+
+  .rules__h2 {
+    font-size: var(--t-h2);
+    color: var(--cream);
+  }
+
+  .rules__lede {
+    margin: 0.25rem 0 0;
+    font-size: var(--t-body);
+    line-height: var(--lh-body);
+    color: var(--on-navy-2);
+    max-width: 52ch;
+  }
+
+  .rules__grid {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .rule {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 1.125rem 1.5rem 1.125rem 0;
+    border-top: 1px solid var(--rule-navy);
+    min-width: 0;
+  }
+
+  .rule__n {
+    flex: none;
+    font-family: var(--font-display);
+    font-size: var(--t-13);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    color: var(--brass);
+  }
+
+  .rule__t {
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-tight);
+    color: var(--on-navy);
+    min-width: 0;
+  }
+
+  /* The farm signs its own list off. Brass and set in the display face so it
+     reads as the end of the list rather than a thirteenth rule. */
+  .rules__sign {
+    margin: 2.5rem 0 0;
+    font-size: var(--t-34);
+    line-height: 1;
+    color: var(--brass);
+  }
+
+  @media (max-width: 48rem) {
+    .rules__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

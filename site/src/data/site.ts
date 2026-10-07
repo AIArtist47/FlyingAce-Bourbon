@@ -70,7 +70,7 @@ export const nav = [
   { label: 'Restaurant', href: '/restaurant' },
   { label: 'Host Your Event', href: '/host-your-event' },
   { label: 'Calendar', href: '/calendar' },
-  { label: 'Visit & FAQ', href: '#visit' },
+  { label: 'Visit & FAQ', href: '/visit' },
 ];
 
 /**
@@ -218,7 +218,7 @@ export const distilleryHours = [
 ];
 
 export const exploreLinks = [
-  { label: 'Visit & FAQ', href: 'https://flyingacefarm.com/faq/' },
+  { label: 'Visit & FAQ', href: '/visit' },
   { label: 'Calendar', href: '/calendar' },
   { label: 'Gift Cards', href: 'https://flyingacefarm.com/gift-cards/' },
   { label: 'Careers', href: 'https://flyingacefarm.com/apply-now/' },
