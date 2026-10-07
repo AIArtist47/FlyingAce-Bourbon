@@ -123,11 +123,37 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
     z-index: 0;
   }
 
+  /* Black down the join, so the two bands meet the section's own colour
+     rather than cutting into each other. Only while they are side by side --
+     once one photograph opens out there is no seam to cover. Sits above the
+     shots and below the heading scrim. */
+  .ec__shots::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(
+      100deg,
+      rgba(8, 9, 11, 0) 23%,
+      var(--ec-black) 30%,
+      var(--ec-black) 35%,
+      rgba(8, 9, 11, 0) 42%
+    );
+    transition: opacity 0.55s var(--ease);
+  }
+
+  .ec[data-in-view='true']:not(:has(.ec__card:hover)) .ec__shots::before {
+    opacity: 1;
+  }
+
   /* Keeps the heading readable over whichever photograph is up. */
   .ec__shots::after {
     content: '';
     position: absolute;
     inset: 0;
+    z-index: 2;
     pointer-events: none;
     background: linear-gradient(
       to bottom,
@@ -150,10 +176,17 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
        the black through. Measured across the full section now, so the stops
        land earlier than when it was confined to the left column: the cards
        begin around 63% across at every width the grid holds. */
-    -webkit-mask-image: linear-gradient(100deg, #000 0%, #000 32%, transparent 66%);
-    mask-image: linear-gradient(100deg, #000 0%, #000 32%, transparent 66%);
-    transition: opacity 0.65s var(--ease);
-    will-change: opacity;
+    -webkit-mask-image: linear-gradient(100deg, #000 0%, #000 46%, transparent 68%);
+    mask-image: linear-gradient(100deg, #000 0%, #000 46%, transparent 68%);
+    /* Full frame unless the resting split below narrows it. Both properties
+       move together on the same curve, so opening out of the pair into one
+       picture is a single gesture rather than a fade and a wipe arriving at
+       different times. */
+    clip-path: inset(0);
+    transition:
+      opacity 0.55s var(--ease),
+      clip-path 0.55s var(--ease);
+    will-change: opacity, clip-path;
   }
 
   /* --- Cards ------------------------------------------------------------ */
@@ -260,6 +293,19 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
     opacity: var(--ec-rest);
   }
 
+  /* Side by side rather than stacked: each photograph takes its own band, with
+     a slice of black between them so the seam is the section's own colour and
+     not one picture cutting into the other. The right-hand band runs into the
+     gradient's fade, which is what carries the pair off toward the cards. */
+  .ec[data-in-view='true']:not(:has(.ec__card:hover)) .ec__shot[data-shot='weddings'] {
+    clip-path: inset(0 66% 0 0);
+  }
+
+  .ec[data-in-view='true']:not(:has(.ec__card:hover))
+    .ec__shot[data-shot='private-events'] {
+    clip-path: inset(0 36% 0 30%);
+  }
+
   /* --- The tie between a card and its photograph ------------------------ */
 
   /* :has() drives the reveal itself, the same mechanism the pillars accordion
@@ -314,7 +360,8 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .ec__shot {
+    .ec__shot,
+    .ec__shots::before {
       transition-duration: 0.01ms;
     }
   }
