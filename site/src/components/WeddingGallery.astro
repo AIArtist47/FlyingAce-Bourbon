@@ -47,14 +47,14 @@ const rows = galleryRows.map((row, r) => ({
 
 <section class="wgal section section--pad" id="gallery" aria-labelledby="wgal-title">
   <div class="wrap">
-    {/* The lettermark is the heading, so it stays an h2 and carries the word
-        as its alt — the section's accessible name comes from it just as it did
-        from the text it replaced. */}
+    {/* The lettermark is the heading, so it stays an h2 and carries what it
+        actually says as its alt — both lines, not just the brass one — so the
+        section's accessible name is the whole phrase, as it reads. */}
     <h2 class="wgal__mark" id="wgal-title" data-reveal="up">
       <img
         class="wgal__markimg"
         src={`${W}/lettermark.webp`}
-        alt="Weddings"
+        alt="And yeah! This is how we do Weddings"
         width="664"
         height="260"
       />
@@ -111,9 +111,10 @@ const rows = galleryRows.map((row, r) => ({
   }
 
   /* Sized by height, since a script mark is read at its x-height rather than
-     by a type step. The file is already the brass the rest of the section
-     uses — rgb(217, 185, 122) is --brass exactly — and carries its own alpha,
-     so it sits on the navy with nothing behind it. */
+     by a type step. Two lines of ink: the lower one is rgb(217, 185, 122),
+     which is --brass exactly, and the upper is pure white — both already the
+     section's own colours, and the file carries its own alpha, so it sits on
+     the navy with nothing behind it. */
   .wgal__mark {
     margin: 0;
     line-height: 0;
@@ -123,6 +124,10 @@ const rows = galleryRows.map((row, r) => ({
     display: block;
     height: clamp(4rem, 10vw, 9rem);
     width: auto;
+    /* Centred across the page. The rows run full bleed and the wrap is itself
+       centred, so centring in the wrap puts the mark over the middle of them.
+       Height is untouched. */
+    margin-inline: auto;
   }
 
   /* --- The rows --------------------------------------------------------- */
