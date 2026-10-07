@@ -57,6 +57,12 @@ import { veteransProgram as v } from '../data/brewery';
 
   .vets__body {
     margin: 0;
+    /* No measure cap. At 162 characters the line count sets the measure, not
+       the width: two lines give 81 characters each, and anything tight enough
+       to change that forces a third line of 54. For a paragraph this short the
+       return sweep happens once, so 81 reads better than three stunted lines.
+       (A 68ch cap also computes to 748px here -- wider than the 704px column
+       -- because ch is the width of the zero glyph, not the average letter.) */
     font-size: var(--t-16);
     line-height: var(--lh-tight);
     color: var(--muted);

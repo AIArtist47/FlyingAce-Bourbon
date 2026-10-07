@@ -17,7 +17,7 @@ import { seasonal } from '../data/brewery';
         seasonal.map((tap, i) => (
           <li class="tap" data-reveal="up" data-stagger={i % 2}>
             <div class="tap__copy">
-              <h3 class="tap__name display display--700">{tap.name}</h3>
+              <h3 class="tap__name display">{tap.name}</h3>
               <p class="tap__body">{tap.body}</p>
             </div>
             <p class="tap__spec">{tap.spec}</p>
@@ -67,7 +67,7 @@ import { seasonal } from '../data/brewery';
   .tap__name {
     margin: 0;
     font-size: var(--t-24);
-    line-height: 1.05;
+    line-height: var(--lh-card);
     transition: color 0.35s var(--ease);
   }
 
@@ -77,8 +77,8 @@ import { seasonal } from '../data/brewery';
 
   .tap__body {
     margin: 0.25rem 0 0;
-    font-size: var(--t-14);
-    line-height: 1.5;
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-tight);
     color: var(--muted);
   }
 

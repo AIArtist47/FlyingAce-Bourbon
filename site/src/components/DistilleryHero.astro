@@ -58,13 +58,13 @@ import { distilleryHero } from '../data/distillery';
   .dhero__title {
     /* Set tighter than the section headings, same as the home hero. */
     --cap-spill: 0.3em;
-    font-size: clamp(3rem, 7.7778vw, 7rem); /* 112px @1440 */
+    font-size: var(--t-hero-sm); /* 112px @1440 */
     line-height: var(--lh-hero);
     color: var(--cream);
   }
 
   .dhero__lede {
-    font-size: clamp(1.0625rem, 1.3194vw, 1.1875rem); /* 19px */
+    font-size: var(--t-hero-lede); /* 19px */
     line-height: var(--lh-body);
     color: var(--on-navy);
     max-width: 38rem;
