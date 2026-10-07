@@ -14,7 +14,8 @@
 const W = '/images/weddings';
 
 export const weddingHero = {
-  eyebrow: 'Weddings at Flying Ace Farm',
+  /* No eyebrow: the page title and the headline already say what this is, and
+     a brass label above "Love takes flight" was a third go at the same thing. */
   title: 'Love takes flight',
   lede: 'Say “I do” amidst 86 acres of working farm at the base of Furnace Mountain, near the Potomac River in Loudoun County, Virginia.',
   image: `${W}/hero.webp`,
