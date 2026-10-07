@@ -5,9 +5,11 @@ import AgeGate from '../components/AgeGate.astro';
 interface Props {
   title: string;
   description: string;
+  /** For pages that exist to be arrived at, never to be found. */
+  noindex?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, noindex = false } = Astro.props;
 
 // Social scrapers need an absolute URL, so the local poster is resolved
 // against `site` from astro.config.mjs.
@@ -23,6 +25,7 @@ const ogImage = Astro.site
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="theme-color" content="#18212C" />
 
     <meta property="og:type" content="website" />

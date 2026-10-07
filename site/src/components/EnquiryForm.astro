@@ -3,7 +3,7 @@ import { site } from '../data/site';
 import { enquiry as q, enquiryFields } from '../data/events';
 
 interface Props {
-  /** Which inbox the form opens against before the script reads the answers.
+  /** Which inbox an answer lands in when the event type does not say.
       The weddings page starts there; everywhere else starts at events. */
   to?: 'events' | 'weddings';
 }
@@ -35,22 +35,23 @@ const inbox = to === 'weddings' ? q.weddings : q.events;
       </dl>
     </div>
 
-    {/* The action matters even though script normally intercepts it. A form
-        with no action defaults to GET on the current URL, so if the script
-        ever fails to load, submitting would write the visitor's name, phone
-        and email into the address bar, their history and any referrer. Posting
-        to mailto keeps those in the request body and, without script, still
-        opens their mail app. */}
+    {/* The action and method are real, not decoration. The script posts this
+        form itself and never leaves the page, but if it fails to arrive the
+        browser posts it natively to the same endpoint and is handed back to
+        /inquiry-sent -- so the form works with no JavaScript at all. A form
+        with no action would default to GET on the current URL, writing the
+        visitor's name, phone and email into the address bar, their history
+        and any referrer. */}
     <form
       class="enq__form"
-      action={`mailto:${inbox}`}
+      action="/api/enquiry"
       method="post"
-      enctype="text/plain"
       data-enquiry
       novalidate
       data-reveal="up"
       data-stagger="1"
     >
+      <input type="hidden" name="inbox" value={to} />
       <div class="enq__grid">
         {
           enquiryFields.map((f) => (
@@ -78,16 +79,43 @@ const inbox = to === 'weddings' ? q.weddings : q.events;
         </p>
       </div>
 
+      {/* Off-screen and out of the tab order, so a person never meets it.
+          Anything that fills it in is not one, and the server quietly drops
+          that inquiry. */}
+      <p class="enq__pot" aria-hidden="true">
+        <label for="q-company">Company</label>
+        <input id="q-company" name="company" type="text" tabindex="-1" autocomplete="off" />
+      </p>
+
       <div class="enq__send">
-        <button class="btn btn--solid btn--lg" type="submit">Send Inquiry</button>
+        <button class="btn btn--solid btn--lg" type="submit" data-send>Send Inquiry</button>
         <p class="enq__status" id="enq-status" role="status" aria-live="polite" data-status></p>
       </div>
 
       {/* Said plainly rather than discovered after pressing the button. */}
       <p class="enq__note">
-        This opens the message in your own mail app so you can check it before it goes.
+        This goes straight to {inbox}. We will reply to the address you leave above.
       </p>
     </form>
+
+    {/* Takes the form's place once the inquiry is away, so the end of the job
+        is unmistakable rather than a line of text under a button that still
+        looks pressable. Focus moves here, which is also how a screen reader
+        is told the page has changed. */}
+    <div class="enq__done" id="enq-done" tabindex="-1" hidden data-done>
+      <p class="eyebrow">Thank you</p>
+      <h3 class="display enq__done-h">Your inquiry is on its way</h3>
+      <p class="enq__done-body">
+        We read every one and will come back to you at the address you left.
+      </p>
+      {/* On its own line rather than inside the sentence above: an address is
+          one unbreakable 25-character word, and in a paragraph on a phone it
+          drags the measure down to half a line. */}
+      <p class="enq__done-to">
+        <span class="label">Sent to</span>
+        <span data-done-inbox>{inbox}</span>
+      </p>
+    </div>
   </div>
 </section>
 
@@ -216,8 +244,67 @@ const inbox = to === 'weddings' ? q.weddings : q.events;
     margin-top: 1.5rem;
   }
 
+  /* Never shown and never reached: off-screen rather than display:none,
+     because the point is that something filling in every field finds it. */
+  .enq__pot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
   .enq__status {
     margin: 0;
+    font-size: var(--t-15);
+    color: var(--accent);
+  }
+
+  /* In flight, where nothing is wrong yet. */
+  .enq__status[data-tone='busy'] {
+    color: var(--muted-2);
+  }
+
+  .enq__status a {
+    color: inherit;
+  }
+
+  /* --- Sent -------------------------------------------------------------- */
+
+  .enq__done {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 2.5rem;
+    background: var(--sand);
+    border: 1px solid var(--rule);
+  }
+
+  .enq__done[hidden] {
+    display: none;
+  }
+
+  .enq__done-h {
+    margin: 0;
+    font-size: var(--t-32);
+  }
+
+  .enq__done-body {
+    margin: 0;
+    font-size: var(--t-body);
+    line-height: var(--lh-body);
+    color: var(--muted);
+    max-width: 44ch;
+  }
+
+  .enq__done-to {
+    margin: 0.75rem 0 0;
+    display: grid;
+    gap: 0.1875rem;
     font-size: var(--t-15);
     color: var(--accent);
   }
@@ -243,6 +330,12 @@ const inbox = to === 'weddings' ? q.weddings : q.events;
     .enq__grid {
       grid-template-columns: minmax(0, 1fr);
     }
+
+    /* 40px of padding either side of a 335px panel leaves a 28-character
+       measure, which is half of what a sentence wants. */
+    .enq__done {
+      padding: 1.75rem;
+    }
   }
 </style>
 
@@ -251,28 +344,39 @@ const inbox = to === 'weddings' ? q.weddings : q.events;
 
   const form = document.querySelector<HTMLFormElement>('[data-enquiry]');
   const status = form?.querySelector<HTMLParagraphElement>('[data-status]');
+  const button = form?.querySelector<HTMLButtonElement>('[data-send]');
+  const done = document.querySelector<HTMLElement>('[data-done]');
 
-  if (form && status) {
-    const fields = [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[name]')];
+  if (form && status && button && done) {
+    const fields = [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[name]')].filter(
+      (f) => f.type !== 'hidden' && f.name !== 'company',
+    );
+
+    const say = (text: string, tone?: 'busy') => {
+      status.textContent = text;
+      if (tone) status.dataset.tone = tone;
+      else delete status.dataset.tone;
+    };
 
     const clear = (el: Element) => {
       el.removeAttribute('aria-invalid');
-      status.textContent = '';
+      say('');
     };
     fields.forEach((f) => f.addEventListener('input', () => clear(f)));
 
     const fail = (el: HTMLInputElement | HTMLTextAreaElement, msg: string) => {
       el.setAttribute('aria-invalid', 'true');
-      status.textContent = msg;
+      say(msg);
       el.focus();
     };
 
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
       event.preventDefault();
       fields.forEach((f) => f.removeAttribute('aria-invalid'));
 
       /* Validate in the order the fields are read, so focus lands on the
-         first thing wrong rather than the last. */
+         first thing wrong rather than the last. The server checks all of this
+         again -- this pass is for the visitor, not for trust. */
       for (const f of fields) {
         if (f.dataset.required === 'true' && !f.value.trim()) {
           fail(f, `${f.dataset.label ?? 'This field'} is needed.`);
@@ -286,28 +390,49 @@ const inbox = to === 'weddings' ? q.weddings : q.events;
         return;
       }
 
-      /* A wedding enquiry goes to the weddings address, as the farm asks. */
-      const kind = (form.querySelector<HTMLInputElement>('#q-kind')?.value ?? '').toLowerCase();
-      const to = /wedding|ceremony|bridal|rehearsal/.test(kind) ? enquiry.weddings : enquiry.events;
+      button.disabled = true;
+      say('Sending…', 'busy');
 
-      const first = form.querySelector<HTMLInputElement>('#q-first')!.value.trim();
-      const last = form.querySelector<HTMLInputElement>('#q-last')!.value.trim();
+      /* The endpoint does the sending, so nothing here opens a mail app and
+         nothing leaves the page. Posting as JSON is what tells it to answer
+         in kind rather than redirect -- the browser's own POST, which is what
+         happens if this script never loaded, gets the redirect instead. */
+      const answers = Object.fromEntries(new FormData(form));
 
-      const lines = fields
-        .filter((f) => f.value.trim())
-        .map((f) => `${f.dataset.label ?? f.name}: ${f.value.trim()}`);
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(answers),
+        });
+        const result = (await response.json().catch(() => ({}))) as {
+          ok?: boolean;
+          to?: string;
+          error?: string;
+        };
 
-      /* No backend on a static site, and the farm's own form is a WordPress
-         endpoint this origin cannot post to. Handing the composed message to
-         the visitor's mail app actually delivers it, and they see what is
-         being sent before it goes. */
-      const href =
-        `mailto:${to}` +
-        `?subject=${encodeURIComponent(`Event inquiry — ${first} ${last}`.trim())}` +
-        `&body=${encodeURIComponent(lines.join('\n'))}`;
+        if (!response.ok || !result.ok) throw new Error(result.error ?? 'The inquiry could not be sent.');
 
-      status.textContent = `Opening your mail app, addressed to ${to}.`;
-      window.location.href = href;
+        const inbox = document.querySelector<HTMLElement>('[data-done-inbox]');
+        if (inbox && result.to) inbox.textContent = result.to;
+
+        form.hidden = true;
+        done.hidden = false;
+        done.focus();
+      } catch (error) {
+        button.disabled = false;
+        /* Named, and with a way through that does not depend on this working:
+           an inquiry that quietly fails is worse than one that was never
+           started. */
+        const to = /wedding|ceremony|bridal|rehearsal|elope/i.test(
+          form.querySelector<HTMLInputElement>('#q-kind')?.value ?? '',
+        )
+          ? enquiry.weddings
+          : enquiry.events;
+
+        say(error instanceof Error ? error.message : 'The inquiry could not be sent.');
+        status.insertAdjacentHTML('beforeend', ` Please email <a href="mailto:${to}">${to}</a>.`);
+      }
     });
   }
 </script>

@@ -1,0 +1,177 @@
+import type { APIRoute } from 'astro';
+import { enquiry, enquiryFields } from '../../data/events';
+
+/**
+ * Takes an inquiry from the form on /host-your-event and /weddings and sends
+ * it to the farm, rather than handing the visitor's own mail app a draft.
+ *
+ * This is the only part of the site that is not built ahead of time. It runs
+ * as a single Vercel function; everything else is still static HTML.
+ *
+ * Two shapes of request arrive here and both are answered in kind:
+ *  - fetch() from the form's own script, as JSON, answered as JSON;
+ *  - the browser's native POST when that script never loaded, as form data,
+ *    answered with a redirect to /inquiry-sent.
+ * The second is what keeps the form working with no JavaScript at all, and it
+ * is the reason the markup still carries a real action and method.
+ */
+
+export const prerender = false;
+
+/** The key is the account's; it is read at run time and never reaches the browser. */
+const env = (key: string): string | undefined => {
+  const runtime = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process;
+  return runtime?.env?.[key] ?? (import.meta.env as Record<string, string | undefined>)[key];
+};
+
+/* Caps, so a single request cannot be used to post a book. Generous enough
+   that no honest answer is ever cut: the longest field on the form asks how
+   many hours someone wants. */
+const MAX_FIELD = 500;
+const MAX_NOTES = 5000;
+
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+/** The farm asks for weddings to go to its own inbox. */
+const WEDDING = /wedding|ceremony|bridal|rehearsal|elope/i;
+
+type Answers = Record<string, string>;
+
+const clean = (value: unknown, max: number): string =>
+  typeof value === 'string' ? value.trim().slice(0, max) : '';
+
+/** A subject is a header. Anything that could break it out gets flattened. */
+const oneLine = (value: string): string => value.replace(/[\r\n]+/g, ' ').trim();
+
+function compose(answers: Answers) {
+  const lines: string[] = [];
+
+  for (const field of enquiryFields) {
+    const value = answers[field.id];
+    if (value) lines.push(`${field.label}: ${value}`);
+  }
+
+  if (answers.notes) lines.push('', 'Anything else:', answers.notes);
+
+  lines.push('', `Sent from the inquiry form on flyingacefarm.com/${answers.inbox === 'weddings' ? 'weddings' : 'host-your-event'}`);
+
+  return lines.join('\n');
+}
+
+async function send(answers: Answers): Promise<{ ok: true; to: string } | { ok: false; to: string }> {
+  const kind = answers.kind ?? '';
+  /* The page the form sits on sets the default inbox; naming a wedding in the
+     event type moves it, from either page. */
+  const to = WEDDING.test(kind) || (answers.inbox === 'weddings' && !kind) ? enquiry.weddings : enquiry.events;
+
+  const key = env('RESEND_API_KEY');
+  if (!key) {
+    console.error('[enquiry] RESEND_API_KEY is not set; the inquiry was not sent.');
+    return { ok: false, to };
+  }
+
+  const name = oneLine(`${answers.first} ${answers.last}`.trim());
+
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: env('ENQUIRY_FROM') ?? 'Flying Ace Farm <inquiries@flyingacefarm.com>',
+      to: [to],
+      /* So the farm can answer by pressing reply, rather than copying an
+         address out of the body. */
+      reply_to: answers.email,
+      subject: oneLine(`Event inquiry — ${name}`),
+      /* Plain text on purpose: nothing a stranger typed is ever handed to an
+         HTML renderer, so there is nothing to escape and nothing to get wrong. */
+      text: compose(answers),
+    }),
+  });
+
+  if (!response.ok) {
+    console.error(`[enquiry] Resend returned ${response.status}: ${await response.text()}`);
+    return { ok: false, to };
+  }
+
+  return { ok: true, to };
+}
+
+export const POST: APIRoute = async ({ request, redirect }) => {
+  const type = request.headers.get('content-type') ?? '';
+  const asJson = type.includes('application/json');
+
+  let raw: Record<string, unknown>;
+  try {
+    raw = asJson
+      ? await request.json()
+      : Object.fromEntries(await request.formData());
+  } catch {
+    return reply(asJson, redirect, { ok: false, status: 400, error: 'That inquiry could not be read.' });
+  }
+
+  const answers: Answers = { inbox: clean(raw.inbox, 20) === 'weddings' ? 'weddings' : 'events' };
+  for (const field of enquiryFields) answers[field.id] = clean(raw[field.id], MAX_FIELD);
+  answers.notes = clean(raw.notes, MAX_NOTES);
+
+  /* The honeypot. It is off-screen and out of the tab order, so a person never
+     meets it and anything that fills it is not one. Answered as a success:
+     telling a bot what gave it away only teaches it. */
+  if (clean(raw.company, MAX_FIELD)) {
+    return reply(asJson, redirect, { ok: true, status: 200, to: enquiry.events });
+  }
+
+  /* Checked again here, not only in the browser: the form's own validation is
+     for the visitor's benefit and anything can post to this address. */
+  for (const field of enquiryFields) {
+    if (field.required && !answers[field.id]) {
+      return reply(asJson, redirect, { ok: false, status: 400, error: `${field.label} is needed.` });
+    }
+  }
+
+  if (!EMAIL.test(answers.email)) {
+    return reply(asJson, redirect, { ok: false, status: 400, error: 'Please enter a valid email address.' });
+  }
+
+  let sent: { ok: boolean; to: string };
+  try {
+    sent = await send(answers);
+  } catch (error) {
+    console.error('[enquiry] send threw:', error);
+    sent = { ok: false, to: enquiry.events };
+  }
+
+  return sent.ok
+    ? reply(asJson, redirect, { ok: true, status: 200, to: sent.to })
+    : reply(asJson, redirect, {
+        ok: false,
+        status: 502,
+        to: sent.to,
+        error: 'The inquiry could not be sent just now.',
+      });
+};
+
+type Outcome = { ok: boolean; status: number; to?: string; error?: string };
+type Redirect = (path: string, status?: 301 | 302 | 303 | 307 | 308) => Response;
+
+/** JSON for the script, a redirect for the browser doing it on its own. */
+function reply(asJson: boolean, redirect: Redirect, outcome: Outcome): Response {
+  if (asJson) {
+    return new Response(JSON.stringify({ ok: outcome.ok, to: outcome.to, error: outcome.error }), {
+      status: outcome.status,
+      headers: { 'content-type': 'application/json' },
+    });
+  }
+
+  const query = new URLSearchParams();
+  if (outcome.to) query.set('to', outcome.to);
+  if (!outcome.ok) query.set('failed', '1');
+  /* A code, never the message itself: anything echoed out of a query string
+     lets a stranger put their own words on the farm's own domain. The page
+     holds the sentences and picks one. */
+  if (outcome.status === 400) query.set('reason', 'incomplete');
+  /* 303, so the browser follows it with a GET and a refresh never re-sends. */
+  return redirect(`/inquiry-sent?${query}`, 303);
+}
+
+/** Anything but a POST has nothing to do here. */
+export const ALL: APIRoute = () => new Response('Method not allowed', { status: 405, headers: { allow: 'POST' } });

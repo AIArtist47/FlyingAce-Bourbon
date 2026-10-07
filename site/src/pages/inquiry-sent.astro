@@ -1,0 +1,145 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+import { enquiry } from '../data/events';
+
+/**
+ * Where the inquiry form sends a browser that posted it without JavaScript.
+ * With script, the form never leaves the page -- it shows its own confirmation
+ * in place -- so almost nobody arrives here. It still has to be a real page on
+ * the farm's own terms rather than a bare endpoint response.
+ *
+ * Rendered per request, because what it says depends on whether the message
+ * actually went.
+ */
+export const prerender = false;
+
+const params = Astro.url.searchParams;
+const failed = params.get('failed') === '1';
+/* The endpoint sends a code, not a sentence. The sentences live here, so
+   nothing a stranger puts in the query string is ever read back out. */
+const incomplete = params.get('reason') === 'incomplete';
+
+/* Only ever one of the farm's own two addresses, never whatever was in the
+   query string -- this page is reachable by anyone who types the URL. */
+const asked = params.get('to');
+const inbox = asked === enquiry.weddings ? enquiry.weddings : enquiry.events;
+---
+
+<Base
+  title={failed ? 'Inquiry not sent — Flying Ace Farm' : 'Inquiry sent — Flying Ace Farm'}
+  description="Confirmation for an event inquiry sent to Flying Ace Farm in Lovettsville, Virginia."
+  noindex
+>
+  <Header />
+
+  <main id="main">
+    <section class="sent section section--pad">
+      <div class="wrap sent__inner">
+        <p class="eyebrow">{failed ? 'Something went wrong' : 'Thank you'}</p>
+
+        <h1 class="display sent__h1">
+          {failed ? (incomplete ? 'Something was missing' : 'That did not send') : 'Your inquiry is on its way'}
+        </h1>
+
+        <p class="lede sent__lede">
+          {
+            incomplete
+              ? 'A first name, a last name and an email address are all we need to come back to you, and one of them did not arrive. Go back and fill them in, or write to us directly.'
+              : failed
+                ? 'The message did not reach us, and we would rather tell you than let you wait on an answer that is not coming. Send it straight to the inbox below and we will pick it up from there.'
+                : `It is with the team at ${inbox}. We read every one and will come back to you.`
+          }
+        </p>
+
+        <dl class="sent__direct">
+          <div>
+            <dt class="label">{failed ? 'Or email us' : 'Sent to'}</dt>
+            <dd><a href={`mailto:${inbox}`}>{inbox}</a></dd>
+          </div>
+          <div>
+            <dt class="label">Prefer to talk</dt>
+            <dd><a href={site.phoneHref}>{site.phone}</a></dd>
+          </div>
+        </dl>
+
+        <div class="sent__cta">
+          <a class="btn btn--solid btn--lg" href="/">Back to the farm</a>
+          {
+            failed && (
+              <a class="btn btn--ghost btn--lg" href="/host-your-event#enquire">
+                {incomplete ? 'Back to the form' : 'Try the form again'}
+              </a>
+            )
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .sent {
+    background: var(--paper);
+  }
+
+  .sent__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    /* A page with one short thing to say should not have it stranded at the
+       top of an empty window. */
+    min-height: 26rem;
+    justify-content: center;
+  }
+
+  .sent__h1 {
+    margin: 0;
+    font-size: var(--t-h2-sm);
+  }
+
+  .sent__lede {
+    margin: 0;
+    max-width: 46ch;
+  }
+
+  .sent__direct {
+    margin: 1.5rem 0 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .sent__direct div {
+    display: grid;
+    gap: 0.1875rem;
+  }
+
+  .sent__direct dt,
+  .sent__direct dd {
+    margin: 0;
+  }
+
+  .sent__direct a {
+    font-size: var(--t-15);
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.35s var(--ease);
+  }
+
+  .sent__direct a:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  .sent__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    margin-top: 2rem;
+  }
+</style>
