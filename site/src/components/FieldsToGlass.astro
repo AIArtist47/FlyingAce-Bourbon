@@ -155,8 +155,15 @@ import { fieldsToGlass as f } from '../data/site';
       gap: 2rem;
     }
 
+    /* Stacked, the frame would take the whole column, and the column keeps
+       growing right up to the breakpoint: the photograph holds a steady 29%
+       of the screen from 320 to 430, then climbs to 51% by 830 before
+       snapping back to a 440px inset the moment the layout unstacks. Capped,
+       it stays around 30% the whole way and the step at the breakpoint is
+       480px to 440px rather than 820px to 440px. */
     .ftg__frame {
       flex: 0 0 auto;
+      max-width: 30rem; /* 480px */
     }
 
     .ftg__h2 {
