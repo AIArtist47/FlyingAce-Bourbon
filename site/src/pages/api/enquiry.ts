@@ -58,42 +58,103 @@ function compose(answers: Answers) {
   return lines.join('\n');
 }
 
-async function send(answers: Answers): Promise<{ ok: true; to: string } | { ok: false; to: string }> {
-  const kind = answers.kind ?? '';
-  /* The page the form sits on sets the default inbox; naming a wedding in the
-     event type moves it, from either page. */
-  const to = WEDDING.test(kind) || (answers.inbox === 'weddings' && !kind) ? enquiry.weddings : enquiry.events;
+/** One message, before either way of sending it has been chosen. */
+type Message = { from: string; to: string; replyTo: string; subject: string; text: string };
 
-  const key = env('RESEND_API_KEY');
-  if (!key) {
-    console.error('[enquiry] RESEND_API_KEY is not set; the inquiry was not sent.');
-    return { ok: false, to };
-  }
+/**
+ * The farm's own mailbox, over SMTP. This is the route that needs no third
+ * party and no new account: flyingacefarm.com already has these mailboxes, so
+ * their credentials are enough.
+ */
+async function sendOverSmtp(host: string, message: Message): Promise<boolean> {
+  /* Imported here rather than at the top of the file, so a deployment using
+     the API route instead never loads it. */
+  const { createTransport } = await import('nodemailer');
 
-  const name = oneLine(`${answers.first} ${answers.last}`.trim());
+  const port = Number(env('SMTP_PORT') ?? 587);
+  const transport = createTransport({
+    host,
+    port,
+    /* 465 is implicit TLS; 587 starts in the clear and upgrades. Getting this
+       pair wrong is the usual reason a working mailbox refuses to send. */
+    secure: port === 465,
+    auth: { user: env('SMTP_USER')!, pass: env('SMTP_PASS')! },
+  });
 
+  await transport.sendMail({
+    from: message.from,
+    to: message.to,
+    replyTo: message.replyTo,
+    subject: message.subject,
+    text: message.text,
+  });
+
+  return true;
+}
+
+/** Resend's HTTP API. No SMTP port to get through, but a domain to verify. */
+async function sendOverResend(key: string, message: Message): Promise<boolean> {
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      from: env('ENQUIRY_FROM') ?? 'Flying Ace Farm <inquiries@flyingacefarm.com>',
-      to: [to],
-      /* So the farm can answer by pressing reply, rather than copying an
-         address out of the body. */
-      reply_to: answers.email,
-      subject: oneLine(`Event inquiry — ${name}`),
-      /* Plain text on purpose: nothing a stranger typed is ever handed to an
-         HTML renderer, so there is nothing to escape and nothing to get wrong. */
-      text: compose(answers),
+      from: message.from,
+      to: [message.to],
+      reply_to: message.replyTo,
+      subject: message.subject,
+      text: message.text,
     }),
   });
 
   if (!response.ok) {
     console.error(`[enquiry] Resend returned ${response.status}: ${await response.text()}`);
+    return false;
+  }
+
+  return true;
+}
+
+async function send(answers: Answers): Promise<{ ok: boolean; to: string }> {
+  const kind = answers.kind ?? '';
+  /* The page the form sits on sets the default inbox; naming a wedding in the
+     event type moves it, from either page. */
+  const to = WEDDING.test(kind) || (answers.inbox === 'weddings' && !kind) ? enquiry.weddings : enquiry.events;
+
+  const message: Message = {
+    from: env('ENQUIRY_FROM') ?? 'Flying Ace Farm <inquiries@flyingacefarm.com>',
+    to,
+    /* So the farm can answer by pressing reply, rather than copying an address
+       out of the body. */
+    replyTo: answers.email,
+    subject: oneLine(`Event inquiry — ${oneLine(`${answers.first} ${answers.last}`.trim())}`),
+    /* Plain text on purpose: nothing a stranger typed is ever handed to an
+       HTML renderer, so there is nothing to escape and nothing to get wrong. */
+    text: compose(answers),
+  };
+
+  /* Whichever set of credentials the deployment has. The mailbox comes first
+     because it is the farm's own and needs nothing set up anywhere else. */
+  const smtpHost = env('SMTP_HOST');
+  const resendKey = env('RESEND_API_KEY');
+
+  try {
+    if (smtpHost && env('SMTP_USER') && env('SMTP_PASS')) {
+      return { ok: await sendOverSmtp(smtpHost, message), to };
+    }
+
+    if (resendKey) {
+      return { ok: await sendOverResend(resendKey, message), to };
+    }
+  } catch (error) {
+    console.error('[enquiry] the send failed:', error);
     return { ok: false, to };
   }
 
-  return { ok: true, to };
+  console.error(
+    '[enquiry] No mail credentials are set, so the inquiry was not sent. ' +
+      'Set SMTP_HOST, SMTP_USER and SMTP_PASS, or RESEND_API_KEY. See .env.example.',
+  );
+  return { ok: false, to };
 }
 
 export const POST: APIRoute = async ({ request, redirect }) => {

@@ -457,6 +457,16 @@ h3.display {
   transform: translateY(0);
 }
 
+/* Nothing to press any more, so the cursor and the lift go with it. */
+.btn:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.btn:disabled:hover {
+  transform: none;
+}
+
 .btn--solid {
   background: var(--accent);
   color: var(--white);
