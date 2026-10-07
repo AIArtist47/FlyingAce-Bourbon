@@ -1,5 +1,5 @@
 ---
-import { img } from '../data/site';
+import { img, site } from '../data/site';
 
 const headline = 'Take off to Flying Ace Farm';
 const words = headline.split(' ');
@@ -51,7 +51,9 @@ const words = headline.split(' ');
 
     <div class="hero__cta" data-reveal="up">
       <a class="btn btn--solid btn--xl" href="#visit">Plan Your Visit</a>
-      <a class="btn btn--ghost-light btn--xl" href="#spirits">Explore Our Spirits</a>
+      <a class="btn btn--ghost-light btn--xl" href={site.spiritsShop} target="_blank" rel="noopener">
+        Explore Our Spirits
+      </a>
     </div>
   </div>
 

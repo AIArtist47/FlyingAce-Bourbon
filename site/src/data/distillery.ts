@@ -1,3 +1,5 @@
+import { site } from './site';
+
 /**
  * Distillery page content.
  *
@@ -153,7 +155,7 @@ export const howToBuy = [
     title: 'Order spirits online',
     body: 'Select American Ace Spirits shipped directly to your door where permitted.',
     cta: 'Order Spirits',
-    href: 'https://sharedpour.com/collections/american-ace-spirits',
+    href: site.spiritsShop,
     external: true,
   },
 ] as const;
