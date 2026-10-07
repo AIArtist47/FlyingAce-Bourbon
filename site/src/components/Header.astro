@@ -43,7 +43,9 @@ const isCurrent = (h: string) => h === Astro.url.pathname;
     </nav>
 
     <div class="hdr__cta">
-      <a class="btn btn--solid" href="/restaurant">Order Food</a>
+      <a class="btn btn--solid" href={site.orderFood} target="_blank" rel="noopener">
+        Order Food
+      </a>
       <a class="btn btn--ghost" href={site.spiritsShop} target="_blank" rel="noopener">
         Order Spirits
       </a>
@@ -82,7 +84,15 @@ const isCurrent = (h: string) => h === Astro.url.pathname;
     </nav>
 
     <div class="drawer__cta">
-      <a class="btn btn--solid btn--xl" href="/restaurant">Order Food</a>
+      <a
+        class="btn btn--solid btn--xl"
+        href={site.orderFood}
+        target="_blank"
+        rel="noopener"
+        data-drawer-link
+      >
+        Order Food
+      </a>
       <a
         class="btn btn--ghost-light btn--xl"
         href={site.spiritsShop}

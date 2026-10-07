@@ -14,7 +14,9 @@
  * Prices change. This file is the one to hand to whoever maintains the menu.
  */
 
-export const ORDER_ONLINE = 'https://order.toasttab.com/online/flying-ace-farm-40950-flying-ace-ln';
+import { site } from './site';
+
+export const ORDER_ONLINE = site.orderFood;
 
 export const restaurantHero = {
   eyebrow: 'Restaurant · BBQ & American fare',

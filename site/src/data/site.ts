@@ -53,6 +53,8 @@ export const site = {
     'https://www.google.com/maps/dir/?api=1&destination=40950+Flying+Ace+Ln%2C+Lovettsville%2C+VA+20180',
   /* American Ace ships through SharedPour; there is no basket on this site. */
   spiritsShop: 'https://sharedpour.com/collections/american-ace-spirits',
+  /* Monk's takes orders through Toast, likewise. */
+  orderFood: 'https://order.toasttab.com/online/flying-ace-farm-40950-flying-ace-ln',
 };
 
 /**
