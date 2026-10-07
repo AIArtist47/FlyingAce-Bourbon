@@ -100,6 +100,14 @@ if (!reduce) {
 
   gsap.ticker.add((time) => lenis!.raf(time * 1000));
   gsap.ticker.lagSmoothing(0);
+
+  /* The age gate goes up while the body is still parsing, long before this
+     module arrives, so Lenis can find itself running behind it. Hold it
+     until the gate reports an answer. */
+  if (document.querySelector('.gate[open]')) {
+    lenis.stop();
+    document.addEventListener('fa:gate-cleared', () => lenis?.start(), { once: true });
+  }
 }
 
 /* -------------------------------------------------------------------------- */
