@@ -41,8 +41,19 @@ const tiles = [
 </section>
 
 <style>
+  /*
+   * Was padding the bottom only, so the tiles sat hard against the black band
+   * above with 96px of air below them -- stuck to one edge and floating off
+   * the other.
+   *
+   * The same total space, split evenly instead: 48px each side at 1440 against
+   * the old 0 and 96, so the band is no more tall than it was and the tiles
+   * are clear of both neighbours. A step under --sec-y on purpose -- these are
+   * two small utility tiles between a black section and a red one, and the
+   * full section rhythm around them reads as a gap rather than a pair.
+   */
   .gh {
-    padding-bottom: var(--sec-y);
+    padding-block: clamp(1.75rem, 3.3333vw, 3rem);
   }
 
   .tile {
