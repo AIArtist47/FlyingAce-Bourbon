@@ -18,7 +18,9 @@ interface Props {
     | 'gift'
     | 'menu'
     | 'close'
-    | 'eye';
+    | 'eye'
+    | 'chevron-left'
+    | 'chevron-right';
   size?: number;
   stroke?: string;
   width?: number;
@@ -56,6 +58,8 @@ const {
     )
   }
   {name === 'bottle' && <path d="M10 2h4v4l2 3v12a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V9l2-3z" />}
+  {name === 'chevron-left' && <path d="M15 4L7 12l8 8" />}
+  {name === 'chevron-right' && <path d="M9 4l8 8-8 8" />}
   {
     name === 'eye' && (
       <>

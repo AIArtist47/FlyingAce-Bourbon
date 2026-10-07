@@ -42,8 +42,16 @@ const copies = [0, 1];
     <div class="strip__track">
       {
         copies.map((copy) =>
-          gallery.map((shot) => (
-            <figure class="gshot" aria-hidden={copy === 1 ? 'true' : undefined}>
+          gallery.map((shot, i) => (
+            <button
+              class="gshot"
+              type="button"
+              data-lb-open={i}
+              data-lb-src={shot.full}
+              data-lb-alt={shot.alt}
+              aria-hidden={copy === 1 ? 'true' : undefined}
+              {...(copy === 1 ? { tabindex: -1 } : {})}
+            >
               <img
                 class="gshot__img"
                 src={shot.src}
@@ -58,12 +66,32 @@ const copies = [0, 1];
               <span class="gshot__view" aria-hidden="true">
                 <Icon name="eye" size={26} stroke="var(--cream)" width={1.5} />
               </span>
-            </figure>
+            </button>
           )),
         )
       }
     </div>
   </div>
+  {/* One panel rather than one per photograph: the source is swapped on open,
+      so only the frame being looked at is ever fetched, and stepping does not
+      have to close one dialog to show the next. */}
+  <dialog class="lb" aria-label="Brewery gallery">
+    <button class="lb__close" type="button" data-lb-close aria-label="Close image">
+      <Icon name="close" size={22} stroke="var(--cream)" width={1.4} />
+    </button>
+
+    <div class="lb__stage">
+      <button class="lb__nav lb__nav--prev" type="button" data-lb-step="-1" aria-label="Previous image">
+        <Icon name="chevron-left" size={30} stroke="var(--cream)" width={1.25} />
+      </button>
+
+      <img class="lb__img" data-lb-img src="" alt="" decoding="async" />
+
+      <button class="lb__nav lb__nav--next" type="button" data-lb-step="1" aria-label="Next image">
+        <Icon name="chevron-right" size={30} stroke="var(--cream)" width={1.25} />
+      </button>
+    </div>
+  </dialog>
 </section>
 
 <style>
@@ -102,13 +130,20 @@ const copies = [0, 1];
      by that much every cycle. */
   .gshot {
     position: relative;
+    /* A button now, so the UA's chrome comes off. */
+    padding: 0;
+    border: 0;
+    background: var(--sand);
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    display: block;
     margin: 0 var(--gap) 0 0;
     flex: none;
     width: var(--card);
     aspect-ratio: 4 / 5;
     overflow: hidden;
     border-radius: 6px;
-    background: var(--sand);
   }
 
   .gshot__img {
@@ -149,6 +184,169 @@ const copies = [0, 1];
 
   .gshot:hover .gshot__view :global(svg) {
     transform: scale(1);
+  }
+
+  /* --- The opened frame ------------------------------------------------- */
+
+  /*
+   * Same mechanism as the show panel on the calendar: a native dialog, its
+   * surface and backdrop sharing one curve and one duration, with
+   * allow-discrete so it animates out instead of vanishing.
+   *
+   * Transparent rather than the calendar's paper, because there is nothing in
+   * here but the photograph -- a panel behind it would only be a frame around
+   * a frame. The backdrop goes heavier than the calendar's 0.62 to make up for
+   * the surface that is no longer there.
+   */
+  .lb {
+    /* No position here. The UA gives dialog:modal position: fixed, which both
+       centres it and is already a containing block for the close button;
+       overriding it to relative drops the panel into normal flow at the top of
+       the body and the page jumps there when it opens. */
+    width: min(72rem, calc(100vw - 2.5rem));
+    max-width: none;
+    max-height: calc(100vh - 3rem);
+    /* Leaves the row the close button sits in, so it never rides over the
+       picture where its stroke could land on a bright patch. */
+    padding: 2.75rem 0 0;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+  }
+
+  .lb::backdrop {
+    background: rgba(14, 20, 28, 0.84);
+  }
+
+  .lb,
+  .lb::backdrop {
+    opacity: 0;
+    transition:
+      opacity 0.24s var(--ease),
+      transform 0.24s var(--ease),
+      overlay 0.24s var(--ease) allow-discrete,
+      display 0.24s var(--ease) allow-discrete;
+  }
+
+  .lb {
+    transform: scale(0.97);
+  }
+
+  .lb[open],
+  .lb[open]::backdrop {
+    opacity: 1;
+  }
+
+  .lb[open] {
+    transform: scale(1);
+  }
+
+  @starting-style {
+    .lb[open],
+    .lb[open]::backdrop {
+      opacity: 0;
+    }
+
+    .lb[open] {
+      transform: scale(0.97);
+    }
+  }
+
+  .lb__stage {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .lb__img {
+    display: block;
+    margin-inline: auto;
+    max-width: 100%;
+    max-height: calc(100vh - 6rem);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+
+  /* Light, as asked: a thin stroke and no chip behind it. They sit in the
+     gutter either side of the photograph rather than on it, so the mark is
+     always against the backdrop -- cream on that is about 7:1, where over a
+     bright picture it would have been nearer 1. */
+  .lb__nav,
+  .lb__close {
+    padding: 0.5rem;
+    border: 0;
+    background: transparent;
+    color: var(--cream);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    opacity: 0.75;
+    transition:
+      opacity 0.3s var(--ease),
+      transform 0.3s var(--ease);
+  }
+
+  .lb__nav:hover,
+  .lb__close:hover {
+    opacity: 1;
+  }
+
+  .lb__nav--prev:hover {
+    transform: translateX(-0.1875rem);
+  }
+
+  .lb__nav--next:hover {
+    transform: translateX(0.1875rem);
+  }
+
+  /* Clear of the picture, which can run to the full height. */
+  .lb__close {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  @media (max-width: 40rem) {
+    /* No gutter to put them in at this width, so they step under the picture
+       instead of sitting over its edges where the stroke could land on a
+       bright patch. */
+    .lb__stage {
+      grid-template-columns: repeat(2, auto);
+      grid-template-areas:
+        'img img'
+        'prev next';
+      justify-content: center;
+      gap: 0.75rem 2.5rem;
+    }
+
+    .lb__img {
+      grid-area: img;
+      max-height: calc(100vh - 9rem);
+    }
+
+    .lb__nav--prev {
+      grid-area: prev;
+    }
+
+    .lb__nav--next {
+      grid-area: next;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lb,
+    .lb::backdrop,
+    .lb__nav,
+    .lb__close {
+      transition: none;
+    }
+
+    .lb,
+    .lb[open] {
+      transform: none;
+    }
   }
 
   /* Exactly half the track is one full copy plus its trailing gap, so the

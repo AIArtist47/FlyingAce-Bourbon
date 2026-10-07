@@ -685,6 +685,79 @@ if (canHover && !reduce && !forcedColors) {
 }
 
 /* -------------------------------------------------------------------------- */
+/* Brewery gallery — the opened frame                                         */
+/* -------------------------------------------------------------------------- */
+
+{
+  const lb = document.querySelector<HTMLDialogElement>('dialog.lb');
+  const img = lb?.querySelector<HTMLImageElement>('[data-lb-img]');
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-lb-open]'));
+
+  if (lb && img && cards.length) {
+    /* Built from the cards themselves. The band carries each frame twice and
+       both copies answer to the same index, so the duplicates write the same
+       entry rather than a second one. */
+    const shots: { src: string; alt: string }[] = [];
+    cards.forEach((c) => {
+      shots[Number(c.dataset.lbOpen)] = { src: c.dataset.lbSrc!, alt: c.dataset.lbAlt! };
+    });
+
+    let index = 0;
+    let opener: HTMLElement | null = null;
+
+    const show = (i: number) => {
+      index = (i + shots.length) % shots.length;
+      img.src = shots[index].src;
+      img.alt = shots[index].alt;
+    };
+
+    cards.forEach((card) => {
+      card.addEventListener('click', () => {
+        opener = card;
+        show(Number(card.dataset.lbOpen));
+        if (!lb.open) {
+          lb.showModal();
+          /* Lenis keeps driving the page under a modal otherwise. */
+          lenis?.stop();
+        }
+      });
+    });
+
+    lb.querySelectorAll<HTMLElement>('[data-lb-step]').forEach((step) => {
+      step.addEventListener('click', () => show(index + Number(step.dataset.lbStep)));
+    });
+
+    lb.querySelector<HTMLElement>('[data-lb-close]')?.addEventListener('click', () => lb.close());
+
+    /* Dismiss on a click that lands on the surface rather than on the
+       photograph or a control. The dialog is transparent, so the stage counts
+       as surface too. */
+    lb.addEventListener('click', (event) => {
+      const t = event.target as HTMLElement;
+      if (t === lb || t.classList.contains('lb__stage')) lb.close();
+    });
+
+    lb.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        show(index - 1);
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        show(index + 1);
+      }
+    });
+
+    lb.addEventListener('close', () => {
+      lenis?.start();
+      /* The band carries two of every frame, so focus goes back to the one
+         actually clicked rather than to whichever the browser remembers. */
+      opener?.focus();
+      opener = null;
+    });
+  }
+}
+
+/* -------------------------------------------------------------------------- */
 /* Keep trigger positions honest once webfonts and images settle              */
 /* -------------------------------------------------------------------------- */
 
