@@ -1,0 +1,32 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import BlogArticle from '../../components/BlogArticle.astro';
+import Footer from '../../components/Footer.astro';
+import { posts } from '../../data/blog';
+
+/* One page per post, all fifteen built ahead of time. The neighbours are
+   worked out here rather than in the component, because only this file knows
+   where the post sits in the run. */
+export function getStaticPaths() {
+  return posts.map((post, i) => ({
+    params: { slug: post.slug },
+    props: { post, newer: posts[i - 1], older: posts[i + 1] },
+  }));
+}
+
+const { post, newer, older } = Astro.props;
+
+/* The post's own opening, trimmed to something a search result can hold. */
+const description = post.excerpt.length > 155 ? `${post.excerpt.slice(0, 152).trimEnd()}…` : post.excerpt;
+---
+
+<Base title={`${post.title} — Flying Ace Farm`} description={description}>
+  <Header />
+
+  <main id="main">
+    <BlogArticle post={post} newer={newer} older={older} />
+  </main>
+
+  <Footer />
+</Base>

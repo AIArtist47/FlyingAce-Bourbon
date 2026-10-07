@@ -1,0 +1,471 @@
+---
+import { posts, sections, readable, blogIntro as intro } from '../data/blog';
+
+const [lead, ...rest] = posts;
+---
+
+{/* One root for the whole page, because the filter below reaches the cards
+    through it: the radio is in the header band and the cards are in the body,
+    so :has() needs an ancestor that holds both. */}
+<section class="bidx" aria-labelledby="bidx-title">
+  <div class="bidx__head">
+    <div class="wrap bidx__headin">
+      <p class="eyebrow eyebrow--brass" data-reveal="up">{intro.eyebrow}</p>
+      <h1 class="display bidx__h1" id="bidx-title" data-reveal="up">{intro.title}</h1>
+      <p class="bidx__lede" data-reveal="up">{intro.lede}</p>
+
+      {/* Filtering with no script at all: a radio group, hidden, and one
+          :has() rule per section. It works before the page has finished
+          loading, it keeps the keyboard behaviour radios already have, and
+          there is no state to get out of step with the markup. */}
+      <fieldset class="bfil" data-reveal="up">
+        <legend class="bfil__legend">Show</legend>
+
+        <input class="bfil__radio" type="radio" name="bsection" id="bf-all" checked />
+        <label class="bfil__label" for="bf-all">All</label>
+
+        {
+          sections.map((s) => (
+            <Fragment>
+              <input class="bfil__radio" type="radio" name="bsection" id={`bf-${s.toLowerCase()}`} />
+              <label class="bfil__label" for={`bf-${s.toLowerCase()}`}>
+                {s}
+              </label>
+            </Fragment>
+          ))
+        }
+      </fieldset>
+    </div>
+  </div>
+
+  <div class="bidx__body">
+    <div class="wrap">
+      {/* The newest post, given the room it deserves on the view everybody
+          lands on. Under a filter it either belongs or it goes, and the grid
+          below closes up behind it. */}
+      <article class="blead" data-section={lead.section} data-reveal="up">
+        <a class="blead__frame" href={`/blog/${lead.slug}`} tabindex="-1" aria-hidden="true">
+          <img
+            class="blead__img"
+            src={lead.card.src}
+            alt=""
+            width={lead.card.w}
+            height={lead.card.h}
+            fetchpriority="high"
+          />
+        </a>
+
+        <div class="blead__copy">
+          <p class="bmeta">
+            <span class="bmeta__section">{lead.section}</span>
+            <span class="bmeta__sep" aria-hidden="true">·</span>
+            <time class="bmeta__date" datetime={lead.date}>{readable(lead.date)}</time>
+          </p>
+
+          <h2 class="display blead__title">
+            <a class="blink" href={`/blog/${lead.slug}`}>{lead.title}</a>
+          </h2>
+
+          <p class="blead__excerpt">{lead.excerpt}</p>
+
+          <span class="bmore" aria-hidden="true">
+            Read this post <span class="bmore__arrow">&#8594;</span>
+          </span>
+        </div>
+      </article>
+
+      <ol class="bgrid" role="list">
+        {
+          rest.map((p) => (
+            <li class="bgrid__cell" data-section={p.section} data-reveal="up">
+              <article class="bcard">
+                <a class="bcard__frame" href={`/blog/${p.slug}`} tabindex="-1" aria-hidden="true">
+                  <img
+                    class="bcard__img"
+                    src={p.card.src}
+                    alt=""
+                    width={p.card.w}
+                    height={p.card.h}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </a>
+
+                <p class="bmeta">
+                  <span class="bmeta__section">{p.section}</span>
+                  <span class="bmeta__sep" aria-hidden="true">
+                    ·
+                  </span>
+                  <time class="bmeta__date" datetime={p.date}>
+                    {readable(p.date)}
+                  </time>
+                </p>
+
+                <h3 class="display bcard__title">
+                  <a class="blink" href={`/blog/${p.slug}`}>
+                    {p.title}
+                  </a>
+                </h3>
+
+                <p class="bcard__excerpt">{p.excerpt}</p>
+              </article>
+            </li>
+          ))
+        }
+      </ol>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  /* --- The band ---------------------------------------------------------- */
+
+  .bidx__head {
+    background: var(--navy);
+    color: var(--cream);
+    padding-block: var(--sec-y) 2.5rem;
+  }
+
+  .bidx__headin {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  /* No photograph behind this one. Fifteen of them are about to appear below
+     it, and a sixteenth above would be the only one that said nothing. */
+  .bidx__h1 {
+    --cap-spill: 0.3em;
+    margin: 0;
+    font-size: var(--t-hero-sm);
+    line-height: var(--lh-hero);
+    color: var(--cream);
+  }
+
+  .bidx__lede {
+    margin: 0;
+    font-size: var(--t-hero-lede);
+    line-height: var(--lh-body);
+    color: var(--on-navy);
+    max-width: 44ch;
+  }
+
+  /* --- The filter -------------------------------------------------------- */
+
+  .bfil {
+    margin: 1.75rem 0 0;
+    padding: 0;
+    border: 0;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+  }
+
+  .bfil__legend {
+    float: left;
+    margin-right: 1.75rem;
+    padding: 0;
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: var(--ls-kicker);
+    text-transform: uppercase;
+    color: var(--muted-2);
+  }
+
+  /* Off-screen rather than display:none, which would take the radios out of
+     the tab order and the accessibility tree along with them. */
+  .bfil__radio {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .bfil__label {
+    position: relative;
+    /* 44px of height without 44px of ink: the row reads as four words, and
+       the hit area is still a target on a phone. */
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    font-size: var(--t-14);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps-sm);
+    text-transform: uppercase;
+    color: var(--on-navy);
+    cursor: pointer;
+    transition: color 0.3s var(--ease);
+  }
+
+  .bfil__label::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.625rem;
+    height: 2px;
+    background: var(--brass);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s var(--ease);
+  }
+
+  .bfil__label:hover {
+    color: var(--cream);
+  }
+
+  .bfil__radio:checked + .bfil__label {
+    color: var(--cream);
+  }
+
+  .bfil__radio:checked + .bfil__label::after {
+    transform: scaleX(1);
+  }
+
+  /* The radio is off-screen, so its focus ring would be too. */
+  .bfil__radio:focus-visible + .bfil__label {
+    outline: 2px solid var(--brass);
+    outline-offset: 3px;
+  }
+
+  /* --- Filtering --------------------------------------------------------- */
+
+  .bidx__body {
+    background: var(--paper);
+    padding-block: var(--sec-y);
+  }
+
+  .bidx:has(#bf-distillery:checked) :is(.blead, .bgrid__cell):not([data-section='Distillery']),
+  .bidx:has(#bf-brewery:checked) :is(.blead, .bgrid__cell):not([data-section='Brewery']),
+  .bidx:has(#bf-events:checked) :is(.blead, .bgrid__cell):not([data-section='Events']) {
+    display: none;
+  }
+
+  /* --- Shared card parts -------------------------------------------------- */
+
+  .bmeta {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: var(--ls-kicker);
+    text-transform: uppercase;
+  }
+
+  .bmeta__section {
+    color: var(--award);
+  }
+
+  .bmeta__sep,
+  .bmeta__date {
+    color: var(--muted-2);
+  }
+
+  /* The title carries the link, so the accessible name is the headline and
+     nothing else. The box below stretches that one link over the whole card,
+     which is why the image above it is out of the tree entirely. */
+  .blink {
+    color: inherit;
+    text-decoration: none;
+    background-image: linear-gradient(var(--award), var(--award));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 2px;
+    transition: background-size 0.4s var(--ease);
+  }
+
+  .blink::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .bmore {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: var(--ls-kicker);
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .bmore__arrow {
+    transition: transform 0.4s var(--ease);
+  }
+
+  /* --- The lead ----------------------------------------------------------- */
+
+  .blead {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: clamp(2rem, 4vw, 3.5rem);
+    align-items: center;
+    padding-bottom: clamp(2.5rem, 4vw, 3.5rem);
+    margin-bottom: clamp(2.5rem, 4vw, 3.5rem);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .blead__frame,
+  .bcard__frame {
+    display: block;
+    overflow: hidden;
+    background: var(--sand);
+  }
+
+  .blead__img,
+  .bcard__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Slow, and only ever this: the picture leans in, nothing lifts, nothing
+       outlines. Everything else on this site settles the same way. */
+    transition: transform 0.8s var(--ease);
+  }
+
+  .blead__frame {
+    aspect-ratio: 3 / 2;
+  }
+
+  .blead__copy {
+    display: flex;
+    flex-direction: column;
+    /* Stretch, not flex-start: in a flex column, flex-start sizes each child
+       to fit-content, and a long headline collapses towards min-content --
+       this one came out eight lines deep at seven characters a line. The one
+       child that genuinely wants to be only as wide as itself says so. */
+    align-items: stretch;
+    gap: 0.875rem;
+    min-width: 0;
+  }
+
+  .blead__title {
+    margin: 0;
+    font-size: var(--t-h2-sm);
+  }
+
+  .blead__excerpt {
+    margin: 0;
+    font-size: var(--t-body);
+    line-height: var(--lh-body);
+    color: var(--muted);
+    max-width: 46ch;
+  }
+
+  .bmeta {
+    align-self: flex-start;
+  }
+
+  .blead:hover .blead__img,
+  .blead:focus-within .blead__img {
+    transform: scale(1.04);
+  }
+
+  .blead:hover .blink,
+  .blead:focus-within .blink {
+    background-size: 100% 2px;
+  }
+
+  .blead:hover .bmore__arrow,
+  .blead:focus-within .bmore__arrow {
+    transform: translateX(4px);
+  }
+
+  /* --- The grid ----------------------------------------------------------- */
+
+  .bgrid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(2rem, 3.2vw, 3rem) clamp(1.5rem, 2.4vw, 2.25rem);
+  }
+
+  .bcard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    height: 100%;
+  }
+
+  .bcard__frame {
+    aspect-ratio: 3 / 2;
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+
+  .bcard__title {
+    margin: 0;
+    font-size: var(--t-24);
+    line-height: var(--lh-card);
+  }
+
+  .bcard__excerpt {
+    margin: 0;
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-body);
+    color: var(--muted);
+  }
+
+  .bcard:hover .bcard__img,
+  .bcard:focus-within .bcard__img {
+    transform: scale(1.04);
+  }
+
+  .bcard:hover .blink,
+  .bcard:focus-within .blink {
+    background-size: 100% 2px;
+  }
+
+  @media (max-width: 68.75rem) {
+    .bgrid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .blead {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.5rem;
+    }
+
+    .blead__title {
+      font-size: var(--t-32);
+    }
+  }
+
+  @media (max-width: 34rem) {
+    .bgrid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blead__img,
+    .bcard__img,
+    .bmore__arrow {
+      transition: none;
+    }
+
+    .blead:hover .blead__img,
+    .blead:focus-within .blead__img,
+    .bcard:hover .bcard__img,
+    .bcard:focus-within .bcard__img {
+      transform: none;
+    }
+  }
+</style>

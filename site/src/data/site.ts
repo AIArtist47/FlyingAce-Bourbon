@@ -223,7 +223,7 @@ export const exploreLinks = [
   { label: 'Gift Cards', href: 'https://flyingacefarm.com/gift-cards/' },
   { label: 'Careers', href: 'https://flyingacefarm.com/apply-now/' },
   { label: 'Live Music Inquiries', href: 'https://flyingacefarm.com/live-music-inquiries/' },
-  { label: 'Blog', href: '#' },
+  { label: 'Blog', href: '/blog' },
   { label: 'Contact', href: 'https://flyingacefarm.com/contact-us/' },
 ];
 

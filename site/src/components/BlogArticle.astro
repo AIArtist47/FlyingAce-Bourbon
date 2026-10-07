@@ -1,0 +1,426 @@
+---
+import { readable, type Post } from '../data/blog';
+
+interface Props {
+  post: Post;
+  /** The posts either side of this one, in the index's own order. */
+  newer?: Post;
+  older?: Post;
+}
+
+const { post, newer, older } = Astro.props;
+---
+
+<article class="bart">
+  <header class="bart__head">
+    <div class="wrap bart__headin">
+      <a class="bart__back arrow-link" href="/blog">
+        <span class="arrow-link__ico" aria-hidden="true">&#8592;</span> All posts
+      </a>
+
+      <p class="bart__meta">
+        <span class="bart__section">{post.section}</span>
+        <span class="bart__sep" aria-hidden="true">·</span>
+        <time class="bart__date" datetime={post.date}>{readable(post.date)}</time>
+      </p>
+
+      <h1 class="display bart__h1" data-reveal="up">{post.title}</h1>
+    </div>
+  </header>
+
+  {/* Full bleed, and decorative: the headline immediately above it already
+      says what it is, so a screen reader that stops to describe it twice is
+      being told the same thing twice. */}
+  <div class="bart__hero">
+    <img
+      class="bart__heroimg"
+      src={post.hero.src}
+      alt=""
+      width={post.hero.w}
+      height={post.hero.h}
+      fetchpriority="high"
+    />
+  </div>
+
+  <div class="bart__bodywrap">
+    <div class="wrap">
+      <div class="bart__body">
+        {
+          post.body.map((block) => {
+            if (block.t === 'h2') return <h2 class="display bart__h2" set:html={block.html} />;
+            if (block.t === 'h3') return <h3 class="bart__h3" set:html={block.html} />;
+            if (block.t === 'ul')
+              return (
+                <ul class="bart__list">
+                  {block.items.map((item) => (
+                    <li set:html={item} />
+                  ))}
+                </ul>
+              );
+            if (block.t === 'rule') return <hr class="bart__rule" />;
+            if (block.t === 'img')
+              return (
+                <figure class="bart__fig">
+                  <img
+                    class="bart__figimg"
+                    src={block.src}
+                    alt={block.alt}
+                    width={block.w}
+                    height={block.h}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </figure>
+              );
+            return <p class="bart__p" set:html={block.html} />;
+          })
+        }
+
+        {
+          post.tags.length > 0 && (
+            <p class="bart__tags">
+              <span class="bart__tagslabel">Filed under</span>
+              {post.tags.map((tag) => (
+                <span class="bart__tag">{tag}</span>
+              ))}
+            </p>
+          )
+        }
+      </div>
+    </div>
+  </div>
+
+  {/* Where to go next, named rather than numbered: "Older" on its own tells a
+      reader nothing about whether they want it. */}
+  {
+    (newer || older) && (
+      <nav class="bnext" aria-label="More posts">
+        <div class="wrap bnext__inner">
+          {newer ? (
+            <a class="bnext__one bnext__one--prev" href={`/blog/${newer.slug}`}>
+              <span class="bnext__dir">
+                <span class="bnext__arrow" aria-hidden="true">
+                  &#8592;
+                </span>{' '}
+                Newer
+              </span>
+              <span class="display bnext__title">{newer.title}</span>
+            </a>
+          ) : (
+            <span />
+          )}
+
+          {older && (
+            <a class="bnext__one bnext__one--next" href={`/blog/${older.slug}`}>
+              <span class="bnext__dir">
+                Older{' '}
+                <span class="bnext__arrow" aria-hidden="true">
+                  &#8594;
+                </span>
+              </span>
+              <span class="display bnext__title">{older.title}</span>
+            </a>
+          )}
+        </div>
+      </nav>
+    )
+  }
+</article>
+
+<style>
+  /* --- The band ---------------------------------------------------------- */
+
+  .bart__head {
+    background: var(--navy);
+    color: var(--cream);
+    padding-block: var(--sec-y) 3rem;
+  }
+
+  .bart__headin {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .bart__back {
+    color: var(--on-navy);
+  }
+
+  .bart__back:hover {
+    color: var(--cream);
+  }
+
+  /* The shared arrow-link slides its mark to the right, which is where a link
+     that goes onward wants it. This one goes back. */
+  .bart__back:hover .arrow-link__ico {
+    transform: translateX(-0.375rem);
+  }
+
+  .bart__meta {
+    margin: 0.75rem 0 0;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: var(--ls-kicker);
+    text-transform: uppercase;
+  }
+
+  .bart__section {
+    color: var(--brass);
+  }
+
+  .bart__sep,
+  .bart__date {
+    color: var(--on-navy);
+  }
+
+  .bart__h1 {
+    --cap-spill: 0.3em;
+    margin: 0;
+    font-size: var(--t-h2-sm);
+    line-height: var(--lh-hero);
+    color: var(--cream);
+    /* Headlines here run from three words to twenty-one. Holding the long ones
+       to a measure stops them crossing the whole window in one line. */
+    max-width: 20ch;
+  }
+
+  /* --- The photograph ----------------------------------------------------- */
+
+  .bart__hero {
+    background: var(--navy);
+    /* A band rather than the whole picture: these are 3:2 and 4:3 and 4:5, and
+       at full height a portrait one would push the first paragraph off the
+       screen entirely. */
+    height: clamp(16rem, 38vw, 34rem);
+  }
+
+  .bart__heroimg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* --- The words ---------------------------------------------------------- */
+
+  .bart__bodywrap {
+    background: var(--paper);
+    padding-block: clamp(3rem, 5vw, 4.5rem) var(--sec-y);
+  }
+
+  /* The measure goes on the children rather than on the column, so a figure
+     can step past it. 36rem puts the line at about 69 characters at 1280 and
+     65 at 1440, inside the 45-75 a reader wants; 38rem measured 73, still
+     legal but at the end of the range where the eye starts losing its place
+     on the way back. */
+  .bart__body > * {
+    max-width: 36rem;
+  }
+
+  .bart__p {
+    margin: 0 0 1.5rem;
+    font-size: var(--t-body);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+  }
+
+  .bart__p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* The farm writes in the first person and its links go to real places, so
+     they are marked as links rather than left to colour alone. */
+  .bart__body a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    transition: border-color 0.3s var(--ease);
+  }
+
+  .bart__body a:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  .bart__h2 {
+    margin: 2.75rem 0 1rem;
+    font-size: var(--t-h3);
+    line-height: var(--lh-card);
+  }
+
+  .bart__h3 {
+    margin: 2rem 0 0.75rem;
+    font-size: var(--t-lead);
+    font-weight: 700;
+    line-height: var(--lh-card);
+    color: var(--ink);
+  }
+
+  .bart__body > :first-child {
+    margin-top: 0;
+  }
+
+  .bart__list {
+    margin: 0 0 1.5rem;
+    padding-left: 1.25rem;
+    display: grid;
+    gap: 0.5rem;
+    font-size: var(--t-body);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+  }
+
+  .bart__list li::marker {
+    color: var(--award);
+  }
+
+  .bart__rule {
+    margin: 2.5rem 0;
+    border: 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* A step past the measure, which is what makes a column of text and
+     pictures read as a page rather than a list. Left-aligned with everything
+     else on this site, so the photographs reach right and the prose does not
+     move. */
+  /* Written as a child of the column on purpose: the measure rule above is
+     `.bart__body > *`, which out-specifies a bare class, so a plain
+     `.bart__fig` loses and every picture comes out at text width. */
+  .bart__body > .bart__fig {
+    margin: 2.25rem 0;
+    max-width: min(44rem, 100%);
+  }
+
+  .bart__figimg {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: var(--sand);
+  }
+
+  .bart__tags {
+    margin: 3rem 0 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    font-size: var(--t-12);
+    letter-spacing: var(--ls-caps-sm);
+    text-transform: uppercase;
+  }
+
+  .bart__tagslabel {
+    font-weight: 600;
+    color: var(--muted-2);
+  }
+
+  .bart__tag {
+    color: var(--award);
+  }
+
+  /* --- What to read next --------------------------------------------------- */
+
+  .bnext {
+    background: var(--sand);
+    border-top: 1px solid var(--rule);
+    padding-block: clamp(2.5rem, 4vw, 3.5rem);
+  }
+
+  .bnext__inner {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem clamp(1.5rem, 3vw, 3rem);
+    align-items: start;
+  }
+
+  .bnext__one {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--ink);
+    min-width: 0;
+  }
+
+  .bnext__one--next {
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  .bnext__dir {
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: var(--ls-kicker);
+    text-transform: uppercase;
+    color: var(--muted-2);
+  }
+
+  .bnext__arrow {
+    display: inline-block;
+    transition: transform 0.4s var(--ease);
+  }
+
+  .bnext__title {
+    font-size: var(--t-lead);
+    line-height: var(--lh-card);
+    background-image: linear-gradient(var(--award), var(--award));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 2px;
+    transition: background-size 0.4s var(--ease);
+  }
+
+  .bnext__one--next .bnext__title {
+    background-position: 100% 100%;
+  }
+
+  .bnext__one:hover .bnext__title,
+  .bnext__one:focus-visible .bnext__title {
+    background-size: 100% 2px;
+  }
+
+  .bnext__one--prev:hover .bnext__arrow {
+    transform: translateX(-4px);
+  }
+
+  .bnext__one--next:hover .bnext__arrow {
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 48rem) {
+    .bart__h1 {
+      max-width: none;
+    }
+
+    .bnext__inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .bnext__one--next {
+      text-align: left;
+      align-items: flex-start;
+    }
+
+    .bnext__one--next .bnext__title {
+      background-position: 0 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bnext__arrow {
+      transition: none;
+    }
+
+    .bnext__one--prev:hover .bnext__arrow,
+    .bnext__one--next:hover .bnext__arrow {
+      transform: none;
+    }
+  }
+</style>
