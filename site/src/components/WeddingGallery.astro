@@ -1,52 +1,108 @@
 ---
 import Lightbox from './Lightbox.astro';
-import { weddingGallery } from '../data/weddings';
+import { galleryRows, galleryCount } from '../data/wedding-gallery';
+
+const W = '/images/weddings';
+
+/**
+ * Four rows drifting in opposite directions — 1 and 3 right to left, 2 and 4
+ * left to right — carrying every photograph the farm publishes.
+ *
+ * The motion is a CSS animation rather than a transform written per frame: the
+ * sequence is fixed and repeating, which is the one case keyframes suit, and
+ * it costs no main-thread work at all.
+ *
+ * Each row's list is laid down twice and travels exactly half the track, so
+ * the frame at 100% is the frame at 0% and the loop has no seam. The gap lives
+ * on the frames rather than the track: with `gap` on a track holding two
+ * copies, half a gap falls inside that travel and the loop slips by it every
+ * cycle.
+ */
+
+/* One speed for every row. The rows hold different numbers of frames at
+   different widths, so a shared duration would have them drifting at visibly
+   different rates — each row's duration is worked out from how far it actually
+   has to travel. Three of them, because the rows shrink twice and a duration
+   is only right for the height it was measured at. */
+const SPEED = 46; // px per second
+const GAP = { lg: 10, md: 8, sm: 6 };
+const ROW_H = { lg: 180, md: 140, sm: 104 };
+
+const dur = (row: { w: number; h: number }[], h: number, gap: number) =>
+  Math.round(row.reduce((a, f) => a + (f.w * h) / f.h + gap, 0) / SPEED);
+
+/* Numbered into one flat run, so the lightbox steps across the whole gallery
+   rather than restarting at each row. */
+let n = -1;
+const rows = galleryRows.map((row, r) => ({
+  dir: r % 2 === 0 ? 'rtl' : 'ltr',
+  style: [
+    `--dur-lg:${dur(row, ROW_H.lg, GAP.lg)}s`,
+    `--dur-md:${dur(row, ROW_H.md, GAP.md)}s`,
+    `--dur-sm:${dur(row, ROW_H.sm, GAP.sm)}s`,
+  ].join(';'),
+  frames: row.map((f) => ({ ...f, n: ++n })),
+}));
 ---
 
-<section class="wgal section section--pad on-navy" id="gallery" aria-labelledby="wgal-title">
+<section class="wgal section section--pad" id="gallery" aria-labelledby="wgal-title">
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-head__title">
         <p class="eyebrow eyebrow--brass" data-reveal="up">Weddings at Flying Ace Farm</p>
         <h2 class="display wgal__h2" id="wgal-title" data-reveal="up">Three weddings</h2>
       </div>
-      <p class="wgal__hint" data-reveal="up">Open any frame</p>
+      <p class="wgal__hint" data-reveal="up">{galleryCount} frames · open any one</p>
     </div>
+  </div>
 
-    <ul class="wgal__grid">
-      {
-        weddingGallery.map((s, i) => (
-          <li class={`wshot wshot--${s.shape}`} data-reveal="up" data-stagger={i % 4}>
-            <button
-              class="wshot__btn"
-              type="button"
-              data-lb-open={i}
-              data-lb-src={s.full}
-              data-lb-alt={s.alt}
-            >
-              <img
-                class="wshot__img"
-                src={s.thumb}
-                alt={s.alt}
-                loading="lazy"
-                decoding="async"
-              />
-            </button>
-          </li>
-        ))
-      }
-    </ul>
+  {/* Outside the wrap, so the rows run the full width of the window and the
+      frames at either end are cut by the edge rather than by a margin. */}
+  <div class="wrows" data-wrows>
+    {
+      rows.map((row) => (
+        <div class={`wrow wrow--${row.dir}`} style={row.style}>
+          <div class="wrow__track">
+            {[0, 1].map((copy) =>
+              row.frames.map((f) => (
+                <button
+                  class="wframe"
+                  type="button"
+                  style={`--ar:${f.w} / ${f.h}`}
+                  data-lb-open={f.n}
+                  data-lb-src={`${W}/full/${f.id}.webp`}
+                  data-lb-alt={`A wedding at Flying Ace Farm, photograph ${f.n + 1} of ${galleryCount}`}
+                  aria-label={`Open wedding photograph ${f.n + 1} of ${galleryCount}`}
+                  {...(copy === 1 ? { tabindex: -1, 'aria-hidden': 'true' } : {})}
+                >
+                  <img
+                    class="wframe__img"
+                    src={`${W}/thumb/${f.id}.webp`}
+                    alt=""
+                    width={f.w}
+                    height={f.h}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </button>
+              )),
+            )}
+          </div>
+        </div>
+      ))
+    }
   </div>
 
   <Lightbox label="Weddings at Flying Ace Farm" />
 </section>
 
 <style>
-  /* The band is dark on purpose: twelve photographs at once need somewhere to
-     sit, and the cream page lets them fight each other. .on-navy only sets the
-     selection and focus colours -- the background has to be stated. */
+  /* Dark on purpose: seventy-seven photographs at once need somewhere to sit,
+     and the cream page lets them fight each other. .on-navy only sets the
+     selection and focus colours — the background has to be stated. */
   .wgal {
     background: var(--navy);
+    overflow: hidden;
   }
 
   .wgal__h2 {
@@ -63,98 +119,160 @@ import { weddingGallery } from '../data/weddings';
     color: var(--on-navy-3);
   }
 
-  /*
-   * A mosaic rather than one crop ratio for everything. The set is half
-   * portrait and half landscape, and forcing either into the other's shape
-   * cuts heads off or throws away half a wedding party -- so each frame keeps
-   * its own orientation and takes the cell that suits it.
-   *
-   * grid-auto-flow: dense is what makes that safe: the spans do not tile on
-   * their own, and without it the browser leaves holes wherever a tall frame
-   * will not fit the current row.
-   */
-  .wgal__grid {
-    list-style: none;
-    margin: 2.5rem 0 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-auto-rows: 12rem;
-    grid-auto-flow: dense;
-    gap: 0.75rem;
+  /* --- The rows --------------------------------------------------------- */
+
+  .wrows {
+    --row-h: 11.25rem; /* 180px */
+    --row-gap: 0.625rem;
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--row-gap);
   }
 
-  .wshot--tall {
-    grid-row: span 2;
+  .wrow {
+    overflow: hidden;
+    height: var(--row-h);
   }
 
-  /* Two cells each way. A 2x1 at this column width is 3.7:1, which is most of
-     a 3:2 photograph thrown away; 2x2 lands near 1.6:1. */
-  .wshot--wide {
-    grid-column: span 2;
-    grid-row: span 2;
-  }
-
-  .wshot {
-    min-width: 0;
-  }
-
-  /* The whole frame is the control, so it takes focus and Enter as well as a
-     click. The UA's button chrome comes off. */
-  .wshot__btn {
-    display: block;
-    width: 100%;
+  .wrow__track {
+    display: flex;
+    width: max-content;
     height: 100%;
+    animation-duration: var(--dur-lg);
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  /* Rows 1 and 3 run right to left, 2 and 4 the other way. Both travel the
+     same half of the track; only the direction differs. */
+  .wrow--rtl .wrow__track {
+    animation-name: wrow-left;
+  }
+
+  .wrow--ltr .wrow__track {
+    animation-name: wrow-right;
+  }
+
+  @keyframes wrow-left {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @keyframes wrow-right {
+    from {
+      transform: translate3d(-50%, 0, 0);
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  /* The gap sits on the frames, not the track. */
+  .wframe {
+    flex: none;
+    height: 100%;
+    aspect-ratio: var(--ar);
+    margin-right: var(--row-gap);
     padding: 0;
     border: 0;
     background: var(--rule-navy);
-    cursor: pointer;
     overflow: hidden;
+    cursor: pointer;
     position: relative;
   }
 
-  .wshot__img {
+  .wframe__img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition:
-      transform 0.8s var(--ease),
-      opacity 0.5s var(--ease);
+      transform 0.7s var(--ease),
+      opacity 0.4s var(--ease);
   }
 
-  .wshot__btn:hover .wshot__img {
-    transform: scale(1.05);
+  .wframe:hover .wframe__img {
+    transform: scale(1.06);
   }
 
-  /* The set reads as one field, so hovering one frame settles the rest back
-     rather than lifting the one. Same idea the old brewery grid used. */
-  .wgal__grid:hover .wshot__img {
-    opacity: 0.55;
+  /* The rows read as one field, so pointing at a frame settles the rest back
+     rather than lifting the one. */
+  .wrows:hover .wframe__img {
+    opacity: 0.5;
   }
 
-  .wgal__grid:hover .wshot__btn:hover .wshot__img {
+  .wrows:hover .wframe:hover .wframe__img {
     opacity: 1;
   }
 
-  @media (max-width: 60rem) {
-    /* Two columns still tiles: the same order walks it as 14 full rows. */
-    .wgal__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-auto-rows: 10rem;
+  /* Holds still while someone is looking at a frame, and while the band is off
+     screen — a loop burns the compositor with nothing on screen to show for
+     it. Paused rather than stopped, so it picks up where it left off. */
+  .wrows:hover .wrow__track,
+  .wrows[data-visible='false'] .wrow__track {
+    animation-play-state: paused;
+  }
+
+  @media (max-width: 68.75rem) {
+    .wrows {
+      --row-h: 8.75rem; /* 140px */
+      --row-gap: 0.5rem;
+    }
+
+    .wrow__track {
+      animation-duration: var(--dur-md);
     }
   }
 
   @media (max-width: 36rem) {
-    .wgal__grid {
-      grid-auto-rows: 7.5rem;
-      gap: 0.5rem;
+    .wrows {
+      --row-h: 6.5rem; /* 104px */
+      --row-gap: 0.375rem;
+    }
+
+    .wrow__track {
+      animation-duration: var(--dur-sm);
     }
   }
 
+  /* No drift for anyone who asked for less motion. Each row becomes one they
+     scroll themselves, and the second pass goes, so it is the gallery once
+     rather than twice. */
   @media (prefers-reduced-motion: reduce) {
-    .wshot__btn:hover .wshot__img {
+    .wrow {
+      overflow-x: auto;
+    }
+
+    .wrow__track {
+      animation: none;
+    }
+
+    .wframe[aria-hidden='true'] {
+      display: none;
+    }
+
+    .wframe:hover .wframe__img {
       transform: none;
     }
   }
 </style>
+
+<script>
+  /* A loop burns the compositor even with nothing on screen to show for it. */
+  const rows = document.querySelector<HTMLElement>('[data-wrows]');
+
+  if (rows && 'IntersectionObserver' in window) {
+    rows.dataset.visible = 'true';
+    new IntersectionObserver(
+      ([entry]) => {
+        rows.dataset.visible = entry.isIntersecting ? 'true' : 'false';
+      },
+      { rootMargin: '150px' },
+    ).observe(rows);
+  }
+</script>

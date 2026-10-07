@@ -63,38 +63,6 @@ export const weddingSpaces = [
   },
 ];
 
-export type WeddingShot = {
-  thumb: string;
-  full: string;
-  alt: string;
-  /** How the frame sits in the mosaic. Portraits stand, the rest run wide. */
-  shape: 'tall' | 'wide' | 'box';
-};
-
-/**
- * Twelve frames from three of the farm's weddings. `shape` follows each
- * photograph's own orientation so nothing is cropped against itself.
- *
- * The order is not editorial -- it is what makes the mosaic tile. wide is 4
- * cells, tall 2, box 1; four of each is 28, and 28 over four columns is seven
- * whole rows. Reordering these will punch holes in the grid, so move them in
- * pairs that keep each two-row band full.
- */
-export const weddingGallery: WeddingShot[] = [
-  { thumb: `${W}/thumb/w05.webp`, full: `${W}/full/w05.webp`, shape: 'wide', alt: 'The couple by the pond at golden hour, reflected in the water' },
-  { thumb: `${W}/thumb/w02.webp`, full: `${W}/full/w02.webp`, shape: 'tall', alt: 'The couple on the farmhouse porch with their bouquets' },
-  { thumb: `${W}/thumb/w04.webp`, full: `${W}/full/w04.webp`, shape: 'tall', alt: 'The groom in the standing corn' },
-  { thumb: `${W}/thumb/w06.webp`, full: `${W}/full/w06.webp`, shape: 'tall', alt: 'The couple at the bar in the barn' },
-  { thumb: `${W}/thumb/w08.webp`, full: `${W}/full/w08.webp`, shape: 'tall', alt: 'The couple close together, the bride holding her bouquet' },
-  { thumb: `${W}/thumb/w01.webp`, full: `${W}/full/w01.webp`, shape: 'wide', alt: 'The wedding party on the lawn, the barn behind them' },
-  { thumb: `${W}/thumb/w07.webp`, full: `${W}/full/w07.webp`, shape: 'wide', alt: 'The processional outside the farmhouse, guests seated on the lawn' },
-  { thumb: `${W}/thumb/w12.webp`, full: `${W}/full/w12.webp`, shape: 'wide', alt: 'Guests holding sparklers overhead as the couple leave' },
-  { thumb: `${W}/thumb/w03.webp`, full: `${W}/full/w03.webp`, shape: 'box', alt: 'A long table laid with flowers and a navy runner under the pavilion' },
-  { thumb: `${W}/thumb/w09.webp`, full: `${W}/full/w09.webp`, shape: 'box', alt: 'The farmhouse and its porch behind the white picket fence' },
-  { thumb: `${W}/thumb/w10.webp`, full: `${W}/full/w10.webp`, shape: 'box', alt: 'The couple on the open lawn as the sun goes down' },
-  { thumb: `${W}/thumb/w11.webp`, full: `${W}/full/w11.webp`, shape: 'box', alt: 'The couple crossing the barn floor, the band playing behind them' },
-];
-
 export const weddingBrochure = {
   eyebrow: 'Everything in one place',
   title: 'The wedding brochure',
