@@ -5,7 +5,7 @@ import { eventCards } from '../data/site';
 const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
 ---
 
-<section class="ec" aria-label="Weddings and events">
+<section class="ec" aria-label="Weddings and events" data-ec>
   {/* Sits on the section itself, not inside the inner column, so the
       photograph bleeds to the section's own edges rather than stopping at
       the gutter. Black until a card is hovered, then that card's shot fades
@@ -57,6 +57,11 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
   /* A deliberately darker register than the navy sections elsewhere: near-black
      rather than #000, which goes flat and dead against photography. */
   .ec {
+    /* How far up the two photographs sit together before anything is hovered.
+       Low enough that the stage still reads as black with something behind it
+       rather than as a picture. */
+    --ec-rest: 0.3;
+
     --ec-black: #08090b;
     --ec-line: rgba(244, 238, 227, 0.16);
     --ec-text: #f4eee3;
@@ -243,10 +248,23 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
     transform: translateX(0.25rem);
   }
 
+  /* Before anything is hovered, both photographs sit up together -- a double
+     exposure of what the two cards hold, rather than flat black. It arrives
+     with the section rather than being there from the start.
+
+     Written as :not(:has(...)) so that hovering simply stops it matching: the
+     base opacity: 0 comes back for both, and the rule below lifts the hovered
+     one on its own. Nothing here competes with it, so the behaviour that was
+     already defined is untouched. */
+  .ec[data-in-view='true']:not(:has(.ec__card:hover)) .ec__shot {
+    opacity: var(--ec-rest);
+  }
+
   /* --- The tie between a card and its photograph ------------------------ */
 
-  /* :has() drives the whole reveal, the same mechanism the pillars accordion
-     already uses. No script, so nothing to fall out of sync. */
+  /* :has() drives the reveal itself, the same mechanism the pillars accordion
+     already uses -- the one line of script below only says when the section
+     has arrived, and never touches which photograph is up. */
   @media (hover: hover) and (pointer: fine) {
     /* Scoped to the section now rather than the inner column, since the shots
        are no longer inside it. */
@@ -301,3 +319,26 @@ const shots = eventCards.map((c) => ({ id: c.id, image: c.image, alt: c.alt }));
     }
   }
 </style>
+
+<script>
+  /* Flags the section once it has been seen, which is all the resting blend
+     needs. Latched rather than live: it should settle in and stay, not fade
+     back out every time the section leaves the window. */
+  const ec = document.querySelector<HTMLElement>('[data-ec]');
+
+  if (ec && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          ec.dataset.inView = 'true';
+          io.disconnect();
+        }
+      },
+      { threshold: 0.2 },
+    );
+    io.observe(ec);
+  } else {
+    /* No observer, no fade-in -- but the blend itself still belongs there. */
+    ec?.setAttribute('data-in-view', 'true');
+  }
+</script>
