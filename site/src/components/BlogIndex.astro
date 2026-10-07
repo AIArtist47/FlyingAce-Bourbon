@@ -443,14 +443,24 @@ const [lead, ...rest] = posts;
       gap: 1.5rem;
     }
 
+    /* Stacked, the lead's copy runs the whole column -- 692px at 760 against
+       315px beside the photograph at 790. The headline was going the other
+       way: 26px across the wide block, then 40px across the narrow one. This
+       step keeps it rising with the width it has to fill. */
     .blead__title {
-      font-size: var(--t-32);
+      font-size: var(--t-h2-news);
     }
   }
 
   @media (max-width: 34rem) {
     .bgrid {
       grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* One column from here down, so the lead's block is a phone's width and
+       the headline comes back to the step the cards are measured against. */
+    .blead__title {
+      font-size: var(--t-32);
     }
   }
 
