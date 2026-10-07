@@ -16,15 +16,45 @@ import { eventCards } from '../data/site';
  */
 const G = '/images/gather';
 
+/* Where each tile sits in the cluster, as insets from the collage's edges.
+   Laid out this way rather than placed in a grid because a grid cell is not
+   something that can be animated: on hover the answering tile runs its four
+   insets to zero and opens out to the whole collage, which is the gesture the
+   section is built around. The boxes are meant to cross. */
 const tiles = [
-  { shot: 'weddings', src: `${G}/weddings.webp` },
-  { shot: 'private-events', src: `${G}/private-events.webp` },
-  { shot: null, src: `${G}/barn.webp` },
-  { shot: null, src: `${G}/farmhouse.webp` },
+  { shot: 'weddings', src: `${G}/weddings.webp`, box: { t: '0%', r: '42%', b: '44%', l: '0%' } },
+  { shot: 'private-events', src: `${G}/private-events.webp`, box: { t: '46%', r: '0%', b: '0%', l: '44%' } },
+  { shot: null, src: `${G}/barn.webp`, box: { t: '0%', r: '0%', b: '58%', l: '52%' } },
+  { shot: null, src: `${G}/farmhouse.webp`, box: { t: '52%', r: '56%', b: '0%', l: '0%' } },
 ];
 ---
 
 <section class="ec" aria-label="Weddings and events" data-ec>
+  {/* On the section rather than inside the column, so the cluster runs to the
+      section's own edges and the tilt carries its corners past them.
+
+      The tilt is on the cluster, not on each photograph: four tiles that share
+      one angle read as a stack someone set down, where four separately-rotated
+      ones read as four mistakes.
+
+      No data-reveal: the section already has its own arrival, and a reveal on
+      the wrapper would fade the whole collage in on top of it. */}
+  <div class="ec__collage" aria-hidden="true">
+    <div class="ec__tilt">
+      {
+        tiles.map((t) => (
+          <div
+            class="ec__tile"
+            data-shot={t.shot ?? undefined}
+            style={`--t:${t.box.t};--r:${t.box.r};--b:${t.box.b};--l:${t.box.l}`}
+          >
+            <img class="ec__tileimg" src={t.src} alt="" loading="lazy" decoding="async" />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
   <div class="ec__inner wrap">
     <div class="ec__stage">
       <div class="ec__title">
@@ -34,24 +64,6 @@ const tiles = [
         </p>
       </div>
 
-      {/* The tilt is on the cluster, not on each photograph: four tiles that
-          share one angle read as a stack someone set down, where four
-          separately-rotated ones read as four mistakes. */}
-      {/* No data-reveal here. The section already has its own arrival -- the
-          latch below brings all four tiles up together -- and a reveal on the
-          wrapper would fade the whole collage in on top of that, so the
-          photographs would arrive twice through two different mechanisms. */}
-      <div class="ec__collage" aria-hidden="true">
-        <div class="ec__tilt">
-          {
-            tiles.map((t) => (
-              <div class="ec__tile" data-shot={t.shot ?? undefined}>
-                <img class="ec__tileimg" src={t.src} alt="" loading="lazy" decoding="async" />
-              </div>
-            ))
-          }
-        </div>
-      </div>
     </div>
 
     {/* Right: two square cards, stacked. */}
@@ -117,9 +129,9 @@ const tiles = [
 
   /* --- Stage ------------------------------------------------------------ */
 
+  /* Holds the heading and nothing else now: the collage is pinned to the
+     section, not to this column. */
   .ec__stage {
-    position: relative;
-    align-self: stretch;
     min-width: 0;
   }
 
@@ -147,64 +159,78 @@ const tiles = [
 
   /* --- The collage ------------------------------------------------------ */
 
+  /* Pinned to the section box, padding included, and then pushed past it on
+     three sides: the cluster is cut by the section's own edges rather than
+     stopping short of them, and the tilt carries its corners out of frame.
+     The section's overflow: hidden is what does the cutting. */
   .ec__collage {
-    margin-top: clamp(2.5rem, 5vw, 4rem);
-    /* A square turned 10.8 degrees needs a box 1.17 times its side to hold
-       its corners. The cluster is held back from the column's full width by
-       about that, so the tilt never reaches the cards or the gutter. */
-    width: min(84%, 34rem);
+    position: absolute;
+    top: -6%;
+    bottom: -6%;
+    left: -5%;
+    width: 62%;
+    z-index: 0;
+    /* Only the right edge is soft. The other three run off the section, so
+       softening them would turn a bleed into a vignette. */
+    -webkit-mask-image: linear-gradient(to right, #000 0%, #000 64%, transparent 97%);
+    mask-image: linear-gradient(to right, #000 0%, #000 64%, transparent 97%);
+  }
+
+  /* Keeps the heading readable over whichever photograph is up. Axis-aligned,
+     so it sits on the collage rather than inside the tilt. */
+  .ec__collage::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      var(--ec-black) 0%,
+      rgba(8, 9, 11, 0.74) 18%,
+      rgba(8, 9, 11, 0) 46%
+    );
   }
 
   .ec__tilt {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    grid-template-rows: repeat(12, minmax(0, 1fr));
-    aspect-ratio: 1 / 1;
+    position: absolute;
+    inset: 0;
     rotate: 10.8deg;
   }
 
   /* A pinwheel: the two photographs that answer a card take the diagonal and
      overlap in the middle, and the two that do not fill the opposite corners
-     underneath them. Every tile is cover-fitted, so the crop follows the
-     shape rather than the shape following the photograph. */
+     underneath them. Laid out with insets rather than in a grid, because a
+     grid cell cannot be animated and these have to be able to open out. */
   .ec__tile {
-    position: relative;
+    position: absolute;
+    inset: var(--t) var(--r) var(--b) var(--l);
     overflow: hidden;
     background: var(--ec-black);
     border: 1px solid var(--ec-line);
-    /* A ring of the section's own black around every tile, which is what
-       makes four overlapping photographs read as four photographs. The ring
-       is drawn outside the tile, so wherever two overlap the upper one's ring
-       cuts into the lower: the stacking order becomes visible instead of
-       having to be inferred from where the picture changes. */
+    /* A ring of the section's own black around every tile, which is what makes
+       four overlapping photographs read as four photographs. The ring is drawn
+       outside the tile, so wherever two overlap the upper one's ring cuts into
+       the lower: the stacking order becomes visible instead of having to be
+       inferred from where the picture changes. */
     box-shadow: 0 0 0 0.4375rem var(--ec-black);
     opacity: 0;
     transition:
-      opacity 0.55s var(--ease),
-      scale 0.55s var(--ease);
-    will-change: opacity;
+      inset 0.7s var(--ease),
+      opacity 0.5s var(--ease),
+      box-shadow 0.5s var(--ease);
   }
 
-  .ec__tile:nth-child(1) {
-    grid-area: 1 / 1 / 8 / 8;
+  .ec__tile[data-shot] {
     z-index: 2;
   }
 
-  .ec__tile:nth-child(2) {
-    grid-area: 6 / 6 / 13 / 13;
-    z-index: 2;
-  }
-
-  .ec__tile:nth-child(3) {
-    grid-area: 1 / 7 / 6 / 13;
+  .ec__tile:not([data-shot]) {
     z-index: 1;
   }
 
-  .ec__tile:nth-child(4) {
-    grid-area: 7 / 1 / 13 / 6;
-    z-index: 1;
-  }
-
+  /* Cover-fitted, so when the box opens out the crop opens with it rather
+     than the photograph stretching to the new shape. */
   .ec__tileimg {
     display: block;
     width: 100%;
@@ -325,14 +351,20 @@ const tiles = [
       opacity: var(--ec-aside);
     }
 
-    /* Then the one that belongs to the hovered card comes up out of it. This
-       has to stay below the rule above: both selectors carry the same weight,
-       so the later one is the one that wins. */
+    /* Then the one that belongs to the hovered card runs its four insets to
+       zero and takes the whole collage: it opens out of its place in the
+       stack rather than cross-fading with it, so where the picture came from
+       stays legible all the way through. The ring goes with it -- a
+       photograph at full size has nothing left to be separated from.
+
+       This has to stay below the rule above: both selectors carry the same
+       weight, so the later one is the one that wins. */
     .ec:has([data-card='weddings']:hover) .ec__tile[data-shot='weddings'],
     .ec:has([data-card='private-events']:hover) .ec__tile[data-shot='private-events'] {
+      inset: 0;
       opacity: 1;
       z-index: 3;
-      scale: 1.03;
+      box-shadow: none;
     }
   }
 
@@ -376,10 +408,10 @@ const tiles = [
       transition-duration: 0.01ms;
     }
 
-    /* The tilt stays -- it is where the collage is, not a movement. Only the
-       lift on the answering tile goes. */
+    /* The tilt stays -- it is where the collage is, not a movement. The
+       opening out goes: it is the one thing here that travels. */
     .ec:has(.ec__card:hover) .ec__tile[data-shot] {
-      scale: 1;
+      inset: var(--t) var(--r) var(--b) var(--l);
     }
   }
 </style>
