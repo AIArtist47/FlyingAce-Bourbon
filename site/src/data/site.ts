@@ -85,7 +85,10 @@ export const pillars = [
     lede: 'American Ace bourbon, whiskey and rum — distilled from grain we grow, store and mill on the property.',
     meta: ['Double Gold, 2021', 'Tasting room', 'On-site ABC store'],
     cta: 'Explore the spirits',
-    href: '/distillery',
+    /* Straight to the shop rather than the distillery page. The panel itself
+       is the link, so the whole card goes off-site; /distillery is still in
+       the nav on every page. */
+    href: site.spiritsShop,
     image: img.distillery,
   },
   {

@@ -1,6 +1,11 @@
 ---
 import { pillars } from '../data/site';
 
+/* Read off the href rather than carried as a flag in the data: the only thing
+   that makes a panel outbound is where it points, and a flag could disagree
+   with it. */
+const outbound = (href: string) => /^https?:\/\//.test(href);
+
 /**
  * Vertical accordion hover cards.
  *
@@ -31,7 +36,13 @@ import { pillars } from '../data/site';
     <div class="acc" data-reveal="up">
       {
         pillars.map((p) => (
-          <a class="panel" id={p.id} href={p.href}>
+          <a
+            class="panel"
+            id={p.id}
+            href={p.href}
+            target={outbound(p.href) ? '_blank' : undefined}
+            rel={outbound(p.href) ? 'noopener' : undefined}
+          >
             <span class="panel__media">
               <img class="panel__img" src={p.image} alt="" loading="lazy" />
             </span>
