@@ -17,7 +17,8 @@ interface Props {
     | 'flag'
     | 'gift'
     | 'menu'
-    | 'close';
+    | 'close'
+    | 'eye';
   size?: number;
   stroke?: string;
   width?: number;
@@ -55,6 +56,14 @@ const {
     )
   }
   {name === 'bottle' && <path d="M10 2h4v4l2 3v12a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V9l2-3z" />}
+  {
+    name === 'eye' && (
+      <>
+        <path d="M2 12s3.6-6.2 10-6.2S22 12 22 12s-3.6 6.2-10 6.2S2 12 2 12z" />
+        <circle cx="12" cy="12" r="3" />
+      </>
+    )
+  }
   {
     name === 'pin' && (
       <>
