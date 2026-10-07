@@ -1,0 +1,111 @@
+---
+import { weddingBrochure as b } from '../data/weddings';
+---
+
+<section class="wbro section section--pad" aria-labelledby="wbro-title">
+  <div class="wrap wbro__inner">
+    <a class="wbro__frame" href={b.href} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+      <img
+        class="wbro__img"
+        src={b.image}
+        alt=""
+        width="900"
+        height="695"
+        loading="lazy"
+        decoding="async"
+      />
+    </a>
+
+    <div class="wbro__copy">
+      <p class="eyebrow" data-reveal="up">{b.eyebrow}</p>
+      <h2 class="display wbro__h2" id="wbro-title" data-reveal="up">{b.title}</h2>
+      <p class="wbro__body sub__body" data-reveal="up">{b.body}</p>
+      {/* The cover above links to the same file, so it is kept out of the tab
+          order and the accessibility tree rather than read out twice. */}
+      <a class="btn btn--solid btn--lg wbro__cta" href={b.href} target="_blank" rel="noopener" data-reveal="up">
+        {b.cta}
+      </a>
+      <p class="wbro__meta" data-reveal="up">PDF · opens in a new tab</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .wbro {
+    background: var(--sand);
+  }
+
+  .wbro__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+    gap: clamp(2rem, 4.5vw, 4.5rem);
+    align-items: center;
+  }
+
+  .wbro__frame {
+    display: block;
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+  }
+
+  .wbro__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transform: scale(1.01);
+    transition: transform 0.9s var(--ease);
+  }
+
+  .wbro__frame:hover .wbro__img {
+    transform: scale(1.04);
+  }
+
+  .wbro__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .wbro__h2 {
+    font-size: var(--t-h2-sm);
+  }
+
+  .wbro__body {
+    margin: 0;
+    font-size: var(--t-body);
+    line-height: var(--lh-body);
+    color: var(--muted);
+    max-width: 44ch;
+  }
+
+  .wbro__cta {
+    margin-top: 0.75rem;
+  }
+
+  .wbro__meta {
+    margin: 0;
+    font-size: var(--t-12);
+    letter-spacing: var(--ls-caps-sm);
+    text-transform: uppercase;
+    color: var(--muted-2);
+  }
+
+  @media (max-width: 52rem) {
+    .wbro__inner {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2rem;
+    }
+
+    .wbro__frame {
+      max-width: 24rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wbro__frame:hover .wbro__img {
+      transform: scale(1.01);
+    }
+  }
+</style>

@@ -1,0 +1,127 @@
+---
+import { weddingIntro as t, weddingFacts } from '../data/weddings';
+---
+
+<section class="wintro section section--pad" aria-labelledby="wintro-title">
+  <div class="wrap wintro__inner">
+    <div class="wintro__copy">
+      {/* The farm's own opening line, set as the heading it already is rather
+          than paraphrased into one. */}
+      <h2 class="wintro__lead quote" id="wintro-title" data-reveal="up">{t.lead}</h2>
+
+      {t.body.map((p, i) => (
+        <p class="wintro__body sub__body" data-reveal="up" data-stagger={i + 1}>
+          {p}
+        </p>
+      ))}
+    </div>
+
+    <dl class="wfacts" data-reveal="up">
+      {
+        weddingFacts.map((f) => (
+          <div class="wfact">
+            <dt class="wfact__label">{f.label}</dt>
+            <dd class="wfact__value display tnum">
+              {f.value}
+              {f.suffix && <span class="wfact__suffix">{f.suffix}</span>}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .wintro__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: clamp(2.5rem, 5vw, 5rem);
+    align-items: start;
+  }
+
+  /* Newsreader italic, the site's one accent voice, at a size that lets this
+     carry the section without a display heading shouting over the photograph
+     above it. */
+  .wintro__lead {
+    margin: 0;
+    font-size: var(--t-h2-news);
+    line-height: 1.15;
+    color: var(--ink);
+    max-width: 20ch;
+  }
+
+  .wintro__body {
+    margin: 1.5rem 0 0;
+    font-size: var(--t-body);
+    line-height: var(--lh-body);
+    color: var(--muted);
+    max-width: 62ch;
+  }
+
+  /* --- The figures ------------------------------------------------------ */
+
+  .wfacts {
+    margin: 0.5rem 0 0;
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .wfact {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.375rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .wfact__value {
+    margin: 0;
+    font-size: var(--t-44);
+    line-height: 1;
+  }
+
+  /* The suffix picks up the brass the way the venue figures do. */
+  .wfact__suffix {
+    color: var(--award);
+  }
+
+  .wfact__label {
+    margin: 0;
+    font-size: var(--t-13);
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--muted-2);
+  }
+
+  @media (max-width: 60rem) {
+    .wintro__inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* Three across once they are no longer a column beside the copy. */
+    .wfacts {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+      border-top: 0;
+    }
+
+    .wfact {
+      border-bottom: 0;
+      border-top: 1px solid var(--rule);
+      padding: 1.25rem 0 0;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .wfacts {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+
+    .wfact {
+      padding: 1rem 0;
+    }
+  }
+</style>

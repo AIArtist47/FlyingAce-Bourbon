@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import WeddingHero from '../components/WeddingHero.astro';
+import WeddingIntro from '../components/WeddingIntro.astro';
+import WeddingSpaces from '../components/WeddingSpaces.astro';
+import WeddingGallery from '../components/WeddingGallery.astro';
+import WeddingBrochure from '../components/WeddingBrochure.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base
+  title="Weddings at Flying Ace Farm — Love Takes Flight | Lovettsville, VA"
+  description="Say “I do” on 86 acres of working farm at the base of Furnace Mountain in Loudoun County, Virginia. A 50′ × 80′ enclosed pavilion, an 1830s farmhouse with a bridal suite, an on-site distillery, brewery and restaurant."
+>
+  <Header />
+
+  <main id="main">
+    <WeddingHero />
+    <WeddingIntro />
+    <WeddingSpaces />
+    <WeddingGallery />
+    <WeddingBrochure />
+    <EnquiryForm to="weddings" />
+  </main>
+
+  <Footer />
+</Base>

@@ -1,0 +1,179 @@
+---
+import { weddingSpaces } from '../data/weddings';
+---
+
+<section class="wsp section section--pad" id="spaces" aria-labelledby="wsp-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-head__title">
+        <p class="eyebrow" data-reveal="up">Where the day happens</p>
+        <h2 class="display wsp__h2" id="wsp-title" data-reveal="up">Two spaces</h2>
+      </div>
+      <a class="arrow-link" href="/host-your-event#venues" data-reveal="up">
+        All four spaces <span class="arrow-link__ico">&#8594;</span>
+      </a>
+    </div>
+
+    <ul class="wsp__grid">
+      {
+        weddingSpaces.map((s, i) => (
+          <li class="wsp__card" id={s.id} data-reveal="up" data-stagger={i}>
+            <div class="wsp__frame">
+              <img
+                class="wsp__img"
+                src={s.image}
+                alt={s.alt}
+                width="980"
+                height="653"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
+            <div class="wsp__body">
+              <h3 class="display display--700 wsp__name">{s.name}</h3>
+              <p class="wsp__meta">{s.meta}</p>
+              <p class="wsp__text">{s.body}</p>
+
+              <p class="wsp__note">{s.note}</p>
+
+              <a class="wsp__tour" href={s.tour} target="_blank" rel="noopener">
+                View 3D tour <span class="arrow-link__ico">&#8599;</span>
+              </a>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .wsp__h2 {
+    font-size: var(--t-h2);
+  }
+
+  .wsp__grid {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .wsp__card {
+    display: flex;
+    flex-direction: column;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+  }
+
+  .wsp__frame {
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+  }
+
+  .wsp__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.01);
+    transition: transform 0.9s var(--ease);
+  }
+
+  .wsp__card:hover .wsp__img {
+    transform: scale(1.05);
+  }
+
+  .wsp__body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 2rem 2.25rem 2.25rem;
+  }
+
+  .wsp__name {
+    margin: 0;
+    font-size: var(--t-h3);
+    line-height: var(--lh-card);
+  }
+
+  .wsp__meta {
+    margin: 0;
+    font-size: var(--t-13);
+    font-weight: 600;
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+    color: var(--award);
+  }
+
+  .wsp__text {
+    margin: 0.25rem 0 0;
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-tight);
+    color: var(--muted);
+  }
+
+  /* The one detail each space is actually chosen for, held apart from the
+     description so it is not buried in it. */
+  .wsp__note {
+    margin: 0.75rem 0 0;
+    padding: 0.375rem 0.75rem;
+    background: var(--sand);
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps-sm);
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .wsp__tour {
+    margin-top: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: var(--t-13);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 0.25rem;
+    transition:
+      color 0.35s var(--ease),
+      border-color 0.35s var(--ease);
+  }
+
+  .wsp__tour .arrow-link__ico {
+    transition: transform 0.35s var(--ease);
+  }
+
+  .wsp__tour:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .wsp__tour:hover .arrow-link__ico {
+    transform: translate(0.125rem, -0.125rem);
+  }
+
+  @media (max-width: 48rem) {
+    .wsp__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .wsp__body {
+      padding: 1.5rem 1.75rem 1.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wsp__card:hover .wsp__img {
+      transform: scale(1.01);
+    }
+  }
+</style>

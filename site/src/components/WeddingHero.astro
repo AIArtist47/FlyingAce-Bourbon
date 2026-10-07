@@ -1,0 +1,121 @@
+---
+import { weddingHero as h } from '../data/weddings';
+---
+
+<section class="whero" id="top">
+  {/* Full bleed rather than the split frame the brewery and distillery heroes
+      use: this is the one photograph the page is really selling, and it wants
+      the whole width. The restaurant hero already sets that precedent. */}
+  <div class="whero__media">
+    <img
+      class="whero__img"
+      src={h.image}
+      alt={h.alt}
+      width="1600"
+      height="1067"
+      fetchpriority="high"
+    />
+    <span class="whero__scrim" aria-hidden="true"></span>
+  </div>
+
+  <div class="whero__body wrap">
+    <p class="eyebrow eyebrow--brass" data-reveal="up">{h.eyebrow}</p>
+    <h1 class="display whero__title" data-reveal="up">{h.title}</h1>
+    <p class="whero__lede" data-reveal="up">{h.lede}</p>
+    <div class="whero__cta" data-reveal="up">
+      <a class="btn btn--solid btn--xl" href="#enquire">Enquire About Your Date</a>
+      <a class="btn btn--ghost-light btn--xl" href="#gallery">See the Weddings</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .whero {
+    position: relative;
+    /* Without this the media's negative z-index escapes to the root stacking
+       context and paints behind this section's own navy, which hides the
+       photograph entirely. The restaurant hero carries the same line for the
+       same reason. */
+    isolation: isolate;
+    min-height: 40rem; /* 640px */
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    background: var(--navy);
+  }
+
+  .whero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+  }
+
+  .whero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* The couple sit low and right in the frame; holding the crop there keeps
+       them out from behind the headline at every width. */
+    object-position: 62% 60%;
+  }
+
+  /* Heavier on the left, where the words are, and clearing on the right so
+     the photograph still reads as a photograph. Measured against the worst
+     case -- the brightest 0.1% of the picture under the text, at the weakest
+     scrim any of it sits on -- the headline clears 8.71:1, the lede 6.68 and
+     the brass eyebrow 5.35, against the 4.5 body text needs. */
+  .whero__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      rgba(14, 20, 28, 0.9) 0%,
+      rgba(14, 20, 28, 0.78) 34%,
+      rgba(14, 20, 28, 0.42) 66%,
+      rgba(14, 20, 28, 0.3) 100%
+    );
+  }
+
+  .whero__body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding-block: var(--sec-y);
+    color: var(--cream);
+  }
+
+  .whero__title {
+    --cap-spill: 0.3em;
+    font-size: var(--t-hero-sm);
+    line-height: var(--lh-hero);
+    color: var(--cream);
+  }
+
+  .whero__lede {
+    font-size: var(--t-hero-lede);
+    line-height: var(--lh-body);
+    color: var(--on-navy);
+    max-width: 34rem;
+  }
+
+  .whero__cta {
+    display: flex;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 48rem) {
+    .whero {
+      min-height: 34rem;
+    }
+
+    /* Nothing to the right of the words at this width, so the crop comes back
+       to the couple rather than holding space for a headline beside them. */
+    .whero__img {
+      object-position: 58% 55%;
+    }
+  }
+</style>

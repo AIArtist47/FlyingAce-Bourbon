@@ -1,6 +1,15 @@
 ---
 import { site } from '../data/site';
 import { enquiry as q, enquiryFields } from '../data/events';
+
+interface Props {
+  /** Which inbox the form opens against before the script reads the answers.
+      The weddings page starts there; everywhere else starts at events. */
+  to?: 'events' | 'weddings';
+}
+
+const { to = 'events' } = Astro.props;
+const inbox = to === 'weddings' ? q.weddings : q.events;
 ---
 
 <section class="enq section section--pad" id="enquire" aria-labelledby="enq-title">
@@ -34,7 +43,7 @@ import { enquiry as q, enquiryFields } from '../data/events';
         opens their mail app. */}
     <form
       class="enq__form"
-      action={`mailto:${q.events}`}
+      action={`mailto:${inbox}`}
       method="post"
       enctype="text/plain"
       data-enquiry

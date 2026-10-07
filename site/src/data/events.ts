@@ -91,7 +91,7 @@ export const weddings = {
   body: 'A seamless blend of timeless elegance and rustic charm. Say “I do” in the pavilion, get ready in the farmhouse bridal suite, and celebrate with Monk’s BBQ, craft beer and spirits made steps away.',
   email: 'weddings@flyingacefarm.com',
   cta: 'Plan Your Wedding',
-  href: 'https://flyingacefarm.com/weddings/',
+  href: '/weddings',
   image: '/images/wedding.jpg',
   alt: 'A couple on the lawn at Flying Ace Farm',
   inset: `${E}/bridal-suite.jpg`,
