@@ -103,10 +103,10 @@ export const beerToGo = [
 ];
 
 export const gallery = [
-  { src: `${B}/g1-taps.jpg`, alt: 'Tap wall and a bowl of brewing grain' },
-  { src: `${B}/g2-sightglass.jpg`, alt: 'Beer running through the brewery sight glass' },
-  { src: `${B}/g3-flag.jpg`, alt: 'A Flying Ace Farm beer beside the American flag' },
-  { src: `${B}/g4-river.jpg`, alt: 'Two cans raised together by the river' },
-  { src: `${B}/g5-kettle.jpg`, alt: 'Inside the brew kettle' },
-  { src: `${B}/g6-cranberry.jpg`, alt: 'A seasonal pour with cranberries' },
+  { src: `${B}/strip/g1-taps.webp`, alt: 'Tap wall and a bowl of brewing grain' },
+  { src: `${B}/strip/g2-sightglass.webp`, alt: 'Beer running through the brewery sight glass' },
+  { src: `${B}/strip/g3-flag.webp`, alt: 'A Flying Ace Farm beer beside the American flag' },
+  { src: `${B}/strip/g4-river.webp`, alt: 'Two cans raised together by the river' },
+  { src: `${B}/strip/g5-kettle.webp`, alt: 'Inside the brew kettle' },
+  { src: `${B}/strip/g6-cranberry.webp`, alt: 'A seasonal pour with cranberries' },
 ];
