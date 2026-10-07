@@ -86,8 +86,20 @@
   /* --t-lead, --t-h2 and --t-hero are already role-named. */
 
   --lh-display: 0.95;
-  --lh-hero: 0.88;
+  /* 0.88 left only 9px of air between two lines of 107px caps -- 0.08 of the
+     cap height, where the h2s run at 0.15. Caps have no descenders, so the
+     line gap is all there is to separate them. */
+  --lh-hero: 0.92;
   --lh-body: 1.6;
+  /* A single line of uppercase has no descenders to clear and no next line to
+     separate from, so it wants a line box that fits the letters. */
+  --lh-label: 1.1;
+
+  /* One distance from a label to the heading it leads, anywhere on the site.
+     The leftover leading under the heading scales with its size, so this lands
+     at about 19px under a 57px heading and 28 under the 132px hero -- tight,
+     and loosening gently with the type, which is what these want. */
+  --gap-eyebrow: 0.75rem;
   --lh-tight: 1.55;
   /* A heading at card size. --lh-display is too tight once the type drops to
      the 24-34px a card title runs at, which is why three components had been
@@ -312,21 +324,44 @@ html:has(.gate[open]) {
 }
 
 /* --- Optical spacing for display headings -----------------------------
-   Oswald's content box measures 1.48em (measured against the rendered face,
-   not assumed, the same way Big Shoulders' 1.19em was before it). Our display
-   line-heights sit below that, so the caps spill past the line box and
-   swallow the space above — a declared 24px gap under the hero eyebrow was
-   reading as about 3px.
+   There used to be a padding-top here, half the difference between Oswald's
+   1.47em content box and our display line-heights, on the theory that the
+   caps spill past the line box and swallow the space above them.
 
-   Giving the spill back as padding makes a declared gap the gap you actually
-   see, which is what keeps these pairs equal across the page. Scoped to real
-   headings so inline uses of .display — the wordmark, day chips, award
-   medals — are untouched.                                                */
-h1.display,
-h2.display,
-h3.display {
-  /* (1.48 − 0.95) ÷ 2 */
-  padding-top: var(--cap-spill, 0.265em);
+   Measured against the rendered face, they do not. At 64px and a 0.95
+   line-height the cap top sits 6px BELOW the box top, not above it, because
+   the ascender space is deeper than the negative half-leading. So the
+   padding was not giving anything back -- it was pure addition, and it was
+   what made every eyebrow sit 16 to 37px further from its heading than the
+   layout asked for. Under the home hero a declared 24px gap was reading as
+   76.
+
+   What is left over without it is about 0.1em of the heading's own size:
+   6px under a 64px heading, 13px under the 132px hero. Small, and it scales,
+   which is why the pairs below can share one declared gap and still look
+   right at every size.                                                    */
+
+/* --- The eyebrow that leads a heading ----------------------------------
+   A single line of 13px uppercase, so it takes a line-height that fits the
+   letters rather than the 1.6 body text runs at -- that was leaving 4px of
+   dead leading under every one of them. Unitless, so a reader who raises
+   line-height site-wide still raises this.                                */
+.eyebrow,
+.kicker,
+.label {
+  line-height: var(--lh-label);
+}
+
+/* The label hugs its heading, whatever the column around it is spaced at. A
+   flex gap and a margin add up, so where a stack runs wider than this pair
+   wants, the pair takes the difference back. A container at the default says
+   nothing; one that is spaced differently declares --stack-gap next to its
+   own gap, and these two stay in step. */
+/* Any heading, not only a .display one: "Take off with our homegrown
+   spirits" splits its two treatments across spans, so the h2 itself carries
+   no .display and a narrower selector walked straight past it. */
+:is(.eyebrow, .kicker):has(+ :is(h1, h2, h3)) {
+  margin-bottom: calc(var(--gap-eyebrow) - var(--stack-gap, var(--gap-eyebrow)));
 }
 
 .eyebrow {
