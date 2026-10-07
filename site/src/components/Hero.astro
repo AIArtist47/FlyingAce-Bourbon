@@ -50,7 +50,11 @@ const words = headline.split(' ');
     </p>
 
     <div class="hero__cta" data-reveal="up">
-      <a class="btn btn--solid btn--xl" href="#visit">Plan Your Visit</a>
+      {/* Was #visit, the id on the band of farm facts that stood lower down
+          this page. That band has gone, and the Visit & FAQ page -- hours,
+          directions, the map, the questions -- is what this button was always
+          promising anyway. */}
+      <a class="btn btn--solid btn--xl" href="/visit">Plan Your Visit</a>
       <a class="btn btn--ghost-light btn--xl" href={site.spiritsShop} target="_blank" rel="noopener">
         Explore Our Spirits
       </a>

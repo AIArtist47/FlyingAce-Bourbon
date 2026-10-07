@@ -156,28 +156,31 @@ export const spirits = [
   { name: 'American Ace Rum', note: 'Bronze medal', price: '$29.99' },
 ];
 
-export const experience = [
-  {
-    icon: 'barn',
-    title: '200-year-old working farm',
-    body: 'Crops grown, harvested, stored and milled right here on the property.',
-  },
-  {
-    icon: 'corn',
-    title: '60+ acres of Bloody Butcher corn',
-    body: 'Dark-red heirloom corn in our White Dog and “Bloody Butcher” Cream Ale.',
-  },
-  {
-    icon: 'music',
-    title: 'Live music Fri · Sat · Sun',
-    body: 'Plenty of indoor and outdoor seating, a 21+ area in the barn and a playground.',
-  },
-  {
-    icon: 'store',
-    title: 'On-site Virginia ABC store',
-    body: 'Take home more than memories — the full American Ace lineup.',
-  },
-];
+/**
+ * The farm-to-bottle sequence, transcribed from the Spirits artboard, where it
+ * sits between the lineup and the cocktails. It replaces the four-fact
+ * "experience" band that used to stand here: every one of those four was
+ * already said by a card in the section above it -- the 200-year-old farm, the
+ * 60 acres of Bloody Butcher, the music on Friday, Saturday and Sunday and the
+ * ABC store -- so the band was the page repeating itself.
+ *
+ * This says something the rest of the page does not: how the corn in the field
+ * becomes the whiskey in the bottle, in five steps and in the farm's order.
+ */
+export const fieldsToGlass = {
+  eyebrow: 'Farm-to-bottle',
+  title: 'From our fields to your glass',
+  lede: 'Dark red in color and bold in flavor, our heirloom Bloody Butcher corn is grown, harvested and milled on site. Crafted with malted barley and wheat, it gives our whiskey a grain-forward nose with undertones of banana bread and kettle corn.',
+  image: '/images/home/fields-to-glass.webp',
+  alt: 'The view from the combine cab across standing Bloody Butcher corn to the red barn, the silos and Furnace Mountain behind them',
+  steps: [
+    { n: '01', title: 'Grow', body: 'Heirloom Bloody Butcher corn planted on the farm.' },
+    { n: '02', title: 'Harvest', body: 'Picked from the fields that surround the distillery.' },
+    { n: '03', title: 'Store & Mill', body: 'Stored and milled on the property.' },
+    { n: '04', title: 'Distill', body: 'Paired with malted barley and wheat and run off our still.' },
+    { n: '05', title: 'Bottle', body: 'Straight off the still as White Dog — or aged into bourbon.' },
+  ],
+};
 
 export const eventCards = [
   {

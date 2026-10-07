@@ -218,7 +218,7 @@ document.querySelectorAll<HTMLAnchorElement>('[data-home]').forEach((home) => {
   });
 });
 
-/* A cross-page link such as /#visit arrives through the browser's own hash
+/* A cross-page link such as /host-your-event#enquire arrives through the browser's own hash
    jump, which knows nothing about the sticky header and leaves the section
    tucked underneath it. This re-seats it — and has to run AFTER
    ScrollTrigger.refresh(), which otherwise restores the scroll it recorded

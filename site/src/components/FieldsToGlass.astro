@@ -1,0 +1,178 @@
+---
+import { fieldsToGlass as f } from '../data/site';
+---
+
+{/* Paper rather than the artboard's sand. On the Spirits page this band sits
+    between two pale sections and sand is the step that separates them; here it
+    follows the navy collage and precedes the sand of "A celebration", so sand
+    would join the two into one block. Paper keeps navy, paper, sand. */}
+<section class="ftg section section--pad" aria-labelledby="ftg-title">
+  <div class="wrap">
+    <div class="ftg__top">
+      <div class="ftg__copy">
+        <p class="eyebrow" data-reveal="up">{f.eyebrow}</p>
+        <h2 class="display ftg__h2" id="ftg-title" data-reveal="up">{f.title}</h2>
+        <p class="ftg__lede" data-reveal="up">{f.lede}</p>
+      </div>
+
+      <div class="ftg__frame" data-reveal="up">
+        <img
+          class="ftg__img"
+          src={f.image}
+          alt={f.alt}
+          width="1200"
+          height="800"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    </div>
+
+    {/* An ordered list because the order is the point: this is a sequence, not
+        four facts that happen to sit in a row. The numbers are the farm's own
+        and are drawn rather than counted, so a screen reader hears "1" from
+        the list and does not then hear "01" again. */}
+    <ol class="ftg__steps">
+      {
+        f.steps.map((step, i) => (
+          <li class="step" data-reveal="up" data-stagger={i}>
+            <span class="step__n" aria-hidden="true">
+              {step.n}
+            </span>
+            <h3 class="display step__title">{step.title}</h3>
+            <p class="step__body">{step.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .ftg {
+    background: var(--paper);
+  }
+
+  .ftg__top {
+    display: flex;
+    align-items: flex-end;
+    gap: clamp(2rem, 5vw, 4.5rem);
+  }
+
+  .ftg__copy {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .ftg__h2 {
+    margin: 0;
+    font-size: var(--t-h2-sm);
+  }
+
+  .ftg__lede {
+    margin: 0;
+    font-size: var(--t-body);
+    line-height: var(--lh-body);
+    color: var(--muted);
+    max-width: 44ch;
+  }
+
+  /* 440 x 280 on the artboard. Held to that ratio rather than that size, so it
+     keeps its shape while the column either side of it moves. */
+  .ftg__frame {
+    flex: 0 1 27.5rem; /* 440px */
+    aspect-ratio: 11 / 7;
+    overflow: hidden;
+    background: var(--sand);
+  }
+
+  .ftg__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ftg__steps {
+    list-style: none;
+    margin: clamp(2.5rem, 4vw, 3.5rem) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  /* The heavy rule is the artboard's, and it is what makes five short columns
+     read as one run rather than five loose notes. */
+  .step {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 1.125rem;
+    border-top: 3px solid var(--navy);
+    min-width: 0;
+  }
+
+  .step__n {
+    font-family: var(--font-display);
+    font-size: var(--t-14);
+    font-weight: 700;
+    letter-spacing: var(--ls-caps-sm);
+    color: var(--award);
+    line-height: 1;
+  }
+
+  .step__title {
+    margin: 0;
+    font-size: var(--t-24);
+    line-height: var(--lh-card);
+  }
+
+  .step__body {
+    margin: 0;
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-body);
+    color: var(--muted);
+  }
+
+  /* Five columns stop being readable long before they stop fitting: "Store &
+     Mill" and a sentence under it need about 180px, and below this they do not
+     get it. */
+  @media (max-width: 68.75rem) {
+    .ftg__steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2rem 1.5rem;
+    }
+  }
+
+  @media (max-width: 52rem) {
+    .ftg__top {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 2rem;
+    }
+
+    .ftg__frame {
+      flex: 0 0 auto;
+    }
+
+    .ftg__h2 {
+      font-size: var(--t-44);
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .ftg__steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 26rem) {
+    .ftg__steps {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
