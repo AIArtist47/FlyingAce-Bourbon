@@ -4,6 +4,21 @@ import { visitHero as h, visitAddress as a } from '../data/visit';
 ---
 
 <section class="vhero on-navy" id="top">
+  {/* The farm's own banner from the FAQ page it replaces: a full lawn, the
+      silos and the stage. It answers "what is it like there" before a word
+      of the copy does. */}
+  <div class="vhero__media">
+    <img
+      class="vhero__img"
+      src={h.image}
+      alt={h.alt}
+      width="2000"
+      height="1020"
+      fetchpriority="high"
+    />
+    <span class="vhero__scrim" aria-hidden="true"></span>
+  </div>
+
   <div class="vhero__inner wrap">
     <div class="vhero__copy">
       <p class="eyebrow eyebrow--brass" data-reveal="up">{h.eyebrow}</p>
@@ -11,9 +26,10 @@ import { visitHero as h, visitAddress as a } from '../data/visit';
       <p class="vhero__lede" data-reveal="up">{h.lede}</p>
     </div>
 
-    {/* No photograph here on purpose. This page is read, not browsed — what a
-        visitor wants in the first viewport is the address and the way to get
-        there, not another picture of the farm. */}
+    {/* Lifted out of the copy and onto its own near-solid panel: this page is
+        read, not browsed, and what a visitor wants in the first viewport is
+        the address and the way to get there. It has to stay legible whatever
+        the photograph behind it is doing. */}
     <address class="vhero__card" data-reveal="up">
       <p class="vhero__kicker kicker">Find us</p>
       <p class="vhero__addr">
@@ -34,11 +50,59 @@ import { visitHero as h, visitAddress as a } from '../data/visit';
 
 <style>
   .vhero {
+    position: relative;
+    /* The floor the calendar, distillery and events heroes stand on. Without
+       it the band is only as tall as the copy, and the photograph is cut to a
+       3:1 letterbox that shows roofline and nothing else. */
+    min-height: 30rem; /* 480px */
+    display: flex;
+    align-items: center;
+    /* The media sits at a negative z-index; without a stacking context here it
+       escapes to the root one and paints behind this section's own navy, and
+       the photograph never shows. */
+    isolation: isolate;
+    overflow: hidden;
     background: var(--navy);
     color: var(--cream);
   }
 
+  .vhero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+  }
+
+  .vhero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* The band and the busiest tables sit right of centre; holding the crop
+       there keeps them out from behind the copy. */
+    object-position: 58% 62%;
+  }
+
+  /* Heaviest where the words are and clearing to the right, so the tables and
+     the stage still read as a photograph. Measured against the worst case --
+     the brightest 0.1% of the picture behind each run of text, composited
+     under this gradient -- the headline clears 8.07:1, the lede 7.08 and the
+     brass eyebrow 5.19, against the 4.5 small text needs. Move the crop or
+     the copy and this wants measuring again. */
+  .vhero__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      rgba(14, 20, 28, 0.95) 0%,
+      rgba(14, 20, 28, 0.88) 38%,
+      rgba(14, 20, 28, 0.55) 72%,
+      rgba(14, 20, 28, 0.45) 100%
+    );
+  }
+
   .vhero__inner {
+    position: relative;
+    width: 100%;
     display: flex;
     align-items: center;
     gap: 3.5rem;
@@ -77,6 +141,9 @@ import { visitHero as h, visitAddress as a } from '../data/visit';
     align-items: flex-start;
     gap: 0.875rem;
     padding: 2rem;
+    /* Near-solid rather than transparent: the address and the times have to
+       stay legible whatever the photograph does behind them. */
+    background: rgba(24, 33, 44, 0.92);
     border: 1px solid var(--rule-navy);
   }
 

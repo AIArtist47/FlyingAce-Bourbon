@@ -21,6 +21,21 @@ export const visitHero = {
   eyebrow: 'Plan your visit',
   title: 'Visit & FAQ',
   lede: 'A working farm in Lovettsville, Virginia, with a restaurant, a brewery, a distillery and an on-site ABC store. Here is when we are open, how to find us, and what people ask most.',
+  /* The farm's own banner from the FAQ page this one replaces. */
+  image: '/images/visit/hero.webp',
+  alt: 'Picnic tables full of people on the lawn, the silos and the red barns behind them and the stage off to the right',
+};
+
+/**
+ * Embedded without an API key, and lazily, so it costs nothing until a reader
+ * scrolls to it. Google resolves the q to the same pin Get Directions opens.
+ * The farm's name leads the query on purpose: with the address alone the pin
+ * is labelled "40950", which reads as a stray number on the map.
+ */
+export const visitMap = {
+  embed:
+    'https://maps.google.com/maps?q=Flying+Ace+Farm,+40950+Flying+Ace+Ln,+Lovettsville,+VA+20180&z=14&output=embed',
+  title: 'Map showing Flying Ace Farm, 40950 Flying Ace Ln, Lovettsville, Virginia',
 };
 
 export const visitAddress = {

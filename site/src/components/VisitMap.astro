@@ -1,0 +1,123 @@
+---
+import { visitMap as m, visitAddress as a } from '../data/visit';
+---
+
+<section class="vmap" aria-label="Where to find Flying Ace Farm">
+  <div class="wrap vmap__bar">
+    <p class="vmap__where">
+      <span class="vmap__label kicker">The farm</span>
+      <span class="vmap__addr">{a.street}, {a.cityState}</span>
+    </p>
+
+    <a class="arrow-link" href={a.directions} target="_blank" rel="noopener">
+      Open in Google Maps <span class="arrow-link__ico">&#8599;</span>
+    </a>
+  </div>
+
+  {/* Full bleed, and lazy: the map is a third-party frame, so it costs nothing
+      until a reader actually scrolls this far. */}
+  <div class="vmap__frame" data-vmap>
+    <iframe
+      class="vmap__embed"
+      src={m.embed}
+      title={m.title}
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+    {/* A full-bleed map eats the gesture that was meant for the page: the
+        wheel zooms it, and on a phone a drag pans it instead of scrolling.
+        So it starts asleep and one click wakes it, after which it behaves
+        like any other map. The frame stays in the tab order throughout, so
+        a keyboard reader never meets the guard at all. */}
+    <span class="vmap__guard" aria-hidden="true"></span>
+  </div>
+</section>
+
+<style>
+  .vmap {
+    background: var(--paper);
+    padding-top: var(--sec-y);
+  }
+
+  .vmap__bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    padding-bottom: 1.5rem;
+  }
+
+  .vmap__where {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    min-width: 0;
+  }
+
+  .vmap__label {
+    color: var(--award);
+  }
+
+  .vmap__addr {
+    font-size: var(--t-22);
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: var(--ls-caps-sm);
+    line-height: var(--lh-card);
+  }
+
+  /* The frame carries the height so the map never collapses before it loads,
+     and never lands as a square on a wide screen. */
+  .vmap__frame {
+    position: relative;
+    height: clamp(18rem, 34vw, 30rem);
+    background: var(--sand);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .vmap__embed {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    /* Pulls the map's own saturation back toward the page rather than letting
+       Google's greens and reds fight the cream and sand around it. */
+    filter: saturate(0.78) contrast(1.04);
+  }
+
+  .vmap__guard {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+  }
+
+  /* Woken. Nothing is between the reader and the map from here on. */
+  .vmap__frame[data-live] .vmap__guard {
+    display: none;
+  }
+
+  @media (max-width: 48rem) {
+    .vmap__bar {
+      gap: 1rem;
+    }
+  }
+</style>
+
+<script>
+  /* One click hands the map over. Without JS the guard simply stays, which
+     leaves the map showing the farm and the page scrolling normally -- the
+     link above it is the way through to the real thing either way. */
+  document.querySelectorAll<HTMLElement>('[data-vmap]').forEach((frame) => {
+    frame.querySelector('.vmap__guard')?.addEventListener(
+      'click',
+      () => {
+        frame.dataset.live = 'true';
+      },
+      { once: true },
+    );
+  });
+</script>
