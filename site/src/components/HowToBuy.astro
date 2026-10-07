@@ -3,7 +3,7 @@ import Icon from './Icon.astro';
 import { howToBuy } from '../data/distillery';
 ---
 
-<section class="buy section" aria-labelledby="buy-title">
+<section class="buy section section--pad" aria-labelledby="buy-title">
   <div class="wrap">
     <h2 class="display buy__h2" id="buy-title" data-reveal="up">How to buy</h2>
 
@@ -30,10 +30,6 @@ import { howToBuy } from '../data/distillery';
 </section>
 
 <style>
-  .buy {
-    padding-top: var(--sec-y);
-  }
-
   .buy__h2 {
     font-size: var(--t-h2-sm);
   }
