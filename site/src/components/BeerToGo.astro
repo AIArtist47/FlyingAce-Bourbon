@@ -18,7 +18,7 @@ import { beerToGo } from '../data/brewery';
             </span>
             <div class="pack__body">
               <h3 class="pack__title display">{item.title}</h3>
-              <p class="pack__price">{item.price}</p>
+              <p class="pack__price quote">{item.price}</p>
               <p class="pack__note">{item.body}</p>
             </div>
           </article>
@@ -102,7 +102,10 @@ import { beerToGo } from '../data/brewery';
   .pack__price {
     margin: 0;
     font-size: var(--t-lead);
-    font-weight: 700;
+    /* No weight set on purpose. Newsreader is loaded as ital,opsz@1,6..72 --
+       one italic cut, no bold -- so a 700 here would be synthesised, sheared
+       and smeared by the browser rather than drawn. The accent colour and the
+       size carry the emphasis instead. */
     color: var(--accent);
   }
 
