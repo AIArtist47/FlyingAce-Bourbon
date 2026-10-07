@@ -47,13 +47,18 @@ const rows = galleryRows.map((row, r) => ({
 
 <section class="wgal section section--pad" id="gallery" aria-labelledby="wgal-title">
   <div class="wrap">
-    <div class="sec-head">
-      <div class="sec-head__title">
-        <p class="eyebrow eyebrow--brass" data-reveal="up">Weddings at Flying Ace Farm</p>
-        <h2 class="display wgal__h2" id="wgal-title" data-reveal="up">Three weddings</h2>
-      </div>
-      <p class="wgal__hint" data-reveal="up">{galleryCount} frames · open any one</p>
-    </div>
+    {/* The lettermark is the heading, so it stays an h2 and carries the word
+        as its alt — the section's accessible name comes from it just as it did
+        from the text it replaced. */}
+    <h2 class="wgal__mark" id="wgal-title" data-reveal="up">
+      <img
+        class="wgal__markimg"
+        src={`${W}/lettermark.webp`}
+        alt="Weddings"
+        width="664"
+        height="260"
+      />
+    </h2>
   </div>
 
   {/* Outside the wrap, so the rows run the full width of the window and the
@@ -105,18 +110,19 @@ const rows = galleryRows.map((row, r) => ({
     overflow: hidden;
   }
 
-  .wgal__h2 {
-    font-size: var(--t-h2);
-    color: var(--cream);
+  /* Sized by height, since a script mark is read at its x-height rather than
+     by a type step. The file is already the brass the rest of the section
+     uses — rgb(217, 185, 122) is --brass exactly — and carries its own alpha,
+     so it sits on the navy with nothing behind it. */
+  .wgal__mark {
+    margin: 0;
+    line-height: 0;
   }
 
-  .wgal__hint {
-    margin: 0;
-    font-size: var(--t-12);
-    font-weight: 600;
-    letter-spacing: var(--ls-label);
-    text-transform: uppercase;
-    color: var(--on-navy-3);
+  .wgal__markimg {
+    display: block;
+    height: clamp(4rem, 10vw, 9rem);
+    width: auto;
   }
 
   /* --- The rows --------------------------------------------------------- */
