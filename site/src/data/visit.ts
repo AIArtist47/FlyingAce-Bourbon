@@ -127,7 +127,7 @@ export const farmRules = [
   'Children are welcome but must be accompanied by an adult and supervised at all times (not permitted in the 21+ area)',
   'Sports equipment is not permitted - balls, bats, frisbees and the like',
   'Pet friendly - must be leashed at all times, and in our outdoor areas only',
-  'We are a working farm and ask patrons to stay in designated areas. Please keep out of the pond, creeks, cornfields, drain fields, septic fields and production areas, unless otherwise permitted, as on a tour',
+  'We are a working farm and require patrons to stay in designated areas. Please keep out of the pond, creeks, cornfields, drain fields, septic fields and production areas, unless otherwise permitted, as on a tour',
 ];
 
 export const rulesNote = 'Have fun.';
