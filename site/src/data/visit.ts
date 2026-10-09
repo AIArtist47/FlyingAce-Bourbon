@@ -61,7 +61,7 @@ export const faqs: Faq[] = [
   },
   {
     q: 'What food options does Flying Ace Farm have?',
-    a: 'Monk’s on the Farm is our on-site restaurant, serving BBQ, smashburgers, veggie burgers, fried chicken and seasonal salads. There are weekly specials too: Kids Eat Free and a food special every Wednesday, a Burger of the Week on Thursday, and Friday specials.',
+    a: 'Monk’s on the Farm is our on-site restaurant, serving BBQ, smashburgers, veggie burgers, fried chicken and seasonal salads. There are weekly specials too: Kids Eat Free and a food special every Wednesday, a Burger of the Week on Thursday, Friday specials, and a Sunday brunch.',
     /* The farm's answer says "under our Menu tab". There is no Menu tab in
        this navigation, so it points at the menu itself. */
     link: { text: 'See the full menu', href: '/restaurant#menu' },

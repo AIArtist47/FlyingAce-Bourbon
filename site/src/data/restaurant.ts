@@ -44,6 +44,11 @@ export const weeklySpecials = [
     title: 'Friday Special & Free Beer',
     body: 'A food special and free beer starting at 3pm, until sold out.',
   },
+  {
+    day: 'Sun',
+    title: 'Brunch Special',
+    body: '$5 Bloody Marys and Mimosas, served 11:30am to 2pm.',
+  },
 ];
 
 /**

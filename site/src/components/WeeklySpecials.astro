@@ -44,7 +44,7 @@ import { weeklySpecials } from '../data/restaurant';
     margin: 2.5rem 0 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1.5rem;
   }
 
@@ -87,7 +87,15 @@ import { weeklySpecials } from '../data/restaurant';
     color: var(--muted);
   }
 
+  /* Four of them now, so the fall is 4 to 2 to 1 rather than the 3 to 1 it
+     was. Two and two beats a row of three with one stranded under it. */
   @media (max-width: 68.75rem) {
+    .specials__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 40rem) {
     .specials__grid {
       grid-template-columns: minmax(0, 1fr);
     }
