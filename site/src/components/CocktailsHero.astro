@@ -21,10 +21,6 @@ import { cocktailsHero as h, carouselLeft, carouselRight } from '../data/cocktai
       <p class="eyebrow eyebrow--brass" data-reveal="up">{h.eyebrow}</p>
       <h1 class="display chero__title" data-reveal="up">{h.title}</h1>
       <p class="chero__lede" data-reveal="up">{h.lede}</p>
-      <div class="chero__cta" data-reveal="up">
-        <a class="btn btn--solid btn--lg" href="#now">See the List</a>
-        <a class="btn btn--ghost-light btn--lg" href="#before">Poured Before</a>
-      </div>
     </div>
 
     <div class="chero__media" data-reveal="up">
@@ -74,13 +70,6 @@ import { cocktailsHero as h, carouselLeft, carouselRight } from '../data/cocktai
     line-height: var(--lh-body);
     color: var(--on-navy);
     max-width: 34rem;
-  }
-
-  .chero__cta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.875rem;
-    margin-top: 0.5rem;
   }
 
   /* Holds the carousel, which sets its own height. */
