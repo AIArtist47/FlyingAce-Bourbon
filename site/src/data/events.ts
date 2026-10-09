@@ -89,7 +89,7 @@ export const weddings = {
   eyebrow: 'Weddings',
   title: 'Love takes flight',
   body: 'A seamless blend of timeless elegance and rustic charm. Say “I do” in the pavilion, get ready in the farmhouse bridal suite, and celebrate with Monk’s BBQ, craft beer and spirits made steps away.',
-  email: 'weddings@flyingacefarm.com',
+  email: 'events@flyingacefarm.com',
   cta: 'Plan Your Wedding',
   href: '/weddings',
   image: '/images/wedding.jpg',
@@ -98,12 +98,16 @@ export const weddings = {
   insetAlt: 'The farmhouse bridal suite, with its vanity and exposed brick',
 };
 
+/* One inbox for everything. There was a second, weddings@, and the form
+   routed to it on any mention of a wedding in the event type. Both the
+   address and the routing are gone: a wedding inquiry lands with the events
+   team like every other one, and which page it was sent from still travels
+   with the message, so the context is not lost. */
 export const enquiry = {
   kicker: 'We’d love to host your next event',
   title: 'Tell us about your event',
   body: 'Share a few details and we’ll come back to you.',
   events: 'events@flyingacefarm.com',
-  weddings: 'weddings@flyingacefarm.com',
 };
 
 /** Matches the fields on the farm's own inquiry form, in its order. */

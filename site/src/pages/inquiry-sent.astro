@@ -22,10 +22,9 @@ const failed = params.get('failed') === '1';
    nothing a stranger puts in the query string is ever read back out. */
 const incomplete = params.get('reason') === 'incomplete';
 
-/* Only ever one of the farm's own two addresses, never whatever was in the
-   query string -- this page is reachable by anyone who types the URL. */
-const asked = params.get('to');
-const inbox = asked === enquiry.weddings ? enquiry.weddings : enquiry.events;
+/* The farm's own address, never whatever was in the query string -- this
+   page is reachable by anyone who types the URL. */
+const inbox = enquiry.events;
 ---
 
 <Base

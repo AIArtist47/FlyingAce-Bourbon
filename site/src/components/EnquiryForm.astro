@@ -3,13 +3,12 @@ import { site } from '../data/site';
 import { enquiry as q, enquiryFields } from '../data/events';
 
 interface Props {
-  /** Which inbox an answer lands in when the event type does not say.
-      The weddings page starts there; everywhere else starts at events. */
-  to?: 'events' | 'weddings';
+  /** Which page this form is on. Both go to the same inbox now; this rides
+      along with the message so the farm can still tell them apart. */
+  page?: 'events' | 'weddings';
 }
 
-const { to = 'events' } = Astro.props;
-const inbox = to === 'weddings' ? q.weddings : q.events;
+const { page = 'events' } = Astro.props;
 ---
 
 <section class="enq section section--pad" id="enquire" aria-labelledby="enq-title">
@@ -21,12 +20,8 @@ const inbox = to === 'weddings' ? q.weddings : q.events;
 
       <dl class="enq__direct" data-reveal="up">
         <div>
-          <dt class="label">Events</dt>
+          <dt class="label">Email us</dt>
           <dd><a href={`mailto:${q.events}`}>{q.events}</a></dd>
-        </div>
-        <div>
-          <dt class="label">Weddings</dt>
-          <dd><a href={`mailto:${q.weddings}`}>{q.weddings}</a></dd>
         </div>
         <div>
           <dt class="label">Prefer to talk</dt>
@@ -51,7 +46,7 @@ const inbox = to === 'weddings' ? q.weddings : q.events;
       data-reveal="up"
       data-stagger="1"
     >
-      <input type="hidden" name="inbox" value={to} />
+      <input type="hidden" name="page" value={page} />
       <div class="enq__grid">
         {
           enquiryFields.map((f) => (
@@ -98,7 +93,7 @@ const inbox = to === 'weddings' ? q.weddings : q.events;
           gone once it has been: the status line above says where the message
           went, and the same address twice in three lines is noise. */}
       <p class="enq__note" data-note>
-        This goes straight to {inbox}. We will reply to the address you leave above.
+        This goes straight to {q.events}. We will reply to the address you leave above.
       </p>
     </form>
 
@@ -401,11 +396,7 @@ const inbox = to === 'weddings' ? q.weddings : q.events;
         /* Named, and with a way through that does not depend on this working:
            an inquiry that quietly fails is worse than one that was never
            started. */
-        const to = /wedding|ceremony|bridal|rehearsal|elope/i.test(
-          form.querySelector<HTMLInputElement>('#q-kind')?.value ?? '',
-        )
-          ? enquiry.weddings
-          : enquiry.events;
+        const to = enquiry.events;
 
         say(error instanceof Error ? error.message : 'The inquiry could not be sent.');
         status.insertAdjacentHTML('beforeend', ` Please email <a href="mailto:${to}">${to}</a>.`);

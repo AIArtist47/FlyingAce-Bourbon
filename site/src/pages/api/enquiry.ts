@@ -32,9 +32,6 @@ const MAX_NOTES = 5000;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-/** The farm asks for weddings to go to its own inbox. */
-const WEDDING = /wedding|ceremony|bridal|rehearsal|elope/i;
-
 type Answers = Record<string, string>;
 
 const clean = (value: unknown, max: number): string =>
@@ -53,7 +50,9 @@ function compose(answers: Answers) {
 
   if (answers.notes) lines.push('', 'Anything else:', answers.notes);
 
-  lines.push('', `Sent from the inquiry form on flyingacefarm.com/${answers.inbox === 'weddings' ? 'weddings' : 'host-your-event'}`);
+  /* Which page it was sent from. With one inbox this is the only thing left
+     that separates a wedding inquiry from any other, so it stays. */
+  lines.push('', `Sent from the inquiry form on flyingacefarm.com/${answers.page === 'weddings' ? 'weddings' : 'host-your-event'}`);
 
   return lines.join('\n');
 }
@@ -115,10 +114,7 @@ async function sendOverResend(key: string, message: Message): Promise<boolean> {
 }
 
 async function send(answers: Answers): Promise<{ ok: boolean; to: string }> {
-  const kind = answers.kind ?? '';
-  /* The page the form sits on sets the default inbox; naming a wedding in the
-     event type moves it, from either page. */
-  const to = WEDDING.test(kind) || (answers.inbox === 'weddings' && !kind) ? enquiry.weddings : enquiry.events;
+  const to = enquiry.events;
 
   const message: Message = {
     from: env('ENQUIRY_FROM') ?? 'Flying Ace Farm <inquiries@flyingacefarm.com>',
@@ -170,7 +166,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     return reply(asJson, redirect, { ok: false, status: 400, error: 'That inquiry could not be read.' });
   }
 
-  const answers: Answers = { inbox: clean(raw.inbox, 20) === 'weddings' ? 'weddings' : 'events' };
+  const answers: Answers = { page: clean(raw.page, 20) === 'weddings' ? 'weddings' : 'events' };
   for (const field of enquiryFields) answers[field.id] = clean(raw[field.id], MAX_FIELD);
   answers.notes = clean(raw.notes, MAX_NOTES);
 
