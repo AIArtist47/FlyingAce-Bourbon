@@ -176,6 +176,8 @@ export const events: EventItem[] = [
  * rejects a webcal URL.
  */
 const FEED_PATH = 'flyingacefarm.com/?post_type=tribe_events&ical=1&eventDisplay=list';
+/* Where the farm's own calendar lives, for the two exports below. */
+const CAL_BASE = 'https://flyingacefarm.com/calendar';
 const FEED_WEBCAL = `webcal://${FEED_PATH}`;
 const FEED_HTTPS = `https://${FEED_PATH}`;
 const CAL_NAME = 'Flying Ace Farm';
@@ -194,6 +196,13 @@ export const subscribe = [
     label: 'Outlook Live',
     href: `https://outlook.live.com/calendar/0/addfromweb?url=${encodeURIComponent(FEED_HTTPS)}&name=${encodeURIComponent(CAL_NAME)}`,
   },
+  /* The last two are a file, not a feed: they hand over a .ics of what is
+     booked now and never update again. The farm's own calendar offers both
+     and in this order, so they sit at the end rather than among the four
+     that subscribe. `file` is what keeps them out of a new tab -- a download
+     opened with target=_blank leaves an empty one behind. */
+  { label: 'Export .ics file', href: `${CAL_BASE}/list/?ical=1`, file: true },
+  { label: 'Export Outlook .ics file', href: `${CAL_BASE}/list/?outlook-ical=1`, file: true },
 ];
 
 /* ---------------------------------------------------------------------- */

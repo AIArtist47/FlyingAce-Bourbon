@@ -35,8 +35,7 @@ import { subscribe } from '../data/calendar';
         <a
           class="csub__opt"
           href={s.href}
-          target="_blank"
-          rel="noopener"
+          {...('file' in s && s.file ? {} : { target: '_blank', rel: 'noopener' })}
           style={`--i:${i}`}
         >
           {s.label}
