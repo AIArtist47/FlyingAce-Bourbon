@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import PageHero from '../components/PageHero.astro';
+import ContactCard from '../components/ContactCard.astro';
+import ContactWays from '../components/ContactWays.astro';
+import VisitMap from '../components/VisitMap.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import Footer from '../components/Footer.astro';
+import { contactHero as h } from '../data/connect';
+---
+
+<Base
+  title="Contact — Flying Ace Farm | Lovettsville, VA"
+  description="Call, email or write to Flying Ace Farm at 40950 Flying Ace Ln, Lovettsville, Virginia. Phone, inbox, directions and a message form."
+>
+  <Header />
+
+  <main id="main">
+    <PageHero eyebrow={h.eyebrow} title={h.title} lede={h.lede}>
+      <ContactCard slot="aside" />
+    </PageHero>
+    <ContactWays />
+    {/* The same map the Visit page carries. Somebody on a contact page is as
+        likely to be looking for the gate as for the inbox. */}
+    <VisitMap />
+    <EnquiryForm kind="contact" />
+  </main>
+
+  <Footer />
+</Base>

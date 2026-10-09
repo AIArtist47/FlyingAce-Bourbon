@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import PageHero from '../components/PageHero.astro';
+import MusicBooking from '../components/MusicBooking.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import Footer from '../components/Footer.astro';
+import { musicHero as h } from '../data/connect';
+---
+
+<Base
+  title="Live Music Inquiries — Flying Ace Farm | Lovettsville, VA"
+  description="Flying Ace Farm books acoustic solo, duo and trio acts for Friday, Saturday and Sunday afternoons in Lovettsville, Virginia. The 2026 season is full; inquiries for 2027 are read now."
+>
+  <Header />
+
+  <main id="main">
+    <PageHero
+      eyebrow={h.eyebrow}
+      title={h.title}
+      lede={h.lede}
+      cta={{ text: 'Send an Inquiry', href: '#enquire' }}
+    />
+    <MusicBooking />
+    <EnquiryForm kind="music" />
+  </main>
+
+  <Footer />
+</Base>

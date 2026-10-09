@@ -1,0 +1,96 @@
+---
+import Icon from './Icon.astro';
+import { contactWays } from '../data/connect';
+
+/**
+ * Where a question is better asked somewhere else.
+ *
+ * Most of what arrives on a contact form is one of three things, and each has
+ * a page on this site that answers it faster than an email can. Offering
+ * those first is not a brush-off: it is the shortest route to the answer, and
+ * the form underneath is still there for everything that is none of them.
+ */
+---
+
+<section class="cways section section--pad">
+  <div class="wrap">
+    <p class="eyebrow" data-reveal="up">Quicker than an email</p>
+    <h2 class="display cways__h2" data-reveal="up">You might want one of these</h2>
+
+    <ul class="cways__grid" role="list">
+      {
+        contactWays.map((w, i) => (
+          <li class="cways__card" data-reveal="up" data-stagger={i}>
+            <Icon name={w.icon} size={30} width={1.4} />
+            <h3 class="display cways__title">{w.kicker}</h3>
+            <p class="cways__note">{w.note}</p>
+            <a class="arrow-link cways__link" href={w.link.href}>
+              {w.link.text} <span class="arrow-link__ico">&#8594;</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .cways {
+    background: var(--cream);
+  }
+
+  .cways__h2 {
+    font-size: var(--t-h2-sm);
+    margin: var(--gap-eyebrow) 0 0;
+  }
+
+  .cways__grid {
+    list-style: none;
+    margin: 2.75rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .cways__card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.625rem;
+    padding: 1.75rem;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    min-width: 0;
+  }
+
+  .cways__title {
+    margin: 0.25rem 0 0;
+    font-size: var(--t-26);
+    line-height: var(--lh-card);
+  }
+
+  .cways__note {
+    margin: 0;
+    font-family: var(--font-sub);
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-body);
+    color: var(--muted);
+    /* Holds the three links on one line with each other. */
+    flex-grow: 1;
+  }
+
+  .cways__link {
+    margin-top: 0.5rem;
+  }
+
+  @media (max-width: 60rem) {
+    .cways__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .cways__note {
+      flex-grow: 0;
+    }
+  }
+</style>

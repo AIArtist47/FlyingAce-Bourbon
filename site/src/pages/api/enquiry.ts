@@ -1,9 +1,15 @@
 import type { APIRoute } from 'astro';
-import { enquiry, enquiryFields } from '../../data/events';
+import { enquiry } from '../../data/events';
+import { forms, isFormKind, type FormKind, type FormSpec } from '../../data/forms';
 
 /**
- * Takes an inquiry from the form on /host-your-event and /weddings and sends
- * it to the farm, rather than handing the visitor's own mail app a draft.
+ * Takes whatever the forms on this site collect and sends it to the farm,
+ * rather than handing the visitor's own mail app a draft.
+ *
+ * One endpoint for all of them. The posted `page` names which form it was,
+ * and that entry in the form registry supplies the questions to read back,
+ * the subject line and the page to credit. An unknown `page` falls back to
+ * the event inquiry rather than failing, so a stale cached form still sends.
  *
  * This is the only part of the site that is not built ahead of time. It runs
  * as a single Vercel function; everything else is still static HTML.
@@ -40,19 +46,19 @@ const clean = (value: unknown, max: number): string =>
 /** A subject is a header. Anything that could break it out gets flattened. */
 const oneLine = (value: string): string => value.replace(/[\r\n]+/g, ' ').trim();
 
-function compose(answers: Answers) {
+function compose(answers: Answers, spec: FormSpec) {
   const lines: string[] = [];
 
-  for (const field of enquiryFields) {
+  for (const field of spec.fields) {
     const value = answers[field.id];
     if (value) lines.push(`${field.label}: ${value}`);
   }
 
-  if (answers.notes) lines.push('', 'Anything else:', answers.notes);
+  if (answers.notes) lines.push('', `${spec.notes.label}:`, answers.notes);
 
-  /* Which page it was sent from. With one inbox this is the only thing left
-     that separates a wedding inquiry from any other, so it stays. */
-  lines.push('', `Sent from the inquiry form on flyingacefarm.com/${answers.page === 'weddings' ? 'weddings' : 'host-your-event'}`);
+  /* Which form it was. With one inbox this is the only thing that separates
+     a job application from a wedding, so it stays. */
+  lines.push('', `Sent from the form on flyingacefarm.com${spec.path}`);
 
   return lines.join('\n');
 }
@@ -113,7 +119,7 @@ async function sendOverResend(key: string, message: Message): Promise<boolean> {
   return true;
 }
 
-async function send(answers: Answers): Promise<{ ok: boolean; to: string }> {
+async function send(answers: Answers, spec: FormSpec): Promise<{ ok: boolean; to: string }> {
   const to = enquiry.events;
 
   const message: Message = {
@@ -122,10 +128,10 @@ async function send(answers: Answers): Promise<{ ok: boolean; to: string }> {
     /* So the farm can answer by pressing reply, rather than copying an address
        out of the body. */
     replyTo: answers.email,
-    subject: oneLine(`Event inquiry — ${oneLine(`${answers.first} ${answers.last}`.trim())}`),
+    subject: oneLine(`${spec.subject} — ${oneLine(`${answers.first} ${answers.last}`.trim())}`),
     /* Plain text on purpose: nothing a stranger typed is ever handed to an
        HTML renderer, so there is nothing to escape and nothing to get wrong. */
-    text: compose(answers),
+    text: compose(answers, spec),
   };
 
   /* Whichever set of credentials the deployment has. The mailbox comes first
@@ -166,8 +172,14 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     return reply(asJson, redirect, { ok: false, status: 400, error: 'That inquiry could not be read.' });
   }
 
-  const answers: Answers = { page: clean(raw.page, 20) === 'weddings' ? 'weddings' : 'events' };
-  for (const field of enquiryFields) answers[field.id] = clean(raw[field.id], MAX_FIELD);
+  /* An unrecognised `page` is treated as the event inquiry rather than
+     rejected: a form cached from an older deploy should still reach someone. */
+  const posted = clean(raw.page, 20);
+  const kind: FormKind = isFormKind(posted) ? posted : 'events';
+  const spec = forms[kind];
+
+  const answers: Answers = { page: kind };
+  for (const field of spec.fields) answers[field.id] = clean(raw[field.id], MAX_FIELD);
   answers.notes = clean(raw.notes, MAX_NOTES);
 
   /* The honeypot. It is off-screen and out of the tab order, so a person never
@@ -179,10 +191,16 @@ export const POST: APIRoute = async ({ request, redirect }) => {
 
   /* Checked again here, not only in the browser: the form's own validation is
      for the visitor's benefit and anything can post to this address. */
-  for (const field of enquiryFields) {
+  for (const field of spec.fields) {
     if (field.required && !answers[field.id]) {
       return reply(asJson, redirect, { ok: false, status: 400, error: `${field.label} is needed.` });
     }
+  }
+
+  /* The free-text box is required on some of these -- a bio, a message -- and
+     it is not in the field list, so it is checked on its own. */
+  if (spec.notes.required && !answers.notes) {
+    return reply(asJson, redirect, { ok: false, status: 400, error: `${spec.notes.label} is needed.` });
   }
 
   if (!EMAIL.test(answers.email)) {
@@ -191,7 +209,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
 
   let sent: { ok: boolean; to: string };
   try {
-    sent = await send(answers);
+    sent = await send(answers, spec);
   } catch (error) {
     console.error('[enquiry] send threw:', error);
     sent = { ok: false, to: enquiry.events };

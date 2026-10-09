@@ -1,0 +1,111 @@
+---
+import { roles, rolesNote } from '../data/connect';
+
+/**
+ * What the farm is hiring for.
+ *
+ * A list, not a set of job adverts: the farm's own application form names
+ * these five roles and says nothing else about any of them, so all this adds
+ * is which part of the farm each one works in. Writing duties or hours here
+ * would be this site inventing terms on the farm's behalf.
+ */
+---
+
+<section class="rol section section--pad">
+  <div class="wrap">
+    <p class="eyebrow" data-reveal="up">Open roles</p>
+    <h2 class="display rol__h2" data-reveal="up">Five ways in</h2>
+
+    <ol class="rol__list" role="list">
+      {
+        roles.map((r, i) => (
+          <li class="rol__row" data-reveal="up" data-stagger={Math.min(i, 3)}>
+            <span class="rol__no" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="display rol__title">{r.title}</h3>
+            <span class="rol__where">{r.where}</span>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p class="rol__note" data-reveal="up">{rolesNote}</p>
+  </div>
+</section>
+
+<style>
+  .rol {
+    background: var(--cream);
+  }
+
+  .rol__h2 {
+    font-size: var(--t-h2-sm);
+    margin: var(--gap-eyebrow) 0 0;
+  }
+
+  .rol__list {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+  }
+
+  /* A rule between rows, and one over the first. Not a box each: five boxes
+     in a column is a form, and this is a list of five short things. */
+  .rol__row {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr auto;
+    align-items: baseline;
+    gap: 1.25rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .rol__row:last-child {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .rol__no {
+    font-family: var(--font-display);
+    font-size: var(--t-14);
+    font-weight: 700;
+    letter-spacing: var(--ls-label);
+    line-height: var(--lh-label);
+    color: var(--accent);
+  }
+
+  .rol__title {
+    margin: 0;
+    font-size: var(--t-28);
+    line-height: var(--lh-card);
+    min-width: 0;
+  }
+
+  .rol__where {
+    font-family: var(--font-sub);
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-body);
+    color: var(--muted);
+    text-align: right;
+  }
+
+  .rol__note {
+    margin: 1.75rem 0 0;
+    font-family: var(--font-sub);
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-body);
+    color: var(--muted);
+    max-width: 48ch;
+  }
+
+  @media (max-width: 40rem) {
+    .rol__row {
+      grid-template-columns: 2.5rem 1fr;
+      gap: 0.5rem 1rem;
+    }
+
+    /* The room drops under the title rather than squeezing beside it. */
+    .rol__where {
+      grid-column: 2;
+      text-align: left;
+    }
+  }
+</style>

@@ -1,0 +1,99 @@
+---
+import { site } from '../data/site';
+import { enquiry } from '../data/events';
+
+/**
+ * The three direct lines, in the hero beside the heading.
+ *
+ * Somebody on a contact page usually wants one of these rather than a form,
+ * so they sit in the first viewport instead of under it.
+ */
+---
+
+<div class="ccard">
+  <p class="ccard__kicker kicker">Reach us</p>
+
+  <dl class="ccard__list">
+    <div class="ccard__row">
+      <dt class="ccard__dt">Call</dt>
+      <dd><a class="ccard__a tap-box" href={site.phoneHref}>{site.phone}</a></dd>
+    </div>
+    <div class="ccard__row">
+      <dt class="ccard__dt">Email</dt>
+      <dd><a class="ccard__a tap-box" href={`mailto:${enquiry.events}`}>{enquiry.events}</a></dd>
+    </div>
+    <div class="ccard__row">
+      <dt class="ccard__dt">Find us</dt>
+      <dd class="ccard__addr">{site.street}<br />{site.cityState}</dd>
+    </div>
+  </dl>
+
+  <a class="btn btn--ghost-light btn--md ccard__go" href={site.directions} target="_blank" rel="noopener">
+    Get Directions
+  </a>
+</div>
+
+<style>
+  .ccard {
+    padding: 2rem;
+    background: rgba(24, 33, 44, 0.92);
+    border: 1px solid var(--rule-navy);
+  }
+
+  .ccard__kicker {
+    margin: 0 0 1.25rem;
+    color: var(--brass);
+  }
+
+  .ccard__list {
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .ccard__row {
+    display: grid;
+    gap: 0.125rem;
+  }
+
+  .ccard__dt {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps-wide);
+    text-transform: uppercase;
+    line-height: var(--lh-label);
+    color: var(--on-navy-3);
+  }
+
+  .ccard__row dd {
+    margin: 0;
+  }
+
+  .ccard__a {
+    font-size: var(--t-15);
+    font-weight: 600;
+    color: var(--cream);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.35s var(--ease);
+    /* The inbox is long enough to run off a 320px screen unbroken. */
+    overflow-wrap: anywhere;
+  }
+
+  .ccard__a:hover {
+    border-bottom-color: var(--brass);
+  }
+
+  .ccard__addr {
+    font-size: var(--t-15);
+    line-height: var(--lh-tight);
+    color: var(--on-navy);
+  }
+
+  .ccard__go {
+    margin-top: 1.5rem;
+    width: 100%;
+  }
+</style>

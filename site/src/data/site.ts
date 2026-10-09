@@ -224,10 +224,10 @@ export const exploreLinks = [
   { label: 'Visit & FAQ', href: '/visit' },
   { label: 'Calendar', href: '/calendar' },
   { label: 'Gift Cards', href: '/gift-cards' },
-  { label: 'Careers', href: 'https://flyingacefarm.com/apply-now/' },
-  { label: 'Live Music Inquiries', href: 'https://flyingacefarm.com/live-music-inquiries/' },
+  { label: 'Careers', href: '/careers' },
+  { label: 'Live Music Inquiries', href: '/live-music' },
   { label: 'Blog', href: '/blog' },
-  { label: 'Contact', href: 'https://flyingacefarm.com/contact-us/' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 /** `label` is no longer rendered; it names the mark for screen readers. */

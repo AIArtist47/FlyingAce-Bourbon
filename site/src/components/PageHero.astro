@@ -1,0 +1,120 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  lede: string;
+  /** Anchor for the page's own call to action, where it has one. */
+  cta?: { text: string; href: string };
+}
+
+const { eyebrow, title, lede, cta } = Astro.props;
+
+/**
+ * The hero for the pages that have no photograph of their own.
+ *
+ * Careers, contact and live music are all somebody arriving with a question
+ * rather than browsing, and there is no picture of "a job" worth putting
+ * behind them. So this is the same navy band the photographed heroes stand
+ * in, built out of type alone, with an optional panel beside it for whatever
+ * that page wants within reach -- a phone number, a booking notice.
+ */
+---
+
+<section class="phero on-navy" id="top">
+  <div class="phero__inner wrap">
+    <div class="phero__copy">
+      <p class="eyebrow eyebrow--brass" data-reveal="up">{eyebrow}</p>
+      <h1 class="display phero__title" data-reveal="up">{title}</h1>
+      <p class="phero__lede" data-reveal="up">{lede}</p>
+
+      {
+        cta && (
+          <div class="phero__cta" data-reveal="up">
+            <a class="btn btn--solid btn--lg" href={cta.href}>
+              {cta.text}
+            </a>
+          </div>
+        )
+      }
+    </div>
+
+    {/* Only drawn when the page fills it. */}
+    <div class="phero__aside" data-reveal="up">
+      <slot name="aside" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .phero {
+    background: var(--navy);
+    color: var(--cream);
+    /* Shorter than the photographed heroes: there is no picture to give room
+       to, and 30rem of navy behind three lines of type is an empty room. */
+    min-height: 24rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .phero__inner {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    padding-block: var(--sec-y);
+  }
+
+  .phero__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    flex: 1 1 32rem;
+    max-width: 42rem;
+    min-width: 0;
+  }
+
+  .phero__title {
+    font-size: var(--t-hero-sm);
+    line-height: var(--lh-hero);
+    color: var(--cream);
+  }
+
+  .phero__lede {
+    font-size: var(--t-hero-lede);
+    line-height: var(--lh-body);
+    color: var(--on-navy);
+    max-width: 36rem;
+  }
+
+  .phero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Collapses to nothing when the slot is empty, so a page that passes no
+     aside gets a single full-width column rather than a 20rem hole. */
+  .phero__aside:not(:has(*)) {
+    display: none;
+  }
+
+  .phero__aside {
+    flex: 0 1 21rem;
+    min-width: 0;
+  }
+
+  @media (max-width: 60rem) {
+    .phero__inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 2.5rem;
+    }
+
+    .phero__copy,
+    .phero__aside {
+      flex: 0 0 auto;
+      max-width: none;
+    }
+  }
+</style>

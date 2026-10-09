@@ -84,8 +84,8 @@ export const faqs: Faq[] = [
     a: 'Yes — live music every Friday, Saturday and Sunday. To play here, fill in the inquiry form.',
     link: {
       text: 'Live music inquiries',
-      href: 'https://flyingacefarm.com/live-music-inquiries/',
-      external: true,
+      href: '/live-music',
+      external: false,
     },
   },
   {

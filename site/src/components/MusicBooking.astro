@@ -1,0 +1,126 @@
+---
+import { musicStatus as s, musicWants } from '../data/connect';
+
+/**
+ * Where the booking year stands, said before the form rather than after it.
+ *
+ * This is the farm's own lead on the page it replaces, and it is the one
+ * thing an artist most needs: without it they fill in a form expecting an
+ * answer that is months away. It gets a panel of its own, above everything
+ * else, rather than a line of small print under the send button.
+ */
+---
+
+<section class="mbk section section--pad">
+  <div class="wrap">
+    <aside class="mbk__notice" data-reveal="up" aria-labelledby="mbk-status">
+      <p class="kicker mbk__kicker">{s.kicker}</p>
+      <h2 class="display mbk__h2" id="mbk-status">{s.title}</h2>
+      <p class="mbk__body">{s.body}</p>
+      <p class="mbk__note">{s.note}</p>
+    </aside>
+
+    <dl class="mbk__wants">
+      {
+        musicWants.map((w, i) => (
+          <div class="mbk__want" data-reveal="up" data-stagger={i}>
+            <dt class="mbk__term">{w.term}</dt>
+            <dd class="mbk__def">{w.def}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <p class="mbk__see" data-reveal="up">
+      <a class="arrow-link" href="/calendar">See who is playing this season <span class="arrow-link__ico">&#8594;</span></a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .mbk {
+    background: var(--paper);
+  }
+
+  /* The notice carries the farm's red down its edge rather than across its
+     whole face: this is important, not an emergency. */
+  .mbk__notice {
+    background: var(--sand);
+    border-left: 4px solid var(--accent);
+    padding: 1.75rem 2rem 2rem;
+    max-width: 46rem;
+  }
+
+  .mbk__kicker {
+    margin: 0;
+    color: var(--accent);
+  }
+
+  .mbk__h2 {
+    margin: var(--gap-eyebrow) 0 0;
+    font-size: var(--t-34);
+    line-height: var(--lh-card);
+  }
+
+  .mbk__body {
+    margin: 0.875rem 0 0;
+    font-size: var(--t-body);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+  }
+
+  .mbk__note {
+    margin: 0.75rem 0 0;
+    font-family: var(--font-sub);
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-body);
+    color: var(--muted);
+  }
+
+  .mbk__wants {
+    margin: 2.5rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.75rem;
+  }
+
+  .mbk__want {
+    min-width: 0;
+    padding-top: 1.25rem;
+    border-top: 2px solid var(--ink);
+  }
+
+  .mbk__term {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--t-22);
+    font-weight: 700;
+    letter-spacing: var(--ls-caps-sm);
+    text-transform: uppercase;
+    line-height: var(--lh-card);
+    color: var(--ink);
+  }
+
+  .mbk__def {
+    margin: 0.5rem 0 0;
+    font-family: var(--font-sub);
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-body);
+    color: var(--muted);
+  }
+
+  .mbk__see {
+    margin: 2rem 0 0;
+  }
+
+  @media (max-width: 52rem) {
+    .mbk__wants {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.25rem;
+    }
+
+    .mbk__notice {
+      padding: 1.5rem 1.5rem 1.75rem;
+    }
+  }
+</style>
