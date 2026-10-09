@@ -1,0 +1,158 @@
+---
+import { amounts, amountNote, buyHref } from '../data/gift';
+
+/**
+ * What the card costs.
+ *
+ * A price list, not a set of buttons. Toast takes the amount on its own page
+ * and there is no address that arrives there with one already chosen, so a
+ * tile that looked clickable would be a promise the checkout cannot keep.
+ */
+---
+
+<section class="gamt section section--pad">
+  <div class="wrap">
+    <p class="eyebrow" data-reveal="up">Choose an amount</p>
+    <h2 class="display gamt__h2" data-reveal="up">Twenty five to two hundred</h2>
+
+    <ul class="gamt__row" role="list" data-reveal="up">
+      {
+        amounts.map((a) => (
+          <li class="gamt__cell">
+            <span class="gamt__sign">$</span>
+            <span class="gamt__num">{a}</span>
+          </li>
+        ))
+      }
+      <li class="gamt__cell gamt__cell--open">
+        <span class="gamt__num gamt__num--word">Any</span>
+      </li>
+    </ul>
+
+    <div class="gamt__foot" data-reveal="up">
+      <p class="gamt__note">{amountNote}</p>
+      <a class="btn btn--solid btn--md" href={buyHref} target="_blank" rel="noopener">
+        Buy a Gift Card
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .gamt {
+    background: var(--paper);
+  }
+
+  .gamt__h2 {
+    font-size: var(--t-h2-sm);
+    margin: var(--gap-eyebrow) 0 0;
+  }
+
+  .gamt__row {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    border: 1px solid var(--rule);
+    background: var(--cream);
+  }
+
+  .gamt__cell {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.125rem;
+    padding: 1.75rem 0.75rem;
+    min-width: 0;
+  }
+
+  /* One rule between cells rather than a border on each, so the seams do not
+     double up where two cells meet. */
+  .gamt__cell + .gamt__cell {
+    border-left: 1px solid var(--rule);
+  }
+
+  .gamt__cell--open {
+    background: var(--sand);
+  }
+
+  .gamt__sign {
+    font-family: var(--font-display);
+    font-size: var(--t-22);
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .gamt__num {
+    font-family: var(--font-display);
+    font-size: var(--t-44);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    line-height: var(--lh-card);
+    color: var(--ink);
+  }
+
+  .gamt__num--word {
+    /* "Any" is a word among numerals: the same weight would shout. */
+    font-size: var(--t-32);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: var(--ls-display);
+    color: var(--muted);
+  }
+
+  .gamt__foot {
+    margin-top: 1.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+
+  .gamt__note {
+    margin: 0;
+    font-family: var(--font-sub);
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-body);
+    color: var(--muted);
+    max-width: 38ch;
+  }
+
+  /* Five across stops working well before the layout does: at 48rem each cell
+     is 90px and the numerals start to touch their rules. */
+  @media (max-width: 52rem) {
+    .gamt__row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .gamt__cell + .gamt__cell {
+      border-left: 0;
+    }
+
+    .gamt__cell:nth-child(odd) {
+      border-right: 1px solid var(--rule);
+    }
+
+    .gamt__cell:nth-child(n + 3) {
+      border-top: 1px solid var(--rule);
+    }
+
+    /* Five is odd, so the open cell takes the last row on its own. */
+    .gamt__cell--open {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .gamt__foot {
+      align-items: stretch;
+    }
+
+    .gamt__foot > .btn {
+      width: 100%;
+    }
+  }
+</style>

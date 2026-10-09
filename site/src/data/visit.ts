@@ -101,7 +101,7 @@ export const faqs: Faq[] = [
   {
     q: 'Do you offer gift cards?',
     a: 'Yes, gift cards are available to buy online.',
-    link: { text: 'Buy a gift card', href: 'https://flyingacefarm.com/gift-cards/', external: true },
+    link: { text: 'Buy a gift card', href: '/gift-cards', external: false },
   },
   {
     q: 'Is the disc golf course open to the public?',

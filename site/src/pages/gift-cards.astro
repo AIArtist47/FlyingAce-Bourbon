@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import GiftHero from '../components/GiftHero.astro';
+import GiftAmounts from '../components/GiftAmounts.astro';
+import GiftGoodFor from '../components/GiftGoodFor.astro';
+import GiftDelivery from '../components/GiftDelivery.astro';
+import GiftBalance from '../components/GiftBalance.astro';
+import Footer from '../components/Footer.astro';
+
+/* The slug the farm's own gift card page has always had, so the links that
+   already point at it from elsewhere keep working. */
+---
+
+<Base
+  title="Gift Cards — Flying Ace Farm | Lovettsville, VA"
+  description="A Flying Ace Farm gift card is good at the restaurant, the brewery, the distillery tasting room and the ABC store. Twenty five to two hundred dollars or any amount, sent by email or text, today or on a date you choose."
+>
+  <Header />
+
+  <main id="main">
+    <GiftHero />
+    <GiftAmounts />
+    <GiftGoodFor />
+    <GiftDelivery />
+    <GiftBalance />
+  </main>
+
+  <Footer />
+</Base>

@@ -1,0 +1,131 @@
+---
+import { goodToKnow, buyHref, balanceHref } from '../data/gift';
+
+/**
+ * The last band: the handful of things worth knowing, and the two addresses
+ * a visitor could still want -- buy another, or find out what is left on one
+ * they were given.
+ */
+---
+
+<section class="gbal on-navy">
+  <div class="wrap gbal__inner">
+    <div class="gbal__copy">
+      <p class="eyebrow eyebrow--brass" data-reveal="up">Good to know</p>
+      <h2 class="display gbal__h2" data-reveal="up">Before you buy</h2>
+
+      <ul class="gbal__list" role="list">
+        {
+          goodToKnow.map((g, i) => (
+            <li class="gbal__item" data-reveal="up" data-stagger={i}>
+              {g}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="gbal__cta" data-reveal="up">
+      <a class="btn btn--solid btn--lg gbal__buy" href={buyHref} target="_blank" rel="noopener">
+        Buy a Gift Card
+      </a>
+      <a
+        class="btn btn--ghost-light btn--lg gbal__check"
+        href={balanceHref}
+        target="_blank"
+        rel="noopener"
+      >
+        Check a Balance
+      </a>
+      <p class="gbal__by">Both open on Toast, who run the farm&rsquo;s tills.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .gbal {
+    background: var(--navy);
+    color: var(--cream);
+  }
+
+  .gbal__inner {
+    display: flex;
+    gap: 4rem;
+    align-items: flex-start;
+    padding-block: var(--sec-y);
+  }
+
+  .gbal__copy {
+    flex: 1 1 32rem;
+    min-width: 0;
+  }
+
+  .gbal__h2 {
+    font-size: var(--t-h2-sm);
+    margin: var(--gap-eyebrow) 0 0;
+    color: var(--cream);
+  }
+
+  .gbal__list {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    max-width: 46rem;
+  }
+
+  .gbal__item {
+    font-family: var(--font-sub);
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-body);
+    color: var(--on-navy);
+    padding: 1rem 0;
+    border-top: 1px solid var(--rule-navy);
+  }
+
+  .gbal__item:last-child {
+    border-bottom: 1px solid var(--rule-navy);
+  }
+
+  .gbal__cta {
+    flex: 0 1 18rem;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    /* Level with the heading rather than the eyebrow above it. */
+    margin-top: 2.25rem;
+  }
+
+  .gbal__buy,
+  .gbal__check {
+    width: 100%;
+  }
+
+  .gbal__by {
+    margin: 0.25rem 0 0;
+    font-family: var(--font-sub);
+    font-size: var(--t-13);
+    line-height: var(--lh-body);
+    color: var(--on-navy-3);
+  }
+
+  @media (max-width: 60rem) {
+    .gbal__inner {
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .gbal__copy,
+    .gbal__cta {
+      flex: 0 0 auto;
+      width: 100%;
+      max-width: none;
+    }
+
+    .gbal__cta {
+      margin-top: 0;
+    }
+  }
+</style>

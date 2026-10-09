@@ -1,0 +1,178 @@
+---
+import { giftHero as h, buyHref, amounts } from '../data/gift';
+
+/**
+ * The gift card, shown rather than described.
+ *
+ * Two cards: the one being given, and the one behind it. The farm's own
+ * artwork from the Toast form sits on a cream face, which is the only way it
+ * reads on a navy band -- the file is black ink, and black on navy is nothing.
+ */
+const low = amounts[0];
+const high = amounts[amounts.length - 1];
+---
+
+<section class="ghero on-navy" id="top">
+  <div class="ghero__inner wrap">
+    <div class="ghero__copy">
+      <p class="eyebrow eyebrow--brass" data-reveal="up">{h.eyebrow}</p>
+      <h1 class="display ghero__title" data-reveal="up">{h.title}</h1>
+      <p class="ghero__lede" data-reveal="up">{h.lede}</p>
+
+      <div class="ghero__cta" data-reveal="up">
+        <a class="btn btn--solid btn--lg" href={buyHref} target="_blank" rel="noopener">
+          Buy a Gift Card
+        </a>
+        <a class="btn btn--ghost-light btn--lg" href="#arrives">How it arrives</a>
+      </div>
+    </div>
+
+    {/* Decorative: the wordmark repeats the farm's name, which the h1 band
+        already carries, so it is not announced twice. */}
+    <div class="ghero__stack" data-reveal="up" aria-hidden="true">
+      <div class="gcard gcard--back"></div>
+      <div class="gcard gcard--front">
+        <img class="gcard__mark" src={h.mark} alt={h.markAlt} width="581" height="267" />
+        <p class="gcard__range">${low} &ndash; ${high}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ghero {
+    background: var(--navy);
+    color: var(--cream);
+    /* The floor every other page hero stands on. */
+    min-height: 30rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .ghero__inner {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    padding-block: var(--sec-y);
+  }
+
+  .ghero__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    flex: 1 1 30rem;
+    max-width: 40rem;
+    min-width: 0;
+  }
+
+  .ghero__title {
+    font-size: var(--t-hero-sm);
+    line-height: var(--lh-hero);
+    color: var(--cream);
+  }
+
+  .ghero__lede {
+    font-size: var(--t-hero-lede);
+    line-height: var(--lh-body);
+    color: var(--on-navy);
+    max-width: 34rem;
+  }
+
+  .ghero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    margin-top: 0.5rem;
+  }
+
+  /* --- The card ------------------------------------------------------- */
+
+  .ghero__stack {
+    position: relative;
+    flex: 0 1 25rem;
+    min-width: 0;
+    /* The back card leans out of the box on both sides. */
+    padding: 1.25rem 0;
+  }
+
+  .gcard {
+    /* A card is a card: the ISO ratio, not a square or a guess. */
+    aspect-ratio: 1.586 / 1;
+    width: 100%;
+  }
+
+  .gcard--back {
+    position: absolute;
+    inset: 1.25rem 0;
+    background: var(--sand);
+    transform: rotate(-5deg);
+    /* Tinted to the band it sits on rather than black, so the lean reads as
+       depth instead of a drop shadow stuck to a flat colour. */
+    box-shadow: 0 1.25rem 2.5rem rgba(9, 13, 19, 0.45);
+  }
+
+  .gcard--front {
+    position: relative;
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    padding: 2rem 2.25rem;
+    box-shadow: 0 1.5rem 3rem rgba(9, 13, 19, 0.5);
+  }
+
+  /* The hairline a printed card carries, inset from the trim. */
+  .gcard--front::after {
+    content: '';
+    position: absolute;
+    inset: 0.625rem;
+    border: 1px solid var(--brass);
+    pointer-events: none;
+  }
+
+  .gcard__mark {
+    width: min(100%, 15.5rem);
+    height: auto;
+  }
+
+  .gcard__range {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--t-14);
+    font-weight: 600;
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+    line-height: var(--lh-label);
+    color: var(--muted);
+  }
+
+  @media (max-width: 60rem) {
+    .ghero__inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 3rem;
+    }
+
+    .ghero__copy {
+      flex: 0 0 auto;
+      max-width: none;
+    }
+
+    .ghero__stack {
+      flex: 0 0 auto;
+      max-width: 24rem;
+      /* The lean needs room on the left that a stretched block does not give. */
+      margin-inline: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gcard--back {
+      transform: none;
+    }
+  }
+</style>

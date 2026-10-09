@@ -16,6 +16,8 @@ interface Props {
     | 'store'
     | 'flag'
     | 'gift'
+    | 'fork'
+    | 'beer'
     | 'menu'
     | 'close'
     | 'eye'
@@ -133,6 +135,28 @@ const {
       <>
         <rect x="3" y="8" width="18" height="4" />
         <path d="M5 12v9h14v-9M12 8v13M12 8c-2-4-6-4-6-1s6 1 6 1zm0 0c2-4 6-4 6-1s-6 1-6 1z" />
+      </>
+    )
+  }
+  {
+    /* The restaurant. A fork and a knife rather than a plate, because a plate
+       at 24px is a circle and reads as nothing. */
+    name === 'fork' && (
+      <>
+        <path d="M7 3v5a1.6 1.6 0 0 0 3.2 0V3" />
+        <path d="M8.6 9.6V21" />
+        <path d="M16.4 3c1.9 2.3 1.9 6.1 0 8.4V21" />
+      </>
+    )
+  }
+  {
+    /* The brewery. A tapered pint with a handle -- the silhouette survives
+       the size where a tulip glass does not. */
+    name === 'beer' && (
+      <>
+        <path d="M7 7h9l-1 13H8L7 7z" />
+        <path d="M16.2 9.6H18a2.2 2.2 0 0 1 0 4.4h-1.5" />
+        <path d="M7.4 11h8.3" />
       </>
     )
   }

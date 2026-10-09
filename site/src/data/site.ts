@@ -223,7 +223,7 @@ export const distilleryHours = [
 export const exploreLinks = [
   { label: 'Visit & FAQ', href: '/visit' },
   { label: 'Calendar', href: '/calendar' },
-  { label: 'Gift Cards', href: 'https://flyingacefarm.com/gift-cards/' },
+  { label: 'Gift Cards', href: '/gift-cards' },
   { label: 'Careers', href: 'https://flyingacefarm.com/apply-now/' },
   { label: 'Live Music Inquiries', href: 'https://flyingacefarm.com/live-music-inquiries/' },
   { label: 'Blog', href: '/blog' },

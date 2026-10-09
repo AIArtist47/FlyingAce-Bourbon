@@ -1,0 +1,83 @@
+---
+import Icon from './Icon.astro';
+import { goodFor } from '../data/gift';
+
+/**
+ * The four counters the card spends at. The reason to buy one here rather
+ * than anywhere else: it is not a restaurant card or a bottle card, it is
+ * the whole farm.
+ */
+---
+
+<section class="ggf section section--pad">
+  <div class="wrap">
+    <p class="eyebrow" data-reveal="up">Where it spends</p>
+    <h2 class="display ggf__h2" data-reveal="up">Four counters, one card</h2>
+
+    <ul class="ggf__grid grid-4" role="list">
+      {
+        goodFor.map((g, i) => (
+          <li class="ggf__tile" data-reveal="up" data-stagger={i}>
+            <Icon name={g.icon} size={34} width={1.4} />
+            <h3 class="display ggf__title">{g.title}</h3>
+            <p class="ggf__body">{g.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .ggf {
+    background: var(--cream);
+  }
+
+  .ggf__h2 {
+    font-size: var(--t-h2-sm);
+    margin: var(--gap-eyebrow) 0 0;
+  }
+
+  .ggf__grid {
+    list-style: none;
+    margin: 2.75rem 0 0;
+    padding: 0;
+  }
+
+  .ggf__tile {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1.75rem 0 0;
+    /* A rule over each tile rather than a box around it: four boxes in a row
+       is the shape this site uses for photographs, not for four short notes. */
+    border-top: 2px solid var(--ink);
+  }
+
+  .ggf__title {
+    margin: 0.25rem 0 0;
+    font-size: var(--t-26);
+    line-height: var(--lh-card);
+  }
+
+  .ggf__body {
+    margin: 0;
+    font-family: var(--font-sub);
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-body);
+    color: var(--muted);
+  }
+
+  @media (max-width: 60rem) {
+    .ggf__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .ggf__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

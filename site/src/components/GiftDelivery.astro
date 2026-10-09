@@ -1,0 +1,175 @@
+---
+import { delivery, timing } from '../data/gift';
+
+/**
+ * How the card reaches the person it is for.
+ *
+ * The three routes and the two send times are exactly the ones on the Toast
+ * form. A buyer who reads this page knows the shape of the checkout before
+ * they are in it, which is the whole job of a page that cannot take the
+ * payment itself.
+ */
+---
+
+<section class="gdel section section--pad" id="arrives">
+  <div class="wrap">
+    <p class="eyebrow" data-reveal="up">How it arrives</p>
+    <h2 class="display gdel__h2" data-reveal="up">Three ways to hand it over</h2>
+
+    <ol class="gdel__routes" role="list">
+      {
+        delivery.map((d, i) => (
+          <li class="gdel__route" data-reveal="up" data-stagger={i}>
+            <span class="gdel__no" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="display gdel__title">{d.title}</h3>
+            <p class="gdel__body">{d.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="gdel__foot grid-2">
+      <div data-reveal="up">
+        <p class="kicker gdel__kicker">When it goes</p>
+        <dl class="gdel__when">
+          {
+            timing.map((t) => (
+              <div class="gdel__wrow">
+                <dt>{t.term}</dt>
+                <dd>{t.def}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+
+      <div data-reveal="up" data-stagger="1">
+        <p class="kicker gdel__kicker">A note from you</p>
+        <p class="gdel__note">
+          The form has a space to write something before it sends. It goes out with the card, so
+          the person opening it knows who it came from and what it is for.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .gdel {
+    background: var(--paper);
+  }
+
+  .gdel__h2 {
+    font-size: var(--t-h2-sm);
+    margin: var(--gap-eyebrow) 0 0;
+  }
+
+  .gdel__routes {
+    list-style: none;
+    margin: 2.75rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
+
+  .gdel__route {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 1.5rem 1.75rem 1.75rem;
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    min-width: 0;
+  }
+
+  .gdel__no {
+    font-family: var(--font-display);
+    font-size: var(--t-14);
+    font-weight: 700;
+    letter-spacing: var(--ls-label);
+    line-height: var(--lh-label);
+    color: var(--accent);
+  }
+
+  .gdel__title {
+    margin: 0.25rem 0 0;
+    font-size: var(--t-28);
+    line-height: var(--lh-card);
+  }
+
+  .gdel__body {
+    margin: 0;
+    font-family: var(--font-sub);
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-body);
+    color: var(--muted);
+  }
+
+  .gdel__foot {
+    margin-top: 2.5rem;
+    padding-top: 2.25rem;
+    border-top: 1px solid var(--rule);
+    align-items: start;
+  }
+
+  .gdel__kicker {
+    margin: 0 0 0.875rem;
+    color: var(--accent);
+  }
+
+  .gdel__when {
+    margin: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .gdel__wrow {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 0.75rem;
+    align-items: baseline;
+  }
+
+  .gdel__wrow dt {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--t-15);
+    font-weight: 700;
+    letter-spacing: var(--ls-caps-sm);
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .gdel__wrow dd {
+    margin: 0;
+    font-family: var(--font-sub);
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-body);
+    color: var(--muted);
+  }
+
+  .gdel__note {
+    margin: 0;
+    font-family: var(--font-sub);
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-body);
+    color: var(--muted);
+    max-width: 44ch;
+  }
+
+  @media (max-width: 60rem) {
+    .gdel__routes {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1rem;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .gdel__wrow {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.125rem;
+    }
+  }
+</style>
