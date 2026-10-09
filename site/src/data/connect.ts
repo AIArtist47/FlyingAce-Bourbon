@@ -86,10 +86,13 @@ export const musicHero = {
   lede: 'Live music every Friday, Saturday and Sunday, out on the lawn with Furnace Mountain behind you.',
 };
 
+/* What the farm's own page actually states, and no more. The set length and
+   the paragraph about pay were both ours: neither appears anywhere on
+   live-music-inquiries, and an artist reading a promise the farm has not
+   made is worse off than one who has to ask. */
 export const musicWants = [
   { term: 'What we book', def: 'Acoustic solo, duo and trio acts. No drums.' },
-  { term: 'When', def: 'Friday, Saturday and Sunday afternoons, three hours a set.' },
-  { term: 'What it pays', def: 'Discussed when we get in touch. Shows are free for guests to attend.' },
+  { term: 'When', def: 'Friday, Saturday and Sunday afternoons.' },
 ] as const;
 
 /**

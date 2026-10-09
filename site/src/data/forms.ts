@@ -219,6 +219,22 @@ export const forms: Record<FormKind, FormSpec> = {
       { id: 'genre', label: 'Genre', type: 'text', required: false },
       { id: 'website', label: 'Website', type: 'url', required: false },
       { id: 'social', label: 'Facebook or Instagram', type: 'url', required: false },
+      {
+        /* Last of the fields, so it sits directly above the bio, which is
+           where the farm's own form has it. */
+        id: 'photo',
+        label: 'Band photo',
+        type: 'file',
+        required: false,
+        wide: true,
+        /* A photo, so only pictures. HEIC because a phone shooting one today
+           most likely produces one. */
+        accept: '.jpg,.jpeg,.png,.webp,.heic,.heif,image/*',
+        /* The same 4 MB the resume takes, and for the same reason: a Vercel
+           function refuses a body over 4.5 MB before our code sees it. */
+        maxBytes: 4 * 1024 * 1024,
+        hint: 'JPG, PNG or HEIC, up to 4 MB. Optional.',
+      },
     ],
     /* Just 'Bio', the word the farm's own form uses: the label is read back
        in the error line, and a label with a dash in it does not survive that. */

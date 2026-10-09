@@ -77,10 +77,15 @@ import { musicStatus as s, musicWants } from '../data/connect';
     color: var(--muted);
   }
 
+  /* As many columns as there are cards, rather than three named here: at a
+     hard three the pair left after the pay card went sat in two thirds of
+     the row with a hole where the third had been. auto-fit collapses the
+     tracks nothing is in, so two share the width and a third returning
+     needs no change. */
   .mbk__wants {
     margin: 2.5rem 0 0;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
     gap: 1.75rem;
   }
 

@@ -84,7 +84,7 @@ function sameOrigin(request: Request): boolean {
 type Answers = Record<string, string>;
 
 /** A file someone chose, once it has been measured and read. */
-type Attachment = { filename: string; bytes: Uint8Array };
+type Attachment = { filename: string; bytes: Uint8Array; label: string };
 
 const clean = (value: unknown, max: number): string =>
   typeof value === 'string' ? value.trim().slice(0, max) : '';
@@ -130,7 +130,15 @@ async function readUpload(
       return { error: `${field.label} should be ${allowed.join(', ')}.` };
     }
 
-    return { file: { filename, bytes: new Uint8Array(await picked.arrayBuffer()) } };
+    return {
+      file: {
+        filename,
+        bytes: new Uint8Array(await picked.arrayBuffer()),
+        /* Carried so the message names what was sent -- a resume on one form,
+           a band photo on another -- rather than whichever came first. */
+        label: field.label,
+      },
+    };
   }
 
   return {};
@@ -147,7 +155,7 @@ function compose(answers: Answers, spec: FormSpec, file?: Attachment) {
     if (value) lines.push(`${field.label}: ${value}`);
   }
 
-  if (file) lines.push(`Resume: ${file.filename}, attached`);
+  if (file) lines.push(`${file.label}: ${file.filename}, attached`);
 
   if (answers.notes) lines.push('', `${spec.notes.label}:`, answers.notes);
 
