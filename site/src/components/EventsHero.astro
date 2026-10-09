@@ -1,7 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import PhotoCarousel from './PhotoCarousel.astro';
-import { eventsHero as h, eventFacts } from '../data/events';
+import { eventsHero as h, eventFacts, galleryLeft, galleryRight } from '../data/events';
 ---
 
 <section class="ehero on-navy" id="top">
@@ -17,7 +17,7 @@ import { eventsHero as h, eventFacts } from '../data/events';
     </div>
 
     <div class="ehero__media" data-reveal="up">
-      <PhotoCarousel />
+      <PhotoCarousel left={galleryLeft} right={galleryRight} />
     </div>
   </div>
 

@@ -1,0 +1,107 @@
+---
+import PhotoCarousel from './PhotoCarousel.astro';
+import { cocktailsHero as h, carouselLeft, carouselRight } from '../data/cocktails';
+
+/**
+ * The same band the events page opens with: copy on the left, two columns of
+ * photographs drifting past each other on the right.
+ *
+ * The carousel is that component, handed a different set and a different
+ * shape. These files are natively 3:4 where the events tiles are 352:424, so
+ * the proportion is passed in rather than cropped to -- and with it the tile's
+ * rendered height, which is what keeps both pages drifting at the same
+ * 20.6 px/s. The media column caps at 42rem; less the 8px gap and halved,
+ * each column is 332px, and at 3:4 that puts a tile at 443.
+ */
+---
+
+<section class="chero on-navy" id="top">
+  <div class="chero__inner wrap">
+    <div class="chero__copy">
+      <p class="eyebrow eyebrow--brass" data-reveal="up">{h.eyebrow}</p>
+      <h1 class="display chero__title" data-reveal="up">{h.title}</h1>
+      <p class="chero__lede" data-reveal="up">{h.lede}</p>
+      <div class="chero__cta" data-reveal="up">
+        <a class="btn btn--solid btn--lg" href="#now">See the List</a>
+        <a class="btn btn--ghost-light btn--lg" href="#before">Poured Before</a>
+      </div>
+    </div>
+
+    <div class="chero__media" data-reveal="up">
+      <PhotoCarousel
+        left={carouselLeft}
+        right={carouselRight}
+        ratio="3 / 4"
+        tileH={443}
+        w={800}
+        h={1067}
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .chero {
+    background: var(--navy);
+    color: var(--cream);
+  }
+
+  .chero__inner {
+    min-height: 30rem;
+    display: flex;
+    align-items: center;
+    gap: 3.5rem;
+    padding-block: var(--sec-y);
+  }
+
+  .chero__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    flex: 1 1 28rem;
+    max-width: 40rem;
+    min-width: 0;
+  }
+
+  .chero__title {
+    font-size: var(--t-hero-sm);
+    line-height: var(--lh-hero);
+    color: var(--cream);
+  }
+
+  .chero__lede {
+    font-size: var(--t-hero-lede);
+    line-height: var(--lh-body);
+    color: var(--on-navy);
+    max-width: 34rem;
+  }
+
+  .chero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Holds the carousel, which sets its own height. */
+  .chero__media {
+    flex: 1 1 36rem;
+    max-width: 42rem;
+    min-width: 0;
+  }
+
+  @media (max-width: 68.75rem) {
+    .chero__inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 2.5rem;
+    }
+
+    .chero__copy,
+    .chero__media {
+      flex: 0 0 auto;
+      max-width: none;
+      width: 100%;
+    }
+  }
+</style>

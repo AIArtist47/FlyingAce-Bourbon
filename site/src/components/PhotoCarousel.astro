@@ -1,5 +1,31 @@
 ---
-import { galleryLeft, galleryRight } from '../data/events';
+export interface Shot {
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  /** The two columns. One drifts up, the other down. */
+  left: readonly Shot[];
+  right: readonly Shot[];
+  /** The tile's own proportion, so nothing is cropped to fit the frame. */
+  ratio?: string;
+  /** What a tile actually measures on screen. The loop duration is worked
+      out from it, so a different shape stays at the same speed. */
+  tileH?: number;
+  /** The intrinsic size of the files, for the img attributes. */
+  w?: number;
+  h?: number;
+}
+
+const {
+  left,
+  right,
+  ratio = '352 / 424',
+  tileH = 400,
+  w = 352,
+  h = 424,
+} = Astro.props;
 
 /**
  * Two columns of photographs drifting past each other, one up, one down.
@@ -20,14 +46,14 @@ import { galleryLeft, galleryRight } from '../data/events';
  */
 const SPEED = 20.6; // px per second, measured off the original
 
-/* The tile as this page actually renders it, not as the original renders it.
-   The hero's media column caps at 42rem; less the 8px gap and halved, each
-   column is 332px, and at the original's 352:424 that makes the tile 400 tall.
-   Sizing the constant off their 424 left the loop running 6% slow. */
-const TILE = 400;
+/* The tile as the page actually renders it, not as the original renders it.
+   A hero's media column caps at 42rem; less the 8px gap and halved, each
+   column is 332px, and at the original's 352:424 that makes the tile 400
+   tall. Sizing the constant off their 424 left the loop running 6% slow.
+   Callers with a different shape pass their own rendered height. */
 const GAP = 8;
 
-const dur = (count: number) => Math.round((count * (TILE + GAP)) / SPEED);
+const dur = (count: number) => Math.round((count * (tileH + GAP)) / SPEED);
 
 /* The frame shows roughly the first two tiles of each column straight away.
    Lazy-loading those delays the hero's largest paint for no saving, so only
@@ -38,19 +64,19 @@ const eager = (copy: number, i: number) =>
     : { loading: 'lazy' as const };
 ---
 
-<div class="vcar" data-carousel>
-  <div class="vcar__col" style={`--dur:${dur(galleryLeft.length)}s`}>
+<div class="vcar" data-carousel style={`--tile-ratio:${ratio}`}>
+  <div class="vcar__col" style={`--dur:${dur(left.length)}s`}>
     <div class="vcar__track vcar__track--up">
       {
         [0, 1].map((copy) =>
-          galleryLeft.map((s, i) => (
+          left.map((s, i) => (
             <figure class="vcar__tile" aria-hidden={copy === 1 ? 'true' : undefined}>
               <img
                 class="vcar__img"
                 src={s.src}
                 alt={copy === 1 ? '' : s.alt}
-                width="352"
-                height="424"
+                width={w}
+                height={h}
                 {...eager(copy, i)}
                 decoding="async"
               />
@@ -61,18 +87,18 @@ const eager = (copy: number, i: number) =>
     </div>
   </div>
 
-  <div class="vcar__col" style={`--dur:${dur(galleryRight.length)}s`}>
+  <div class="vcar__col" style={`--dur:${dur(right.length)}s`}>
     <div class="vcar__track vcar__track--down">
       {
         [0, 1].map((copy) =>
-          galleryRight.map((s, i) => (
+          right.map((s, i) => (
             <figure class="vcar__tile" aria-hidden={copy === 1 ? 'true' : undefined}>
               <img
                 class="vcar__img"
                 src={s.src}
                 alt={copy === 1 ? '' : s.alt}
-                width="352"
-                height="424"
+                width={w}
+                height={h}
                 {...eager(copy, i)}
                 decoding="async"
               />
@@ -112,7 +138,7 @@ const eager = (copy: number, i: number) =>
   .vcar__tile {
     margin: 0 0 8px;
     flex: none;
-    aspect-ratio: 352 / 424;
+    aspect-ratio: var(--tile-ratio, 352 / 424);
     overflow: hidden;
     border-radius: 6px;
     background: var(--rule-navy);

@@ -183,3 +183,17 @@ export const standby: readonly Cocktail[] = [
 
 /** Where a current cocktail’s photograph lives. */
 export const shot = (slug: string) => `/images/cocktails/${slug}.webp`;
+
+/**
+ * The two columns the hero carousel drifts past each other.
+ *
+ * Split even and odd rather than first-half / second-half, so neither column
+ * is all old fashioneds and the pair reads as one set of thirteen.
+ */
+const frame = (c: PouredNow) => ({
+  src: shot(c.slug),
+  alt: `${c.title}, poured in the Flying Ace Farm tasting room`,
+});
+
+export const carouselLeft = runway.filter((_, i) => i % 2 === 0).map(frame);
+export const carouselRight = runway.filter((_, i) => i % 2 === 1).map(frame);
