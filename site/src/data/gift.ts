@@ -47,7 +47,7 @@ export const goodFor = [
   {
     icon: 'fork' as const,
     title: 'The Restaurant',
-    body: 'Monk’s BBQ, smashburgers and fried chicken, Wednesday through Sunday.',
+    body: 'Monk’s BBQ and smashburgers, Wednesday through Sunday.',
   },
   {
     icon: 'beer' as const,
