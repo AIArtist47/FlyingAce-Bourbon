@@ -307,6 +307,16 @@ const shots = eventCards.map((c) => ({ id: c.id, src: `${G}/${c.id}.webp` }));
     }
   }
 
+  /* Two abreast on a phone puts each photograph at 162px, and at 4:3 that is
+     121px of picture -- a thumbnail rather than a photograph. Stacked, each
+     takes the full column and reads properly. */
+  @media (max-width: 36rem) {
+    .ec__shots {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.875rem;
+    }
+  }
+
   /* The darkening stays: it is the emphasis, and it does not travel. The
      lift and the zoom go. */
   @media (prefers-reduced-motion: reduce) {
