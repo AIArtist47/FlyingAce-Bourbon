@@ -120,7 +120,7 @@ async function sendOverResend(key: string, message: Message): Promise<boolean> {
 }
 
 async function send(answers: Answers, spec: FormSpec): Promise<{ ok: boolean; to: string }> {
-  const to = enquiry.events;
+  const to = spec.inbox;
 
   const message: Message = {
     from: env('ENQUIRY_FROM') ?? 'Flying Ace Farm <inquiries@flyingacefarm.com>',
@@ -169,6 +169,8 @@ export const POST: APIRoute = async ({ request, redirect }) => {
       ? await request.json()
       : Object.fromEntries(await request.formData());
   } catch {
+    /* Before the body is parsed there is no form to name, so this one
+       goes without a kind and the sent page falls back. */
     return reply(asJson, redirect, { ok: false, status: 400, error: 'That inquiry could not be read.' });
   }
 
@@ -186,25 +188,25 @@ export const POST: APIRoute = async ({ request, redirect }) => {
      meets it and anything that fills it is not one. Answered as a success:
      telling a bot what gave it away only teaches it. */
   if (clean(raw.company, MAX_FIELD)) {
-    return reply(asJson, redirect, { ok: true, status: 200, to: enquiry.events });
+    return reply(asJson, redirect, { ok: true, status: 200, to: spec.inbox, kind });
   }
 
   /* Checked again here, not only in the browser: the form's own validation is
      for the visitor's benefit and anything can post to this address. */
   for (const field of spec.fields) {
     if (field.required && !answers[field.id]) {
-      return reply(asJson, redirect, { ok: false, status: 400, error: `${field.label} is needed.` });
+      return reply(asJson, redirect, { ok: false, status: 400, kind, error: `${field.label} is needed.` });
     }
   }
 
   /* The free-text box is required on some of these -- a bio, a message -- and
      it is not in the field list, so it is checked on its own. */
   if (spec.notes.required && !answers.notes) {
-    return reply(asJson, redirect, { ok: false, status: 400, error: `${spec.notes.label} is needed.` });
+    return reply(asJson, redirect, { ok: false, status: 400, kind, error: `${spec.notes.label} is needed.` });
   }
 
   if (!EMAIL.test(answers.email)) {
-    return reply(asJson, redirect, { ok: false, status: 400, error: 'Please enter a valid email address.' });
+    return reply(asJson, redirect, { ok: false, status: 400, kind, error: 'Please enter a valid email address.' });
   }
 
   let sent: { ok: boolean; to: string };
@@ -212,20 +214,21 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     sent = await send(answers, spec);
   } catch (error) {
     console.error('[enquiry] send threw:', error);
-    sent = { ok: false, to: enquiry.events };
+    sent = { ok: false, to: spec.inbox };
   }
 
   return sent.ok
-    ? reply(asJson, redirect, { ok: true, status: 200, to: sent.to })
+    ? reply(asJson, redirect, { ok: true, status: 200, to: sent.to, kind })
     : reply(asJson, redirect, {
         ok: false,
         status: 502,
         to: sent.to,
+        kind,
         error: 'The inquiry could not be sent just now.',
       });
 };
 
-type Outcome = { ok: boolean; status: number; to?: string; error?: string };
+type Outcome = { ok: boolean; status: number; to?: string; error?: string; kind?: FormKind };
 type Redirect = (path: string, status?: 301 | 302 | 303 | 307 | 308) => Response;
 
 /** JSON for the script, a redirect for the browser doing it on its own. */
@@ -244,6 +247,7 @@ function reply(asJson: boolean, redirect: Redirect, outcome: Outcome): Response 
      lets a stranger put their own words on the farm's own domain. The page
      holds the sentences and picks one. */
   if (outcome.status === 400) query.set('reason', 'incomplete');
+  if (outcome.kind) query.set('for', outcome.kind);
   /* 303, so the browser follows it with a GET and a refresh never re-sends. */
   return redirect(`/inquiry-sent?${query}`, 303);
 }

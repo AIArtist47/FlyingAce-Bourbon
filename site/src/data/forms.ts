@@ -13,6 +13,8 @@
  * is what tells a job application apart from a wedding.
  */
 
+import { enquiry } from './events';
+
 export type FormFieldType = 'text' | 'tel' | 'email' | 'date' | 'number' | 'url' | 'select';
 
 export interface FormField {
@@ -30,6 +32,8 @@ export interface FormField {
 export type FormKind = 'events' | 'weddings' | 'careers' | 'contact' | 'music';
 
 export interface FormSpec {
+  /** Which of the farm's two inboxes this one lands in. */
+  inbox: string;
   /** The subject stem. The sender's name is appended to it. */
   subject: string;
   /** Where this form lives, named in the message so the farm knows its origin. */
@@ -60,6 +64,7 @@ const person: readonly FormField[] = [
 export const forms: Record<FormKind, FormSpec> = {
   /* The two that already existed. Unchanged, down to the wording. */
   events: {
+    inbox: enquiry.events,
     subject: 'Event inquiry',
     sentNoun: 'inquiry',
     path: '/host-your-event',
@@ -78,6 +83,7 @@ export const forms: Record<FormKind, FormSpec> = {
   },
 
   weddings: {
+    inbox: enquiry.events,
     subject: 'Wedding inquiry',
     sentNoun: 'inquiry',
     path: '/weddings',
@@ -104,6 +110,7 @@ export const forms: Record<FormKind, FormSpec> = {
    * the button says so, rather than leaving an applicant to wonder.
    */
   careers: {
+    inbox: enquiry.events,
     subject: 'Job application',
     sentNoun: 'application',
     path: '/careers',
@@ -136,6 +143,8 @@ export const forms: Record<FormKind, FormSpec> = {
   },
 
   contact: {
+    /* The only one that is not an event: general questions go to info@. */
+    inbox: enquiry.general,
     subject: 'Message from the website',
     sentNoun: 'message',
     path: '/contact',
@@ -152,6 +161,7 @@ export const forms: Record<FormKind, FormSpec> = {
    * which the links below it cover better than an attachment would.
    */
   music: {
+    inbox: enquiry.events,
     subject: 'Live music inquiry',
     sentNoun: 'inquiry',
     path: '/live-music',

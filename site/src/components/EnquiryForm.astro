@@ -1,6 +1,5 @@
 ---
 import { site } from '../data/site';
-import { enquiry as q } from '../data/events';
 import { forms, type FormKind } from '../data/forms';
 
 interface Props {
@@ -23,7 +22,7 @@ const spec = forms[kind];
       <dl class="enq__direct" data-reveal="up">
         <div>
           <dt class="label">Email us</dt>
-          <dd><a class="tap-box" href={`mailto:${q.events}`}>{q.events}</a></dd>
+          <dd><a class="tap-box" href={`mailto:${spec.inbox}`}>{spec.inbox}</a></dd>
         </div>
         <div>
           <dt class="label">Prefer to talk</dt>
@@ -44,6 +43,7 @@ const spec = forms[kind];
       action="/api/enquiry"
       method="post"
       data-enquiry
+      data-inbox={spec.inbox}
       novalidate
       data-reveal="up"
       data-stagger="1"
@@ -126,7 +126,7 @@ const spec = forms[kind];
           gone once it has been: the status line above says where the message
           went, and the same address twice in three lines is noise. */}
       <p class="enq__note" data-note>
-        This goes straight to {q.events}. We will reply to the address you leave above.
+        This goes straight to {spec.inbox}. We will reply to the address you leave above.
         {spec.foot && <><br />{spec.foot}</>}
       </p>
     </form>
@@ -344,8 +344,6 @@ const spec = forms[kind];
 </style>
 
 <script>
-  import { enquiry } from '../data/events';
-
   const form = document.querySelector<HTMLFormElement>('[data-enquiry]');
   const status = form?.querySelector<HTMLParagraphElement>('[data-status]');
   const button = form?.querySelector<HTMLButtonElement>('[data-send]');
@@ -447,7 +445,7 @@ const spec = forms[kind];
         /* Named, and with a way through that does not depend on this working:
            an inquiry that quietly fails is worse than one that was never
            started. */
-        const to = enquiry.events;
+        const to = form.dataset.inbox ?? '';
 
         say(error instanceof Error ? error.message : 'The inquiry could not be sent.');
         status.insertAdjacentHTML('beforeend', ` Please email <a href="mailto:${to}">${to}</a>.`);

@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../data/site';
-import { enquiry } from '../data/events';
+import { forms, isFormKind } from '../data/forms';
 
 /**
  * Where the inquiry form sends a browser that posted it without JavaScript.
@@ -22,9 +22,11 @@ const failed = params.get('failed') === '1';
    nothing a stranger puts in the query string is ever read back out. */
 const incomplete = params.get('reason') === 'incomplete';
 
-/* The farm's own address, never whatever was in the query string -- this
-   page is reachable by anyone who types the URL. */
-const inbox = enquiry.events;
+/* Which form it was, as a code the registry is asked about -- never an
+   address read out of the query string. This page is reachable by anyone who
+   types the URL, so nothing in it is printed back. */
+const asked = params.get('for');
+const inbox = (isFormKind(asked) ? forms[asked] : forms.events).inbox;
 ---
 
 <Base

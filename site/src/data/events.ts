@@ -108,6 +108,10 @@ export const enquiry = {
   title: 'Tell us about your event',
   body: 'Share a few details and we’ll come back to you.',
   events: 'events@flyingacefarm.com',
+  /* The farm publishes two addresses: events@ for anything it would quote
+     for, and info@ for everything else. The contact page and its form use
+     this one; every other form on the site goes to events@. */
+  general: 'info@flyingacefarm.com',
 };
 
 /** Matches the fields on the farm's own inquiry form, in its order. */

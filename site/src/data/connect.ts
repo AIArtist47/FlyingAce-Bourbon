@@ -50,7 +50,7 @@ export const rolesNote =
 export const contactHero = {
   eyebrow: 'Contact',
   title: 'Get in touch',
-  lede: 'The farm sits on Flying Ace Lane, ten minutes from Lovettsville. Call, write, or send the form below.',
+  lede: 'The farm sits on Flying Ace Lane in Lovettsville. Call, write, or send the form below.',
 };
 
 /**
