@@ -2,59 +2,24 @@
 import { eventCards } from '../data/site';
 
 /**
- * The collage beside the cards: four photographs lying over one another, the
- * whole cluster tilted.
+ * Two photographs beside the cards, equal and side by side.
  *
- * Two of them answer to a card -- their `shot` is that card's id, and hovering
- * the card brings its photograph up out of the stack. The other two carry no
- * id and never move; they are what makes the thing a collage rather than a
- * pair of slides, and both are named in the cards' own copy ("a historic barn
- * ... the farmhouse and open lawns", "the farmhouse bridal suite").
+ * Each answers to a card. Both sit at full strength at rest; hovering either
+ * a card or its photograph lifts that one and darkens the other, so the pair
+ * stays a comparison rather than becoming a slideshow.
  *
  * Decorative in full: every word this section carries is in the cards, so the
- * collage takes an empty alt and sits outside the accessibility tree.
+ * photographs take an empty alt and sit outside the accessibility tree.
  */
 const G = '/images/gather';
 
-/* Where each tile sits in the cluster, as insets from the collage's edges.
-   Laid out this way rather than placed in a grid because a grid cell is not
-   something that can be animated: on hover the answering tile runs its four
-   insets to zero and opens out to the whole collage, which is the gesture the
-   section is built around. The boxes are meant to cross. */
-const tiles = [
-  { shot: 'weddings', src: `${G}/weddings.webp`, box: { t: '0%', r: '42%', b: '44%', l: '0%' } },
-  { shot: 'private-events', src: `${G}/private-events.webp`, box: { t: '46%', r: '0%', b: '0%', l: '44%' } },
-  { shot: null, src: `${G}/barn.webp`, box: { t: '0%', r: '0%', b: '58%', l: '52%' } },
-  { shot: null, src: `${G}/farmhouse.webp`, box: { t: '52%', r: '56%', b: '0%', l: '0%' } },
-];
+/* One photograph per card, in the cards' own order, so the pair on the
+   left reads left to right against the pair on the right. Decorative:
+   every word this section carries is in the cards. */
+const shots = eventCards.map((c) => ({ id: c.id, src: `${G}/${c.id}.webp` }));
 ---
 
-<section class="ec" aria-label="Weddings and events" data-ec>
-  {/* On the section rather than inside the column, so the cluster runs to the
-      section's own edges and the tilt carries its corners past them.
-
-      The tilt is on the cluster, not on each photograph: four tiles that share
-      one angle read as a stack someone set down, where four separately-rotated
-      ones read as four mistakes.
-
-      No data-reveal: the section already has its own arrival, and a reveal on
-      the wrapper would fade the whole collage in on top of it. */}
-  <div class="ec__collage" aria-hidden="true">
-    <div class="ec__tilt">
-      {
-        tiles.map((t) => (
-          <div
-            class="ec__tile"
-            data-shot={t.shot ?? undefined}
-            style={`--t:${t.box.t};--r:${t.box.r};--b:${t.box.b};--l:${t.box.l}`}
-          >
-            <img class="ec__tileimg" src={t.src} alt="" loading="lazy" decoding="async" />
-          </div>
-        ))
-      }
-    </div>
-  </div>
-
+<section class="ec" aria-label="Weddings and events">
   <div class="ec__inner wrap">
     <div class="ec__stage">
       <div class="ec__title">
@@ -64,6 +29,17 @@ const tiles = [
         </p>
       </div>
 
+      {/* Hover is on the figure itself as well as on its card, so the
+          gesture works whichever half of the section the pointer is in. */}
+      <div class="ec__shots" aria-hidden="true">
+        {
+          shots.map((sh, i) => (
+            <span class="ec__shot" data-shot={sh.id} data-reveal="up" data-stagger={i}>
+              <img class="ec__shotimg" src={sh.src} alt="" loading="lazy" decoding="async" />
+            </span>
+          ))
+        }
+      </div>
     </div>
 
     {/* Right: two square cards, stacked. */}
@@ -95,15 +71,8 @@ const tiles = [
   /* A deliberately darker register than the navy sections elsewhere: near-black
      rather than #000, which goes flat and dead against photography. */
   .ec {
-    /* How far up the collage sits before anything is hovered. Higher than the
-       0.3 this held when the photographs were a full-bleed wash behind the
-       heading: a contained object on its own ground has to read as a picture,
-       not as a texture. */
-    --ec-rest: 0.52;
-
-    /* And how far the three that are not being asked about step back while
-       one of them answers. */
-    --ec-aside: 0.2;
+    /* How far the photograph that is not being asked about steps back. */
+    --ec-dark: 0.42;
 
     --ec-black: #08090b;
     --ec-line: rgba(244, 238, 227, 0.16);
@@ -156,89 +125,6 @@ const tiles = [
     font-size: var(--t-lead);
     color: var(--ec-dim);
   }
-
-  /* --- The collage ------------------------------------------------------ */
-
-  /* Pinned to the section box, padding included, and then pushed past it on
-     three sides: the cluster is cut by the section's own edges rather than
-     stopping short of them, and the tilt carries its corners out of frame.
-     The section's overflow: hidden is what does the cutting. */
-  .ec__collage {
-    position: absolute;
-    top: -6%;
-    bottom: -6%;
-    left: -5%;
-    width: 62%;
-    z-index: 0;
-    /* Only the right edge is soft. The other three run off the section, so
-       softening them would turn a bleed into a vignette. */
-    -webkit-mask-image: linear-gradient(to right, #000 0%, #000 64%, transparent 97%);
-    mask-image: linear-gradient(to right, #000 0%, #000 64%, transparent 97%);
-  }
-
-  /* Keeps the heading readable over whichever photograph is up. Axis-aligned,
-     so it sits on the collage rather than inside the tilt. */
-  .ec__collage::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-    pointer-events: none;
-    background: linear-gradient(
-      to bottom,
-      var(--ec-black) 0%,
-      rgba(8, 9, 11, 0.74) 18%,
-      rgba(8, 9, 11, 0) 46%
-    );
-  }
-
-  .ec__tilt {
-    position: absolute;
-    inset: 0;
-    rotate: 10.8deg;
-  }
-
-  /* A pinwheel: the two photographs that answer a card take the diagonal and
-     overlap in the middle, and the two that do not fill the opposite corners
-     underneath them. Laid out with insets rather than in a grid, because a
-     grid cell cannot be animated and these have to be able to open out. */
-  .ec__tile {
-    position: absolute;
-    inset: var(--t) var(--r) var(--b) var(--l);
-    overflow: hidden;
-    background: var(--ec-black);
-    border: 1px solid var(--ec-line);
-    /* A ring of the section's own black around every tile, which is what makes
-       four overlapping photographs read as four photographs. The ring is drawn
-       outside the tile, so wherever two overlap the upper one's ring cuts into
-       the lower: the stacking order becomes visible instead of having to be
-       inferred from where the picture changes. */
-    box-shadow: 0 0 0 0.4375rem var(--ec-black);
-    opacity: 0;
-    transition:
-      inset 0.7s var(--ease),
-      opacity 0.5s var(--ease),
-      box-shadow 0.5s var(--ease);
-  }
-
-  .ec__tile[data-shot] {
-    z-index: 2;
-  }
-
-  .ec__tile:not([data-shot]) {
-    z-index: 1;
-  }
-
-  /* Cover-fitted, so when the box opens out the crop opens with it rather
-     than the photograph stretching to the new shape. */
-  .ec__tileimg {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  /* --- Cards ------------------------------------------------------------ */
 
   .ec__cards {
     display: grid;
@@ -330,41 +216,67 @@ const tiles = [
     transform: translateX(0.25rem);
   }
 
-  /* The collage arrives with the section rather than being there from the
-     start, and all four come up together: before anything is asked, it is one
-     picture of the place rather than a slideshow waiting for input. */
-  .ec[data-in-view='true'] .ec__tile {
-    opacity: var(--ec-rest);
+  /* --- The two photographs ---------------------------------------------- */
+
+  .ec__shots {
+    position: relative;
+    margin-top: clamp(2rem, 4vw, 3rem);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .ec__shot {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--ec-black);
+    border: 1px solid var(--ec-line);
+    transition:
+      transform 0.55s var(--ease),
+      box-shadow 0.55s var(--ease);
+  }
+
+  .ec__shotimg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition:
+      filter 0.45s var(--ease),
+      transform 0.8s var(--ease);
   }
 
   /* --- The tie between a card and its photograph ------------------------ */
 
-  /* :has() drives the reveal itself, the same mechanism the pillars accordion
-     already uses -- the one line of script below only says when the section
-     has arrived, and never touches which photograph is up. The cards' own
-     hover is untouched by any of this: the fill, the brass on the link and
-     the arrow are defined above and nothing here competes with them. */
+  /* :has() drives this, the same mechanism the pillars accordion uses, so
+     there is no script behind it. Both photographs sit at full strength until
+     something is asked; then one rises and the other goes back, which reads
+     as emphasis rather than as a slideshow changing slide.
+
+     Either half of the section triggers it, the card or the photograph, so
+     the pointer never has to find the right one. */
   @media (hover: hover) and (pointer: fine) {
-    /* First the whole stack steps back, so whichever tile answers next is
-       answering out of a quieter picture. */
-    .ec[data-in-view='true']:has(.ec__card:hover) .ec__tile {
-      opacity: var(--ec-aside);
+    .ec__shot:hover,
+    .ec:has([data-card='weddings']:hover) .ec__shot[data-shot='weddings'],
+    .ec:has([data-card='private-events']:hover) .ec__shot[data-shot='private-events'] {
+      transform: translateY(-0.875rem);
+      box-shadow: 0 1.5rem 2.75rem rgba(0, 0, 0, 0.55);
+      z-index: 2;
     }
 
-    /* Then the one that belongs to the hovered card runs its four insets to
-       zero and takes the whole collage: it opens out of its place in the
-       stack rather than cross-fading with it, so where the picture came from
-       stays legible all the way through. The ring goes with it -- a
-       photograph at full size has nothing left to be separated from.
+    .ec__shot:hover .ec__shotimg {
+      transform: scale(1.04);
+    }
 
-       This has to stay below the rule above: both selectors carry the same
-       weight, so the later one is the one that wins. */
-    .ec:has([data-card='weddings']:hover) .ec__tile[data-shot='weddings'],
-    .ec:has([data-card='private-events']:hover) .ec__tile[data-shot='private-events'] {
-      inset: 0;
-      opacity: 1;
-      z-index: 3;
-      box-shadow: none;
+    /* And the other one steps back. Written as :not() against whichever is
+       being asked about, so there is one rule per source of the hover rather
+       than one per photograph. */
+    .ec__shots:has(.ec__shot:hover) .ec__shot:not(:hover) .ec__shotimg,
+    .ec:has([data-card='weddings']:hover) .ec__shot:not([data-shot='weddings']) .ec__shotimg,
+    .ec:has([data-card='private-events']:hover) .ec__shot:not([data-shot='private-events']) .ec__shotimg {
+      filter: brightness(var(--ec-dark));
     }
   }
 
@@ -374,12 +286,6 @@ const tiles = [
     .ec__inner {
       grid-template-columns: minmax(0, 1fr);
       gap: 2.5rem;
-    }
-
-    /* No hover to answer, so the collage goes and each card carries its own
-       photograph instead. */
-    .ec__collage {
-      display: none;
     }
 
     .ec__card {
@@ -394,47 +300,28 @@ const tiles = [
       background: none;
     }
 
+    /* The pair above the cards already carries the photography, so a copy
+       inside each card would be this section's four pictures over again. */
     .ec__inline {
-      display: block;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-      margin-bottom: 1.5rem;
+      display: none;
     }
   }
 
+  /* The darkening stays: it is the emphasis, and it does not travel. The
+     lift and the zoom go. */
   @media (prefers-reduced-motion: reduce) {
-    .ec__tile {
+    .ec__shot,
+    .ec__shotimg {
       transition-duration: 0.01ms;
     }
 
-    /* The tilt stays -- it is where the collage is, not a movement. The
-       opening out goes: it is the one thing here that travels. */
-    .ec:has(.ec__card:hover) .ec__tile[data-shot] {
-      inset: var(--t) var(--r) var(--b) var(--l);
+    .ec__shot:hover,
+    .ec:has(.ec__card:hover) .ec__shot {
+      transform: none;
+    }
+
+    .ec__shot:hover .ec__shotimg {
+      transform: none;
     }
   }
 </style>
-
-<script>
-  /* Flags the section once it has been seen, which is all the resting blend
-     needs. Latched rather than live: it should settle in and stay, not fade
-     back out every time the section leaves the window. */
-  const ec = document.querySelector<HTMLElement>('[data-ec]');
-
-  if (ec && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          ec.dataset.inView = 'true';
-          io.disconnect();
-        }
-      },
-      { threshold: 0.2 },
-    );
-    io.observe(ec);
-  } else {
-    /* No observer, no fade-in -- but the blend itself still belongs there. */
-    ec?.setAttribute('data-in-view', 'true');
-  }
-</script>
