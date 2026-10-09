@@ -17,7 +17,12 @@
  * nothing on this site calls WordPress at run time or at build time.
  */
 
-export type Section = 'Distillery' | 'Brewery' | 'Events';
+export type Section =
+  | 'Distillery'
+  | 'Brewery'
+  | 'Events'
+  | 'Restaurant'
+  | 'Weddings & Functions';
 
 /** One piece of a post's body. `html` carries only a, strong, em and br. */
 export type Block =
@@ -469,7 +474,26 @@ export const posts: Post[] = [
 ];
 
 /* The filter on the index, in the order the farm writes about them. */
-export const sections: Section[] = ['Distillery', 'Brewery', 'Events'];
+/**
+ * The filter, in the order the farm's own navigation runs.
+ *
+ * Restaurant and Weddings & Functions carry no posts yet: none of the
+ * fifteen imported from WordPress is about either. They are here because
+ * the farm writes about both, and the index answers an empty one rather
+ * than showing a blank page. That answer disappears on its own the moment
+ * a post is filed under them.
+ */
+export const sections: Section[] = [
+  'Distillery',
+  'Brewery',
+  'Restaurant',
+  'Events',
+  'Weddings & Functions',
+];
+
+/** A section as it appears in an id or a selector. */
+export const sectionSlug = (s: Section) =>
+  s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
 const MONTHS = [
   'January',

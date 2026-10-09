@@ -1,5 +1,5 @@
 ---
-import { posts, sections, readable, blogIntro as intro } from '../data/blog';
+import { posts, sections, sectionSlug, readable, blogIntro as intro } from '../data/blog';
 
 const [lead, ...rest] = posts;
 ---
@@ -19,7 +19,10 @@ const [lead, ...rest] = posts;
           loading, it keeps the keyboard behaviour radios already have, and
           there is no state to get out of step with the markup. */}
       <fieldset class="bfil" data-reveal="up">
-        <legend class="bfil__legend">Show</legend>
+        {/* Named for a screen reader, which needs to know what the group
+            of radios is for, and off the screen, where the buttons say it
+            themselves. */}
+        <legend class="bfil__legend vh">Show</legend>
 
         <input class="bfil__radio" type="radio" name="bsection" id="bf-all" checked />
         <label class="bfil__label" for="bf-all">All</label>
@@ -27,8 +30,13 @@ const [lead, ...rest] = posts;
         {
           sections.map((s) => (
             <Fragment>
-              <input class="bfil__radio" type="radio" name="bsection" id={`bf-${s.toLowerCase()}`} />
-              <label class="bfil__label" for={`bf-${s.toLowerCase()}`}>
+              <input
+                class="bfil__radio"
+                type="radio"
+                name="bsection"
+                id={`bf-${sectionSlug(s)}`}
+              />
+              <label class="bfil__label" for={`bf-${sectionSlug(s)}`}>
                 {s}
               </label>
             </Fragment>
@@ -73,6 +81,11 @@ const [lead, ...rest] = posts;
           </span>
         </div>
       </article>
+
+      {/* Shown only when the chosen section holds nothing. The rule pairs
+          each section with its own cells, so it stops showing by itself as
+          soon as a post is filed under that section. */}
+      <p class="bnone">Nothing filed under this yet. More on the way.</p>
 
       <ol class="bgrid" role="list">
         {
@@ -242,8 +255,34 @@ const [lead, ...rest] = posts;
 
   .bidx:has(#bf-distillery:checked) :is(.blead, .bgrid__cell):not([data-section='Distillery']),
   .bidx:has(#bf-brewery:checked) :is(.blead, .bgrid__cell):not([data-section='Brewery']),
-  .bidx:has(#bf-events:checked) :is(.blead, .bgrid__cell):not([data-section='Events']) {
+  .bidx:has(#bf-restaurant:checked) :is(.blead, .bgrid__cell):not([data-section='Restaurant']),
+  .bidx:has(#bf-events:checked) :is(.blead, .bgrid__cell):not([data-section='Events']),
+  .bidx:has(#bf-weddings-functions:checked)
+    :is(.blead, .bgrid__cell):not([data-section='Weddings & Functions']) {
     display: none;
+  }
+
+  /* --- When a section is empty ------------------------------------------- */
+
+  .bnone {
+    display: none;
+    margin: 0 0 2rem;
+    font-family: var(--font-sub);
+    font-size: var(--t-body);
+    line-height: var(--lh-body);
+    color: var(--muted);
+  }
+
+  /* One pair per section: the section is chosen, and the page holds no card
+     of that section. Written this way rather than naming the two that happen
+     to be empty today, so it corrects itself when one of them fills up. */
+  .bidx:has(#bf-distillery:checked):not(:has([data-section='Distillery'])) .bnone,
+  .bidx:has(#bf-brewery:checked):not(:has([data-section='Brewery'])) .bnone,
+  .bidx:has(#bf-restaurant:checked):not(:has([data-section='Restaurant'])) .bnone,
+  .bidx:has(#bf-events:checked):not(:has([data-section='Events'])) .bnone,
+  .bidx:has(#bf-weddings-functions:checked):not(:has([data-section='Weddings & Functions']))
+    .bnone {
+    display: block;
   }
 
   /* --- Shared card parts -------------------------------------------------- */
@@ -271,14 +310,32 @@ const [lead, ...rest] = posts;
   /* The title carries the link, so the accessible name is the headline and
      nothing else. The box below stretches that one link over the whole card,
      which is why the image above it is out of the tree entirely. */
+  /* The rule is a background on an inline box, and these headlines wrap --
+     the lead runs to four lines. By default the background is sliced across
+     the line fragments and positioned against the whole box, so only the
+     last line ever drew one. `clone` gives each fragment its own background,
+     so every line of a wrapped headline gets a rule as long as that line.
+
+     The padding is what holds the rule off the type. It is in `em` so it
+     keeps its proportion, and it differs by size below: the same fraction
+     that looks right under 24px card type is too much air under the 64px
+     lead. Padding on an inline box does not move the line it sits on, so
+     none of this shifts the layout. */
   .blink {
     color: inherit;
     text-decoration: none;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    padding-bottom: 0.26em;
     background-image: linear-gradient(var(--award), var(--award));
     background-repeat: no-repeat;
     background-position: 0 100%;
     background-size: 0% 2px;
     transition: background-size 0.4s var(--ease);
+  }
+
+  .blead .blink {
+    padding-bottom: 0.15em;
   }
 
   .blink::after {
