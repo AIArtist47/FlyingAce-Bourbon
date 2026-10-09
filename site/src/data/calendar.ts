@@ -165,20 +165,35 @@ export const events: EventItem[] = [
   },
 ];
 
-/** Subscribe targets, straight from The Events Calendar's own export links. */
-const ICAL = 'webcal://flyingacefarm.com/?post_type=tribe_events&ical=1&eventDisplay=list';
+/**
+ * Subscribe targets, all four pointed at the same feed: The Events Calendar's
+ * own export, which is what the farm already publishes.
+ *
+ * Two spellings of one URL, because the handlers differ. A `webcal://` link is
+ * what hands a feed to whatever calendar the machine has registered, which is
+ * the whole job of the iCalendar entry. The two Outlooks and Google take the
+ * feed as a query parameter instead, and want it over https -- `addfromweb`
+ * rejects a webcal URL.
+ */
+const FEED_PATH = 'flyingacefarm.com/?post_type=tribe_events&ical=1&eventDisplay=list';
+const FEED_WEBCAL = `webcal://${FEED_PATH}`;
+const FEED_HTTPS = `https://${FEED_PATH}`;
+const CAL_NAME = 'Flying Ace Farm';
 
 export const subscribe = [
   {
     label: 'Google Calendar',
-    href: `https://www.google.com/calendar/render?cid=${encodeURIComponent(ICAL)}`,
+    href: `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(FEED_HTTPS)}`,
   },
-  { label: 'Apple Calendar', href: ICAL },
+  { label: 'iCalendar', href: FEED_WEBCAL },
   {
-    label: 'Outlook',
-    href: `https://outlook.office.com/owa?path=/calendar/action/compose&rru=addsubscription&url=${encodeURIComponent(ICAL)}&name=Flying+Ace+Farm`,
+    label: 'Outlook 365',
+    href: `https://outlook.office.com/calendar/0/addfromweb?url=${encodeURIComponent(FEED_HTTPS)}&name=${encodeURIComponent(CAL_NAME)}`,
   },
-  { label: 'Download .ics', href: 'https://flyingacefarm.com/calendar/list/?ical=1' },
+  {
+    label: 'Outlook Live',
+    href: `https://outlook.live.com/calendar/0/addfromweb?url=${encodeURIComponent(FEED_HTTPS)}&name=${encodeURIComponent(CAL_NAME)}`,
+  },
 ];
 
 /* ---------------------------------------------------------------------- */

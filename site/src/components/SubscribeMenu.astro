@@ -1,0 +1,206 @@
+---
+import { subscribe } from '../data/calendar';
+
+/**
+ * The hero's second call to action: a button that opens the four places a
+ * reader can put this calendar, rather than a link that scrolls them to a
+ * section to read about it.
+ *
+ * It is a disclosure, not a menu: the options are ordinary links and sit next
+ * in the tab order, so nothing needs arrow-key handling or a focus trap. The
+ * button says whether they are showing, Escape and a click outside put them
+ * away, and the panel is absolutely positioned so opening it never moves the
+ * hero underneath.
+ */
+---
+
+<div class="csub" data-csub>
+  <button
+    class="btn btn--ghost-light btn--lg csub__toggle"
+    type="button"
+    aria-expanded="false"
+    aria-controls="csub-panel"
+    data-csub-toggle
+  >
+    Subscribe to Calendar
+    <span class="csub__caret" aria-hidden="true">&#9662;</span>
+  </button>
+
+  {/* Not [hidden]: the panel animates, and a hidden element cannot. Its own
+      [data-open] drives both the visibility and the stagger, and
+      `visibility` keeps it out of the tab order while it is shut. */}
+  <div class="csub__panel" id="csub-panel" data-csub-panel>
+    {
+      subscribe.map((s, i) => (
+        <a
+          class="csub__opt"
+          href={s.href}
+          target="_blank"
+          rel="noopener"
+          style={`--i:${i}`}
+        >
+          {s.label}
+        </a>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .csub {
+    position: relative;
+  }
+
+  .csub__toggle {
+    gap: 0.5rem;
+  }
+
+  .csub__caret {
+    font-size: 0.75em;
+    line-height: 1;
+    transition: transform 0.35s var(--ease);
+  }
+
+  .csub__toggle[aria-expanded='true'] .csub__caret {
+    transform: rotate(180deg);
+  }
+
+  /* Absolute, so the hero does not jump when it opens. Left-aligned to the
+     button it came out of. */
+  .csub__panel {
+    position: absolute;
+    top: calc(100% + 0.625rem);
+    left: 0;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    /* The panel starts at the button's left edge, which is already some way
+       into the column because another button precedes it. Four of these in a
+       row from there measure 563px and run out of the hero's copy and under
+       the next-up card, so they wrap two and two. The stagger still reads
+       left to right -- across the first row, then the second. */
+    width: max-content;
+    max-width: min(26rem, calc(100vw - 3rem));
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .csub__panel[data-open='true'] {
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  /* Each one starts tucked under the button's left edge and slides out to its
+     place, one after the next, so the row reads as coming out of the parent
+     rather than appearing all at once. */
+  .csub__opt {
+    flex: none;
+    min-height: var(--btn-h-sm);
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    padding: 0.5rem 1rem;
+    background: var(--cream);
+    color: var(--navy);
+    font-size: var(--t-13);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps-sm);
+    text-transform: uppercase;
+    text-decoration: none;
+    opacity: 0;
+    transform: translateX(-0.75rem);
+    transition:
+      opacity 0.3s var(--ease),
+      transform 0.3s var(--ease),
+      background-color 0.3s var(--ease);
+    /* Shut: all four leave together and quickly, so a second click does not
+       feel like waiting for a queue to clear. */
+    transition-delay: 0s;
+  }
+
+  .csub__panel[data-open='true'] .csub__opt {
+    opacity: 1;
+    transform: translateX(0);
+    /* Open: left to right, 55ms apart. */
+    transition-delay: calc(var(--i) * 55ms);
+  }
+
+  .csub__opt:hover,
+  .csub__opt:focus-visible {
+    background: var(--brass);
+  }
+
+  /* Four of these do not fit beside each other on a phone, so they wrap into
+     a block under the button and the stagger runs down the list instead. */
+  @media (max-width: 48rem) {
+    .csub__panel {
+      position: static;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-top: 0.625rem;
+      /* Static, so it has to actually collapse rather than just hide. */
+      display: none;
+    }
+
+    .csub__panel[data-open='true'] {
+      display: flex;
+    }
+
+    .csub__opt {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .csub__opt,
+    .csub__caret {
+      transition: none;
+    }
+
+    .csub__panel[data-open='true'] .csub__opt {
+      transition-delay: 0s;
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-csub]');
+  const toggle = root?.querySelector<HTMLButtonElement>('[data-csub-toggle]');
+  const panel = root?.querySelector<HTMLElement>('[data-csub-panel]');
+
+  if (root && toggle && panel) {
+    const set = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      panel.dataset.open = String(open);
+    };
+
+    set(false);
+
+    toggle.addEventListener('click', () => {
+      set(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    /* Escape puts it away and hands focus back to the button that opened it,
+       so a keyboard reader is not left stranded in a closed panel. */
+    root.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      set(false);
+      toggle.focus();
+    });
+
+    /* Anywhere else, including a tab into the rest of the page. */
+    document.addEventListener('click', (event) => {
+      if (!root.contains(event.target as Node)) set(false);
+    });
+
+    root.addEventListener('focusout', () => {
+      /* Next tick: at focusout the new element is not focused yet. */
+      setTimeout(() => {
+        if (!root.contains(document.activeElement)) set(false);
+      });
+    });
+  }
+</script>

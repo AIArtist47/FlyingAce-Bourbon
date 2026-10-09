@@ -1,5 +1,6 @@
 ---
 import { nextUp, eventCount, season } from '../data/calendar';
+import SubscribeMenu from './SubscribeMenu.astro';
 ---
 
 <section class="chero on-navy" id="top">
@@ -13,7 +14,7 @@ import { nextUp, eventCount, season } from '../data/calendar';
       </p>
       <div class="chero__cta" data-reveal="up">
         <a class="btn btn--solid btn--lg" href="#lineup">See the Lineup</a>
-        <a class="btn btn--ghost-light btn--lg" href="#subscribe">Add to Your Calendar</a>
+        <SubscribeMenu />
       </div>
     </div>
 
