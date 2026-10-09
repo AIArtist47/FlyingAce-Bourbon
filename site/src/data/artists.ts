@@ -1,5 +1,5 @@
 /**
- * Artist profiles — the detail behind each calendar card.
+ * Artist profiles - the detail behind each calendar card.
  *
  * Transcribed from each event's own page on flyingacefarm.com/calendar/.
  * Keyed by artist rather than by date, because Jake Phillips and Alex Kerns
@@ -13,7 +13,7 @@
 export type ArtistLink = { label: string; href: string };
 
 export type ArtistProfile = {
-  /** One line under the name — who this act is, at a glance. */
+  /** One line under the name - who this act is, at a glance. */
   billing: string;
   /** The farm's own invitation line for the set. */
   intro: string;
@@ -29,7 +29,7 @@ export const artistProfiles: Record<string, ArtistProfile> = {
       'A self-taught guitarist who has been playing Loudoun County rooms for most of his life.',
     bio: [
       'I grew up in Lucketts, Va. I still call Loudoun County home. Began teaching myself guitar around age 10 using chord books and listening to records.',
-      'Since then, music has been a major part of my life — playing at family gatherings, at church, weddings and local wineries and breweries.',
+      'Since then, music has been a major part of my life - playing at family gatherings, at church, weddings and local wineries and breweries.',
       'My wife Lori and I have been married 41 years. We have three grown children and three grandchildren. I am a dedicated husband, father, grandfather, veteran and a lifelong artist.',
     ],
     links: [
@@ -41,10 +41,10 @@ export const artistProfiles: Record<string, ArtistProfile> = {
   'Drew Stevyns': {
     billing: 'America’s Got Talent top-10 finalist',
     intro:
-      'A voice that pulls the room close — three albums, a national television run and a decade of stages behind it.',
+      'A voice that pulls the room close - three albums, a national television run and a decade of stages behind it.',
     bio: [
       'Performing since the age of two, Drew Stevyns started his career singing in church choirs while growing up in England. After returning to the U.S. he kept developing, taking piano lessons, writing songs and teaching himself guitar.',
-      'There is a palpable sadness to his voice that makes his songs impossible to shake, and the music surges — hard-edged yet beautiful and melodic. He has released three albums: “Waiting” (2009), “Please Excuse the Machine” (2011) and “Somewhere in Between” (2015).',
+      'There is a palpable sadness to his voice that makes his songs impossible to shake, and the music surges - hard-edged yet beautiful and melodic. He has released three albums: “Waiting” (2009), “Please Excuse the Machine” (2011) and “Somewhere in Between” (2015).',
       'In 2009 he reached the top 10 of NBC’s America’s Got Talent, working with producers Nigel Wright and Shane Keister. Shortly after, Paul Reed Smith asked him to endorse a new line of guitars, which led to a showcase with his band at the Whisky a Go Go.',
       'He has shared stages with Thelma Houston, The Charlie Daniels Band and Josh Doyle, headlined for the United Soldiers and Sailors of America since 2013, and had his music featured on Rizzoli & Isles. His song “Waiting” placed third in the International Songwriting Competition.',
     ],
@@ -58,7 +58,7 @@ export const artistProfiles: Record<string, ArtistProfile> = {
     billing: 'Low Water Bridge Band co-founder',
     intro: 'Genre-bending covers and originals, from the Beatles to Tyler Childers.',
     bio: [
-      'Known to genre bend, Alex Kerns covers a wide range of artists and songs — from the classic sounds of the Beatles to Tyler Childers to the Americana vibe of his own originals.',
+      'Known to genre bend, Alex Kerns covers a wide range of artists and songs - from the classic sounds of the Beatles to Tyler Childers to the Americana vibe of his own originals.',
       'Hailing from Berryville, Virginia, he is the co-founder and bass player of the Low Water Bridge Band. Born and raised in Clarke County, he has been playing up and down the Shenandoah Valley for the past 15 years.',
       'He still pursues a busy acoustic solo career, playing everywhere from small amphitheatres to back-yard private parties, and always leaves a smile on the faces of the people who turn up.',
     ],
@@ -74,7 +74,7 @@ export const artistProfiles: Record<string, ArtistProfile> = {
     billing: 'Singer-songwriter, US and European tours',
     intro: 'Original music and an eclectic set of classic folk and alternative covers.',
     bio: [
-      'Jake Phillips is a singer-songwriter who has travelled the world — from US and European tours to Singapore and Canada and points beyond.',
+      'Jake Phillips is a singer-songwriter who has travelled the world - from US and European tours to Singapore and Canada and points beyond.',
       'With a powerful voice and dynamic guitar skills, his repertoire includes original music alongside an eclectic set of classic folk and alternative covers.',
       'His song “Brother of Mine” debuted on Suits LA (season 1, episode 10) in May 2025.',
     ],
@@ -84,11 +84,11 @@ export const artistProfiles: Record<string, ArtistProfile> = {
   'Laura Cashman': {
     billing: 'Powerhouse vocalist',
     intro:
-      'Hits from the 70s through today, with a few originals thrown in — and the energy of a career built on big rooms.',
+      'Hits from the 70s through today, with a few originals thrown in - and the energy of a career built on big rooms.',
     bio: [
       'Laura Cashman is a knock-out powerhouse vocalist who will captivate you through an entire song and leave you wanting more. Her energy and crowd engagement gained her a following from the start of her career.',
       'She began with Millennium, among the most sought-after cover bands on the East Coast and top of the live entertainment charts for the five years she was in it, playing Washington DC, Baltimore, Philadelphia, Pittsburgh and New York.',
-      'More recently she switched gears to focus on her own music, singing and playing acoustic guitar for vineyards, breweries and private events — covering the 70s through today with originals in the set list.',
+      'More recently she switched gears to focus on her own music, singing and playing acoustic guitar for vineyards, breweries and private events - covering the 70s through today with originals in the set list.',
     ],
     links: [{ label: 'Official website', href: 'https://lauracashman7.wixsite.com/lauracashman' }],
   },
@@ -98,7 +98,7 @@ export const artistProfiles: Record<string, ArtistProfile> = {
     intro: 'Drums with his feet, guitar in his hands, and every genre in the set.',
     bio: [
       'My name is Chris Bowen. I am a local guy who has lived in Taylorstown most of my life.',
-      'I am a one-man band — I play drums with my feet, play guitar and sing. I play all genres, so the crowds stay focused.',
+      'I am a one-man band - I play drums with my feet, play guitar and sing. I play all genres, so the crowds stay focused.',
     ],
     links: [{ label: 'Facebook', href: 'https://www.facebook.com/TheChrisBone/' }],
   },
@@ -109,7 +109,7 @@ export const artistProfiles: Record<string, ArtistProfile> = {
     bio: [
       'For more than a decade Melanie Pearl has been entertaining audiences throughout the Shenandoah Valley with her solo performances.',
       'Accompanied by keyboard, ukulele and vocals, she tailors each performance to the crowd and welcomes song requests, which makes every set a slightly different one.',
-      'Her range runs across the decades — music made famous by Janis Joplin, Dolly Parton, Amy Winehouse and Adele among many others. She is a regular at Barrel Oak Winery & Brewery, The Half Note Lounge, Woodstock Brewhouse and Bright Box.',
+      'Her range runs across the decades - music made famous by Janis Joplin, Dolly Parton, Amy Winehouse and Adele among many others. She is a regular at Barrel Oak Winery & Brewery, The Half Note Lounge, Woodstock Brewhouse and Bright Box.',
     ],
     links: [],
   },
@@ -135,7 +135,7 @@ export const artistProfiles: Record<string, ArtistProfile> = {
       'High-energy acoustic sets built on 90s alternative, classic rock and the odd throwback.',
     bio: [
       'Joey Hafner is a vocalist and guitar player based in Lovettsville, Virginia, playing high-energy acoustic sets as a solo artist and fronting the party rock cover band Ghost Pepper.',
-      'His musical journey began at nine and was shaped by the alternative explosion of the 90s — early inspiration from Jane’s Addiction, Smashing Pumpkins and Pearl Jam.',
+      'His musical journey began at nine and was shaped by the alternative explosion of the 90s - early inspiration from Jane’s Addiction, Smashing Pumpkins and Pearl Jam.',
       'He blends alternative rock, 90s hip hop, classic rock and country into sets built for wineries, breweries and live venues across Northern Virginia and Central Maryland, with creative mashups, sing-alongs and the occasional surprise throwback.',
     ],
     links: [
@@ -160,7 +160,7 @@ export const artistProfiles: Record<string, ArtistProfile> = {
     intro: 'A one-man show built live on stage from vocals, percussion, bass, guitar and loops.',
     bio: [
       'A Northern Virginia native, Britton James is a singer-songwriter, producer and multi-instrumentalist who writes, records and performs original alternative music.',
-      'His energetic one-man show is anything but ordinary, combining live vocals with percussion, bass, guitar and looping to build the sound of a full band — all performed live on stage.',
+      'His energetic one-man show is anything but ordinary, combining live vocals with percussion, bass, guitar and looping to build the sound of a full band - all performed live on stage.',
       'He blends his originals with crowd-favourite covers spanning decades, from timeless classics to today’s hits.',
     ],
     links: [{ label: 'Official website', href: 'https://www.brittonjamesmusic.com/' }],
@@ -169,7 +169,7 @@ export const artistProfiles: Record<string, ArtistProfile> = {
 
 /** True of every set at the farm, so it is stated once rather than thirteen times. */
 export const eventStandards = [
-  'Free to attend — no ticket needed',
+  'Free to attend - no ticket needed',
   'Seating indoors and out, first come first served',
   'Kitchen and tasting room open throughout',
 ];

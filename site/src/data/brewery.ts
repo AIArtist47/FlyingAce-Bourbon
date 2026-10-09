@@ -1,7 +1,7 @@
 /**
  * Brewery page content.
  *
- * Transcribed from the Brewery — Desktop artboard (project/Brewery.dc.html).
+ * Transcribed from the Brewery - Desktop artboard (project/Brewery.dc.html).
  * Imagery comes from flyingacefarm.com/brewery/ and lives in
  * public/images/brewery/.
  *
@@ -9,7 +9,7 @@
  * had already drifted apart when this was built (the site was showing Märzen,
  * Berry Blood Orange Sour and Pumpkin Pie Ale; the artboard lists Red Tail,
  * Sombeero and the sours below). The artboard is the source of truth here, as
- * specified — but this file is the one to hand to whoever updates the taps,
+ * specified - but this file is the one to hand to whoever updates the taps,
  * or to replace with a CMS feed.
  */
 
@@ -18,7 +18,7 @@ const B = '/images/brewery';
 export const breweryHero = {
   eyebrow: 'Flying Ace Farm Brewery',
   title: 'Raise a glass',
-  lede: '15+ rotating beers and seltzers on tap — including a cream ale brewed with nearly 300 pounds of our own Bloody Butcher corn.',
+  lede: '15+ rotating beers and seltzers on tap - including a cream ale brewed with nearly 300 pounds of our own Bloody Butcher corn.',
   image: `${B}/hero-tanks.jpg`,
   alt: 'Fermentation tanks in the Flying Ace Farm brewery',
 };
@@ -69,7 +69,7 @@ export const flagships = [
   },
 ];
 
-/** Rotating taps — beers, seltzers, cider and a non-alcoholic option. */
+/** Rotating taps - beers, seltzers, cider and a non-alcoholic option. */
 export const seasonal = [
   { name: '“Red Tail” Irish Red Ale', body: 'Caramel, vanilla and a touch of roast.', spec: '4.5% · 20 IBU' },
   { name: 'Ultra Light Lager', body: 'Pilsner malt and flaked rice; clean and crisp.', spec: '5.5% · 10 IBU' },

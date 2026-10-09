@@ -15,11 +15,11 @@ const isCurrent = (h: string) => h === Astro.url.pathname;
 
 <header class="hdr" id="site-header" data-header>
   <div class="hdr__inner wrap">
-    {/* The brand lockup — mark and wordmark together — is the route home from
+    {/* The brand lockup - mark and wordmark together - is the route home from
         anywhere. It points at "/" rather than an in-page anchor because both
         pages carry a #top section, so a hash would have kept you where you
         were instead of taking you to the landing page. */}
-    <a class="brand" href="/" rel="home" aria-label={`${site.name} — home`} data-home>
+    <a class="brand" href="/" rel="home" aria-label={`${site.name} - home`} data-home>
       <img class="brand__mark" src={img.logo} alt="" width="52" height="52" />
       <span class="brand__text">
         <span class="brand__name display">Flying Ace Farm</span>
@@ -207,7 +207,7 @@ const isCurrent = (h: string) => h === Astro.url.pathname;
   }
 
   /* The island is a 1px block stretched by scaleX, so it never animates
-     width — and with square corners there is nothing for the scale to
+     width - and with square corners there is nothing for the scale to
      distort. JS parks it behind whichever link is lit. */
   .hdr__island {
     position: absolute;
@@ -371,7 +371,7 @@ const isCurrent = (h: string) => h === Astro.url.pathname;
   /* --- Breakpoints ----------------------------------------------------- */
 
   @media (max-width: 78.125rem) {
-    /* 1250px — nav would collide with the CTA pair */
+    /* 1250px - nav would collide with the CTA pair */
     .hdr__nav {
       display: none;
     }

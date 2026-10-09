@@ -21,7 +21,7 @@ function gcal(e: DecoratedEvent) {
   const day = e.date.replace(/-/g, '');
   const p = new URLSearchParams({
     action: 'TEMPLATE',
-    text: `${e.artist} — Live Music at Flying Ace Farm`,
+    text: `${e.artist} - Live Music at Flying Ace Farm`,
     dates: `${day}T${clock(e.start)}/${day}T${clock(e.end)}`,
     details: `Live music at Flying Ace Farm. Free to attend.\n\n${e.href}`,
     location: '40950 Flying Ace Ln, Lovettsville, VA',
@@ -113,7 +113,7 @@ function gcal(e: DecoratedEvent) {
                 <a class="btn btn--ghost" href={e.path}>Full listing</a>
               </div>
 
-              {/* Step between shows without closing — the reader is browsing a
+              {/* Step between shows without closing - the reader is browsing a
                   lineup, not looking up one fact. */}
               <div class="ed__step">
                 {prev ? (
@@ -154,7 +154,7 @@ function gcal(e: DecoratedEvent) {
     background: rgba(14, 20, 28, 0.62);
   }
 
-  /* Panel and backdrop share one curve and one duration — mismatched timing
+  /* Panel and backdrop share one curve and one duration - mismatched timing
      between a surface and its overlay is the usual cause of "something feels
      off". `allow-discrete` is what lets display and overlay animate out
      instead of the panel vanishing on close. */
@@ -478,8 +478,8 @@ function gcal(e: DecoratedEvent) {
       height: 100%;
     }
 
-    /* Tied to viewport height, not a fixed band: on a short window — a phone
-       held sideways, a small desktop window — a fixed 13rem of photograph
+    /* Tied to viewport height, not a fixed band: on a short window - a phone
+       held sideways, a small desktop window - a fixed 13rem of photograph
        leaves the biography with nothing to sit in. */
     .ed__media {
       height: clamp(6rem, 22vh, 13rem);

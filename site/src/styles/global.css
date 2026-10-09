@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Flying Ace Farm — design tokens
+   Flying Ace Farm - design tokens
    Extracted from the Home-Desktop artboard (Main.dc.html) + brand notes.
    Every size is rem/clamp so it resolves to the artboard's exact px value
    at a 1440px viewport and still scales with the user's font-size setting.
@@ -12,7 +12,7 @@
   --paper: #fbf8f2;
   --sand: #eae2d3;
 
-  --accent: #9a2a22; /* "Bloody Butcher" red — canvas tweak default */
+  --accent: #9a2a22; /* "Bloody Butcher" red - canvas tweak default */
   --accent-deep: #6e1d17; /* a:hover in the artboard helmet */
   --brass: #d9b97a; /* on navy only */
   --award: #8a5a1c;
@@ -233,7 +233,7 @@ input {
   outline-offset: 3px;
 }
 
-/* Accent red on a navy or red ground is close to invisible — these surfaces
+/* Accent red on a navy or red ground is close to invisible - these surfaces
    take the brass ring instead. */
 .on-navy :focus-visible,
 .drawer :focus-visible,
@@ -396,7 +396,7 @@ html:has(.gate[open]) {
   color: var(--brass);
 }
 
-/* Dates, times and prices sit in columns, so their digits need equal widths —
+/* Dates, times and prices sit in columns, so their digits need equal widths -
    proportional numerals make a stack of them visibly ragged. */
 .tnum {
   font-variant-numeric: tabular-nums;
@@ -416,7 +416,7 @@ html:has(.gate[open]) {
 }
 
 /* ==========================================================================
-   Subtext under a heading — Montserrat Medium
+   Subtext under a heading - Montserrat Medium
    ==========================================================================
 
    The standfirst paragraph beneath a hero or section title, listed by hand
@@ -581,11 +581,11 @@ a:hover .arrow-link__ico {
 }
 
 /* ==========================================================================
-   Motion — hidden states only apply when JS is running
+   Motion - hidden states only apply when JS is running
    ========================================================================== */
 
 /* Start states are gated on `:not(.is-revealed)`. motion.ts adds that class
-   when the tween finishes and then drops the inline transform — without the
+   when the tween finishes and then drops the inline transform - without the
    gate, clearing the inline value would let the start offset reassert itself
    and strand the element 40px low for good. */
 .js [data-reveal]:not(.is-revealed) {
@@ -621,7 +621,7 @@ a:hover .arrow-link__ico {
 }
 
 /* Mission words are created at runtime by motion.ts, so they carry no Astro
-   scope id — their styles must be global too. */
+   scope id - their styles must be global too. */
 .mw {
   will-change: opacity;
 }
@@ -655,7 +655,7 @@ a:hover .arrow-link__ico {
   top: 0;
   left: 0;
   z-index: 300;
-  /* 44px matches the touch-target minimum — the same big circle whether or
+  /* 44px matches the touch-target minimum - the same big circle whether or
      not you can touch it. A pointer affordance rather than text, so it holds
      px instead of scaling with the reader's font size, and the 0.227 idle
      scale in motion.ts is derived from this number. */
@@ -663,7 +663,7 @@ a:hover .arrow-link__ico {
   height: 44px;
   border-radius: 50%;
   /* Light source + difference blending = inverts whatever is beneath it:
-     near-black over cream, warm sand over navy. See the note in the reply —
+     near-black over cream, warm sand over navy. See the note in the reply -
      this is --cream rather than --ink deliberately. */
   background: var(--cream);
   mix-blend-mode: difference;
@@ -677,7 +677,7 @@ a:hover .arrow-link__ico {
   background: var(--paper);
 }
 
-/* Safety net — even if the script ran, reduced motion never sees it. */
+/* Safety net - even if the script ran, reduced motion never sees it. */
 @media (prefers-reduced-motion: reduce) {
   .cursor-dot {
     display: none;
@@ -685,7 +685,7 @@ a:hover .arrow-link__ico {
 }
 
 /* ==========================================================================
-   Responsive reflow — desktop composition is the 1440px artboard
+   Responsive reflow - desktop composition is the 1440px artboard
    ========================================================================== */
 
 @media (max-width: 68.75rem) {

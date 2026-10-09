@@ -1,7 +1,7 @@
 /**
  * Weddings page content.
  *
- * Transcribed from flyingacefarm.com/weddings/ — the headline, the long
+ * Transcribed from flyingacefarm.com/weddings/ - the headline, the long
  * introduction, both venue descriptions, the two Matterport tours and the
  * brochure are the farm's own words and links, not rewritten. Nothing here is
  * invented: every figure (86 acres, 50' x 80', the 1830s farmhouse) appears on
@@ -67,7 +67,7 @@ export const weddingSpaces = [
 export const weddingBrochure = {
   eyebrow: 'Everything in one place',
   title: 'The wedding brochure',
-  body: 'Spaces, capacities, what is included and how the day runs — the farm’s own trifold, as a PDF.',
+  body: 'Spaces, capacities, what is included and how the day runs - the farm’s own trifold, as a PDF.',
   cta: 'Download the brochure',
   /* The farm's own trifold, served from this site rather than linked back
      to the WordPress uploads folder. Two reasons: a cross-origin link

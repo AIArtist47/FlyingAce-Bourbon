@@ -21,7 +21,7 @@ const { post, newer, older } = Astro.props;
 const description = post.excerpt.length > 155 ? `${post.excerpt.slice(0, 152).trimEnd()}…` : post.excerpt;
 ---
 
-<Base title={`${post.title} — Flying Ace Farm`} description={description}>
+<Base title={`${post.title} - Flying Ace Farm`} description={description}>
   <Header />
 
   <main id="main">

@@ -18,7 +18,7 @@ months.reduce((acc, m, i) => {
         <h2 class="display cal__h2" id="cal-title" data-reveal="up">Every show on the farm</h2>
       </div>
       <p class="cal__aside" data-reveal="up">
-        Free to attend. Kitchen and tasting room open throughout — no reservation needed.
+        Free to attend. Kitchen and tasting room open throughout - no reservation needed.
       </p>
     </div>
 
@@ -26,7 +26,7 @@ months.reduce((acc, m, i) => {
       months.map((m, mi) => (
         <div class="mon">
           {/* The month pins in the rail and rides along while its own shows pass,
-              then hands off to the next — the page's one authored moment. */}
+              then hands off to the next - the page's one authored moment. */}
           <h3 class="mon__head">
             <span class="mon__name display">{m.month}</span>
             <span class="mon__year tnum">{m.year}</span>
@@ -156,7 +156,7 @@ months.reduce((acc, m, i) => {
 
   .ev__link {
     position: relative;
-    /* Button resets — it carries the row's whole layout, so it has to stop
+    /* Button resets - it carries the row's whole layout, so it has to stop
        behaving like a control and start behaving like the row. */
     width: 100%;
     border: 0;
@@ -193,7 +193,7 @@ months.reduce((acc, m, i) => {
      would leave the sweep parked mid-row on whichever show was pressed last. */
   @media (hover: hover) and (pointer: fine) {
     /* The band is wider than the row and starts outside it, so the row has to
-       clip — which also holds the sweep to the same bounds as the sand
+       clip - which also holds the sweep to the same bounds as the sand
        highlight and the rules between the shows. */
     .ev__link {
       overflow: hidden;
@@ -227,7 +227,7 @@ months.reduce((acc, m, i) => {
     }
 
     /* Leaving drops the band fast. The transform still reverses underneath,
-       but at zero opacity, so the sheen is never seen travelling backwards —
+       but at zero opacity, so the sheen is never seen travelling backwards -
        and because these are transitions, re-entering retargets from wherever
        the band had got to instead of snapping back to the start. */
     .ev__link:not(:hover) .ev__sweep {
@@ -245,7 +245,7 @@ months.reduce((acc, m, i) => {
     }
   }
 
-  /* No travelling light for a reader who asked for less movement — the sand
+  /* No travelling light for a reader who asked for less movement - the sand
      wash still marks the row. */
   @media (prefers-reduced-motion: reduce) {
     .ev__sweep {

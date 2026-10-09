@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import PageHero from '../components/PageHero.astro';
+import CocktailList from '../components/CocktailList.astro';
+import CocktailArchive from '../components/CocktailArchive.astro';
+import Footer from '../components/Footer.astro';
+import { cocktailsHero as h } from '../data/cocktails';
+---
+
+<Base
+  title="Cocktail List — Flying Ace Farm Distillery | Lovettsville, VA"
+  description="Every cocktail poured in the Flying Ace Farm distillery tasting room in Lovettsville, Virginia: thirteen on the board now, built on American Ace bourbon, whiskey and rum, and sixty two more poured before."
+>
+  <Header />
+
+  <main id="main">
+    <PageHero
+      eyebrow={h.eyebrow}
+      title={h.title}
+      lede={h.lede}
+      cta={{ text: 'See the List', href: '#now' }}
+    />
+    <CocktailList />
+    <CocktailArchive />
+  </main>
+
+  <Footer />
+</Base>

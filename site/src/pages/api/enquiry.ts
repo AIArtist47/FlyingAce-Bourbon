@@ -128,7 +128,7 @@ async function send(answers: Answers, spec: FormSpec): Promise<{ ok: boolean; to
     /* So the farm can answer by pressing reply, rather than copying an address
        out of the body. */
     replyTo: answers.email,
-    subject: oneLine(`${spec.subject} — ${oneLine(`${answers.first} ${answers.last}`.trim())}`),
+    subject: oneLine(`${spec.subject} - ${oneLine(`${answers.first} ${answers.last}`.trim())}`),
     /* Plain text on purpose: nothing a stranger typed is ever handed to an
        HTML renderer, so there is nothing to escape and nothing to get wrong. */
     text: compose(answers, spec),

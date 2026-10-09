@@ -9,13 +9,13 @@ const outbound = (href: string) => /^https?:\/\//.test(href);
 /**
  * Vertical accordion hover cards.
  *
- * The felt state here is browsing, not deciding — someone weighing how to
+ * The felt state here is browsing, not deciding - someone weighing how to
  * spend an afternoon. The physical analogue is sliding a barn door: real
  * weight on the way open, a soft landing, no bounce. So the panel carries a
  * long ease-out and the content follows it in rather than racing it.
  *
  * Width is driven by `grid-template-columns` on the parent via `:has()`, so
- * the whole interaction is CSS — no JS, interruptible mid-flight, and
+ * the whole interaction is CSS - no JS, interruptible mid-flight, and
  * keyboard users get it through `:focus-within` exactly as hover users do.
  * Pointers without hover, reduced-motion readers and narrow screens all fall
  * back to a plain card grid where every panel is open.
@@ -88,7 +88,7 @@ const outbound = (href: string) => /^https?:\/\//.test(href);
   /* ---------------------------------------------------------------------- *
    * Fallback layout: a plain grid of open cards.
    * Everything below the accordion media query builds on this, so a browser
-   * without :has() — or a reader on a phone — still gets the full content.
+   * without :has() - or a reader on a phone - still gets the full content.
    * ---------------------------------------------------------------------- */
 
   .acc {
@@ -338,7 +338,7 @@ const outbound = (href: string) => /^https?:\/\//.test(href);
   }
 
   /* A browser without :has() keeps the fallback grid rather than a broken
-     accordion — the whole open/shut system hangs off :has(). */
+     accordion - the whole open/shut system hangs off :has(). */
   @supports not selector(:has(*)) {
     .acc {
       grid-template-columns: repeat(4, minmax(0, 1fr));

@@ -40,7 +40,7 @@ export const giftHero = {
  */
 export const amounts = ['25', '50', '100', '200'] as const;
 
-export const amountNote = 'Or any amount you like — the form takes a figure of your own.';
+export const amountNote = 'Or any amount you like - the form takes a figure of your own.';
 
 /** Where the card spends. The farm's four counters, in the order a visitor meets them. */
 export const goodFor = [
@@ -100,7 +100,7 @@ export const timing = [
 ] as const;
 
 export const goodToKnow = [
-  'The card is spent at the counter like any other card — nothing to print and nothing to collect first.',
+  'The card is spent at the counter like any other card - nothing to print and nothing to collect first.',
   'You still have to be 21 to buy alcohol with it, card or no card, and the bar will ask.',
   'Balances are held by Toast, who run the farm’s tills. Check one any time with the link below.',
 ] as const;

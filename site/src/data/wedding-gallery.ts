@@ -1,6 +1,6 @@
 /**
  * The wedding gallery: every photograph the farm publishes on
- * flyingacefarm.com/weddings/ — all 77 of them, from three weddings,
+ * flyingacefarm.com/weddings/ - all 77 of them, from three weddings,
  * re-encoded to what this page renders.
  *
  * Dealt round-robin across four rows from a list already interleaved by shoot,

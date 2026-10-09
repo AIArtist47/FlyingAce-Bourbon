@@ -5,7 +5,7 @@
     "AgeGate.dc.html": {
       "h": 900,
       "is_interactive": true,
-      "title": "Age Gate — Desktop",
+      "title": "Age Gate - Desktop",
       "w": 1440,
       "x": 0,
       "y": 0
@@ -13,70 +13,70 @@
     "AgeGate-Mobile.dc.html": {
       "h": 844,
       "is_interactive": true,
-      "title": "Age Gate — Mobile",
+      "title": "Age Gate - Mobile",
       "w": 390,
       "x": 1520,
       "y": 0
     },
     "Mobile-Menu.dc.html": {
       "h": 844,
-      "title": "Mobile Menu — Open",
+      "title": "Mobile Menu - Open",
       "w": 390,
       "x": 1990,
       "y": 0
     },
     "Main.dc.html": {
       "h": 7048,
-      "title": "Home — Desktop",
+      "title": "Home - Desktop",
       "w": 1440,
       "x": 0,
       "y": 1320
     },
     "Home-Mobile.dc.html": {
       "h": 8000,
-      "title": "Home — Mobile",
+      "title": "Home - Mobile",
       "w": 390,
       "x": 1520,
       "y": 1320
     },
     "Spirits.dc.html": {
       "h": 5248,
-      "title": "Distillery — Desktop",
+      "title": "Distillery - Desktop",
       "w": 1440,
       "x": 1990,
       "y": 1320
     },
     "Brewery.dc.html": {
       "h": 4288,
-      "title": "Brewery — Desktop",
+      "title": "Brewery - Desktop",
       "w": 1440,
       "x": 3510,
       "y": 1320
     },
     "Restaurant.dc.html": {
       "h": 4508,
-      "title": "Restaurant (Monk’s) — Desktop",
+      "title": "Restaurant (Monk’s) - Desktop",
       "w": 1440,
       "x": 5030,
       "y": 1320
     },
     "Events.dc.html": {
       "h": 4628,
-      "title": "Host Your Event (incl. Weddings) — Desktop",
+      "title": "Host Your Event (incl. Weddings) - Desktop",
       "w": 1440,
       "x": 6550,
       "y": 1320
     },
     "Visit.dc.html": {
       "h": 3108,
-      "title": "Visit & FAQ — Desktop",
+      "title": "Visit & FAQ - Desktop",
       "w": 1440,
       "x": 8070,
       "y": 1320
     },
     "GiftCards.dc.html": {
       "h": 1488,
-      "title": "Gift Cards — Desktop",
+      "title": "Gift Cards - Desktop",
       "w": 1440,
       "x": 9590,
       "y": 1320
@@ -134,7 +134,7 @@
     "pages": {
       "kind": "title1",
       "maxW": 8000,
-      "text": "Flying Ace Farm — site pages",
+      "text": "Flying Ace Farm - site pages",
       "w": 240,
       "x": 0,
       "y": 1020
@@ -154,5 +154,5 @@
     "GiftCards.dc.html"
   ],
   "pages": [],
-  "title": "Flying Ace Farm — Website Redesign"
+  "title": "Flying Ace Farm - Website Redesign"
 }

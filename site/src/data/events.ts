@@ -1,7 +1,7 @@
 /**
  * Host Your Event page content.
  *
- * Transcribed from the "Host Your Event (incl. Weddings) — Desktop" artboard
+ * Transcribed from the "Host Your Event (incl. Weddings) - Desktop" artboard
  * (project/Events.dc.html) and cross-checked against
  * flyingacefarm.com/host-your-event/, which is where the 3D tour links and the
  * inquiry fields come from.
@@ -139,7 +139,7 @@ export const venueStats = [
 /* ---------------------------------------------------------------------- */
 
 /**
- * Every photograph on flyingacefarm.com/host-your-event/ — 21 of them, the
+ * Every photograph on flyingacefarm.com/host-your-event/ - 21 of them, the
  * two logos on that page excluded.
  *
  * Six carry the specific alt text written when they were chosen for the venue

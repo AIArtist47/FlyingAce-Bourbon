@@ -32,7 +32,7 @@ const day = show.date.replace(/-/g, '');
 const pageUrl = Astro.site ? new URL(show.path, Astro.site).href : show.path;
 const params = new URLSearchParams({
   action: 'TEMPLATE',
-  text: `${show.artist} — Live Music at Flying Ace Farm`,
+  text: `${show.artist} - Live Music at Flying Ace Farm`,
   dates: `${day}T${clock(show.start)}/${day}T${clock(show.end)}`,
   details: ['Live music at Flying Ace Farm. Free to attend.', '', pageUrl].join('\n'),
   location: `${site.street}, ${site.cityState}`,

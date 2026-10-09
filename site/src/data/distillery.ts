@@ -3,7 +3,7 @@ import { site } from './site';
 /**
  * Distillery page content.
  *
- * Transcribed from the Distillery — Desktop artboard (project/Spirits.dc.html).
+ * Transcribed from the Distillery - Desktop artboard (project/Spirits.dc.html).
  * Prices, availability, tasting notes and cocktail builds were cross-checked
  * against flyingacefarm.com/distillery/; the bottle and cocktail shots come
  * from that page and live in public/images/distillery/.
@@ -161,7 +161,7 @@ export const howToBuy = [
 ] as const;
 
 /* -------------------------------------------------------------------------- */
-/* Featured trio — "Take off with our homegrown spirits"                      */
+/* Featured trio - "Take off with our homegrown spirits"                      */
 /* -------------------------------------------------------------------------- */
 
 /** Fisher–Yates. A `sort(() => Math.random() - 0.5)` shuffle is measurably
@@ -182,7 +182,7 @@ export const FEATURE_COUNT = 3;
  * walk out with are eligible, so the showcase never leads with something
  * that is out of stock.
  *
- * Drawn once per build — every deploy features a different trio. Flip this to
+ * Drawn once per build - every deploy features a different trio. Flip this to
  * a per-visit shuffle if you would rather it change on every page load.
  */
 export const featured = shuffle(lineup.filter((s) => s.availability !== 'Out of stock')).slice(

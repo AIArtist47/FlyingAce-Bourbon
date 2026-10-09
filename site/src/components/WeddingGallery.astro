@@ -5,8 +5,8 @@ import { galleryRows, galleryCount } from '../data/wedding-gallery';
 const W = '/images/weddings';
 
 /**
- * Four rows drifting in opposite directions — 1 and 3 right to left, 2 and 4
- * left to right — carrying every photograph the farm publishes.
+ * Four rows drifting in opposite directions - 1 and 3 right to left, 2 and 4
+ * left to right - carrying every photograph the farm publishes.
  *
  * The motion is a CSS animation rather than a transform written per frame: the
  * sequence is fixed and repeating, which is the one case keyframes suit, and
@@ -21,7 +21,7 @@ const W = '/images/weddings';
 
 /* One speed for every row. The rows hold different numbers of frames at
    different widths, so a shared duration would have them drifting at visibly
-   different rates — each row's duration is worked out from how far it actually
+   different rates - each row's duration is worked out from how far it actually
    has to travel. Three of them, because the rows shrink twice and a duration
    is only right for the height it was measured at. */
 const SPEED = 46; // px per second
@@ -54,7 +54,7 @@ const rows = galleryRows.map((row, r) => ({
 
   <div class="wrap wgal__head">
     {/* The lettermark is the heading, so it stays an h2 and carries what it
-        actually says as its alt — both lines, not just the brass one — so the
+        actually says as its alt - both lines, not just the brass one - so the
         section's accessible name is the whole phrase, as it reads. */}
     <h2 class="wgal__mark" id="wgal-title" data-reveal="up">
       <img
@@ -110,7 +110,7 @@ const rows = galleryRows.map((row, r) => ({
 <style>
   /* Dark on purpose: seventy-seven photographs at once need somewhere to sit,
      and the cream page lets them fight each other. .on-navy only sets the
-     selection and focus colours — the background has to be stated. */
+     selection and focus colours - the background has to be stated. */
   .wgal {
     position: relative;
     background: var(--navy);
@@ -196,7 +196,7 @@ const rows = galleryRows.map((row, r) => ({
 
   /* Sized by height, since a script mark is read at its x-height rather than
      by a type step. Two lines of ink: the lower one is rgb(217, 185, 122),
-     which is --brass exactly, and the upper is pure white — both already the
+     which is --brass exactly, and the upper is pure white - both already the
      section's own colours, and the file carries its own alpha, so it sits on
      the navy with nothing behind it. */
   .wgal__mark {
@@ -306,7 +306,7 @@ const rows = galleryRows.map((row, r) => ({
   }
 
   /* Holds still while someone is looking at a frame, and while the band is off
-     screen — a loop burns the compositor with nothing on screen to show for
+     screen - a loop burns the compositor with nothing on screen to show for
      it. Paused rather than stopped, so it picks up where it left off. */
   .wrows:hover .wrow__track,
   .wrows[data-visible='false'] .wrow__track {

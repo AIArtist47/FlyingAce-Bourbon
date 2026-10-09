@@ -1,5 +1,5 @@
 /**
- * Motion layer — Lenis smooth scroll driving GSAP ScrollTrigger.
+ * Motion layer - Lenis smooth scroll driving GSAP ScrollTrigger.
  *
  * Everything here is additive: the page is fully readable and navigable with
  * this file absent or `prefers-reduced-motion: reduce` set.
@@ -28,7 +28,7 @@ const forcedColors = window.matchMedia('(forced-colors: active)').matches;
 /* Fluid island nav                                                           */
 /*                                                                            */
 /* One block slides between nav items instead of each item owning an          */
-/* underline. It travels on x and scaleX only — never width — and gets a      */
+/* underline. It travels on x and scaleX only - never width - and gets a      */
 /* transient over-stretch proportional to the distance, so it reads as one    */
 /* body of liquid being pulled across rather than a box teleporting.          */
 /* -------------------------------------------------------------------------- */
@@ -164,7 +164,7 @@ if (header) {
       targets.forEach((entry) => entry.link.classList.toggle('is-active', entry.link === current));
 
       /* A pointer in the nav outranks the scroll position. On a page whose
-         nav holds no in-page sections — the Distillery page — `current` is
+         nav holds no in-page sections - the Distillery page - `current` is
          always null, so fall back to the link the server marked as the
          current page, or the island would never appear there. */
       if (!navHovered) moveIsland(current ?? activeNavLink());
@@ -205,7 +205,7 @@ document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((link) => {
   });
 });
 
-/* The brand lockups — header and footer — navigate home. When you are already
+/* The brand lockups - header and footer - navigate home. When you are already
    on the home page there is nowhere to go, so they return to the top rather
    than reloading the page under you. */
 document.querySelectorAll<HTMLAnchorElement>('[data-home]').forEach((home) => {
@@ -220,7 +220,7 @@ document.querySelectorAll<HTMLAnchorElement>('[data-home]').forEach((home) => {
 
 /* A cross-page link such as /host-your-event#enquire arrives through the browser's own hash
    jump, which knows nothing about the sticky header and leaves the section
-   tucked underneath it. This re-seats it — and has to run AFTER
+   tucked underneath it. This re-seats it - and has to run AFTER
    ScrollTrigger.refresh(), which otherwise restores the scroll it recorded
    and undoes the correction. */
 function seatHash() {
@@ -301,7 +301,7 @@ if (!reduce) {
          `:hover { transform }` on a revealed element silently dies.
          Order matters: the class must land BEFORE the inline transform is
          dropped, because the start-state rule is gated on
-         `:not(.is-revealed)` — clear it first and the start offset reasserts
+         `:not(.is-revealed)` - clear it first and the start offset reasserts
          itself, leaving the element permanently 40px low. */
       onComplete() {
         el.classList.add('is-revealed');
@@ -311,7 +311,7 @@ if (!reduce) {
     });
   });
 
-  /* Images with a parallax budget — overscaled so no edge is ever exposed. */
+  /* Images with a parallax budget - overscaled so no edge is ever exposed. */
   gsap.utils.toArray<HTMLElement>('[data-parallax]').forEach((el) => {
     const amount = Number(el.dataset.parallax ?? 0.08) * 100;
     const box = el.parentElement ?? el;
@@ -330,7 +330,7 @@ if (!reduce) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Mission statement — words lift out of the page as it scrolls past          */
+/* Mission statement - words lift out of the page as it scrolls past          */
 /* -------------------------------------------------------------------------- */
 
 const mission = document.querySelector<HTMLElement>('[data-mission]');
@@ -470,7 +470,7 @@ if (navEl && islandEl) {
 /* Lineup filter (Distillery page)                                            */
 /*                                                                            */
 /* Filtering is a content change, not decoration, so it runs regardless of     */
-/* motion preference — only the transition is conditional. Cards leave on      */
+/* motion preference - only the transition is conditional. Cards leave on      */
 /* opacity and transform, are then taken out of the flow, and the survivors    */
 /* stagger back in.                                                           */
 /* -------------------------------------------------------------------------- */
@@ -553,7 +553,7 @@ if (lineupRoot) {
 /* does the pointing; this follows with eased lag and swells to full size     */
 /* over anything clickable.                                                   */
 /*                                                                            */
-/* The box stays 44px for its whole life — only `scale` changes, so it never  */
+/* The box stays 44px for its whole life - only `scale` changes, so it never  */
 /* leaves its composited layer or triggers layout. Difference blending        */
 /* inverts whatever is beneath it instead of being recoloured per section.    */
 /*                                                                            */
@@ -583,7 +583,7 @@ if (canHover && !reduce && !forcedColors) {
         duration: 0.35,
         ease: 'power3.out',
         // 'auto' only clears the properties in conflict, so this never kills
-        // an in-flight scale tween — and moves cannot stack into jitter.
+        // an in-flight scale tween - and moves cannot stack into jitter.
         overwrite: 'auto',
       });
     },
@@ -621,7 +621,7 @@ if (canHover && !reduce && !forcedColors) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Calendar — the show panel behind each card                                 */
+/* Calendar - the show panel behind each card                                 */
 /* -------------------------------------------------------------------------- */
 
 {
@@ -672,7 +672,7 @@ if (canHover && !reduce && !forcedColors) {
       });
 
       panel.addEventListener('close', () => {
-        /* Only hand scrolling back once no panel is left open — stepping
+        /* Only hand scrolling back once no panel is left open - stepping
            between shows closes one while opening the next. */
         if (!document.querySelector('dialog.ed[open]')) {
           lenis?.start();
@@ -685,7 +685,7 @@ if (canHover && !reduce && !forcedColors) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Brewery gallery — the opened frame                                         */
+/* Brewery gallery - the opened frame                                         */
 /* -------------------------------------------------------------------------- */
 
 {

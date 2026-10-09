@@ -1,14 +1,14 @@
 /**
  * Restaurant (Monk's on the Farm) page content.
  *
- * Transcribed from the Restaurant — Desktop artboard
+ * Transcribed from the Restaurant - Desktop artboard
  * (project/Restaurant.dc.html) and cross-checked against
  * flyingacefarm.com/menu-online-ordering/.
  *
  * The live site publishes its menus as flat PNGs
  * (MONKS-WINTER-MENU-2026-12.png, COCKTAIL-MENU-11.png). The canvas build
  * note calls for rebuilding those as HTML text for SEO and accessibility,
- * which is what the artboard does and what is reproduced here — a screen
+ * which is what the artboard does and what is reproduced here - a screen
  * reader and a search engine can both read these prices.
  *
  * Prices change. This file is the one to hand to whoever maintains the menu.
@@ -130,11 +130,11 @@ export const foodMenu: MenuGroup[] = [
     items: [
       { name: 'Giant Pretzel', prices: ['$13.99'] },
       { name: 'Memphis Nachos', prices: ['$15.49'] },
-      { name: '— Pork', prices: ['$17.49'], indent: true },
-      { name: '— Brisket or Pastrami', prices: ['$19.49'], indent: true },
+      { name: '- Pork', prices: ['$17.49'], indent: true },
+      { name: '- Brisket or Pastrami', prices: ['$19.49'], indent: true },
       { name: 'Summer Berry Salad', prices: ['$15.49'] },
-      { name: '— Pork', prices: ['$17.49'], indent: true },
-      { name: '— Brisket or Pastrami', prices: ['$19.49'], indent: true },
+      { name: '- Pork', prices: ['$17.49'], indent: true },
+      { name: '- Brisket or Pastrami', prices: ['$19.49'], indent: true },
     ],
   },
 ];

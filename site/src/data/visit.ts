@@ -4,7 +4,7 @@ import { site } from './site';
  * Visit & FAQ page content.
  *
  * The questions, answers and the farm rules are transcribed from
- * flyingacefarm.com/faq/ — the farm's own words, not rewritten.
+ * flyingacefarm.com/faq/ - the farm's own words, not rewritten.
  *
  * Two deliberate departures, both noted where they occur:
  *  - The old page's emoticons are dropped. They are the only ones anywhere on
@@ -56,7 +56,7 @@ export type Faq = {
 export const faqs: Faq[] = [
   {
     q: 'Can you order American Ace spirits online?',
-    a: 'Yes — we ship directly to you where permitted.',
+    a: 'Yes - we ship directly to you where permitted.',
     link: { text: 'Order spirits online', href: site.spiritsShop, external: true },
   },
   {
@@ -72,7 +72,7 @@ export const faqs: Faq[] = [
   },
   {
     q: 'Do you take reservations?',
-    a: 'No reservations are required — there is plenty of indoor and outdoor space. For small and large group gatherings, email us to arrange tables.',
+    a: 'No reservations are required - there is plenty of indoor and outdoor space. For small and large group gatherings, email us to arrange tables.',
     link: { text: 'events@flyingacefarm.com', href: 'mailto:events@flyingacefarm.com' },
   },
   {
@@ -81,7 +81,7 @@ export const faqs: Faq[] = [
   },
   {
     q: 'Do you have music? Where can I sign my band up to play?',
-    a: 'Yes — live music every Friday, Saturday and Sunday. To play here, fill in the inquiry form.',
+    a: 'Yes - live music every Friday, Saturday and Sunday. To play here, fill in the inquiry form.',
     link: {
       text: 'Live music inquiries',
       href: '/live-music',
@@ -105,7 +105,7 @@ export const faqs: Faq[] = [
   },
   {
     q: 'Is the disc golf course open to the public?',
-    a: 'No — the course is private and requires approval before playing. For more information, contact Pete Thomas.',
+    a: 'No - the course is private and requires approval before playing. For more information, contact Pete Thomas.',
     link: { text: 'pete@flyingacefarm.com', href: 'mailto:pete@flyingacefarm.com' },
   },
 ];
@@ -113,7 +113,7 @@ export const faqs: Faq[] = [
 /**
  * The farm's rules, in its own order. Split into the two that read as welcome
  * rather than restriction and the rest, so the list does not open on a wall of
- * "no" — the wording of every one is unchanged.
+ * "no" - the wording of every one is unchanged.
  */
 export const farmRules = [
   'No outside food or drink',
@@ -125,8 +125,8 @@ export const farmRules = [
   'Parking is for patrons only',
   'Overnight parking is not permitted',
   'Children are welcome but must be accompanied by an adult and supervised at all times (not permitted in the 21+ area)',
-  'Sports equipment is not permitted — balls, bats, frisbees and the like',
-  'Pet friendly — must be leashed at all times, and in our outdoor areas only',
+  'Sports equipment is not permitted - balls, bats, frisbees and the like',
+  'Pet friendly - must be leashed at all times, and in our outdoor areas only',
   'We are a working farm and ask patrons to stay in designated areas. Please keep out of the pond, creeks, cornfields, drain fields, septic fields and production areas, unless otherwise permitted, as on a tour',
 ];
 

@@ -1,0 +1,181 @@
+---
+import { runway, mocktails, shot } from '../data/cocktails';
+
+/**
+ * What the tasting room is pouring now.
+ *
+ * A photograph each, because these are the ones a reader might actually order
+ * this weekend and a drink is largely a thing you look at before you choose
+ * it. The builds are the farm's own, slashes and all, so the list reads the
+ * way the board behind the bar does.
+ */
+---
+
+<section class="ckl section section--pad" id="now">
+  <div class="wrap">
+    <p class="eyebrow" data-reveal="up">On the runway</p>
+    <h2 class="display ckl__h2" data-reveal="up">Pouring now</h2>
+    <p class="ckl__note" data-reveal="up">
+      Thirteen built on American Ace spirits, distilled here on the farm.
+    </p>
+
+    <ul class="ckl__grid" role="list">
+      {
+        runway.map((c, i) => (
+          <li class="ckl__card" data-reveal="up" data-stagger={Math.min(i, 3)}>
+            <span class="ckl__media">
+              <img
+                class="ckl__img"
+                src={shot(c.slug)}
+                alt={`${c.title}, as served in the Flying Ace Farm tasting room`}
+                width="800"
+                height="1067"
+                loading={i < 3 ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+            </span>
+            <h3 class="display ckl__name">{c.title}</h3>
+            <p class="ckl__build">{c.build}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    {/* Its own small block rather than a fourteenth card: these are a short
+        list of names with no build to read and no photograph of their own. */}
+    <aside class="ckl__mock" data-reveal="up">
+      <p class="label ckl__mockh">Mocktails</p>
+      <ul class="ckl__mocklist" role="list">
+        {mocktails.map((m) => <li>{m}</li>)}
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .ckl {
+    background: var(--paper);
+  }
+
+  .ckl__h2 {
+    font-size: var(--t-h2-sm);
+    margin: var(--gap-eyebrow) 0 0;
+  }
+
+  .ckl__note {
+    margin: 0.75rem 0 0;
+    font-family: var(--font-sub);
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-body);
+    color: var(--muted);
+    max-width: 46ch;
+  }
+
+  .ckl__grid {
+    list-style: none;
+    margin: 2.75rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.5rem clamp(1.25rem, 2.5vw, 2rem);
+  }
+
+  .ckl__card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    min-width: 0;
+  }
+
+  /* The frame, not the photograph, holds the shape: every source is natively
+     3:4, so nothing is being cropped to fit this. */
+  .ckl__media {
+    display: block;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: var(--sand);
+  }
+
+  .ckl__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s var(--ease);
+  }
+
+  .ckl__card:hover .ckl__img {
+    transform: scale(1.03);
+  }
+
+  .ckl__name {
+    margin: 0.25rem 0 0;
+    font-size: var(--t-26);
+    line-height: var(--lh-card);
+  }
+
+  .ckl__build {
+    margin: 0;
+    font-family: var(--font-sub);
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-body);
+    color: var(--muted);
+  }
+
+  /* --- No alcohol --------------------------------------------------------- */
+
+  .ckl__mock {
+    margin-top: 3rem;
+    padding: 1.5rem 1.75rem;
+    background: var(--sand);
+    border-left: 4px solid var(--brass);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem 1.75rem;
+  }
+
+  .ckl__mockh {
+    margin: 0;
+    color: var(--award);
+    flex: none;
+  }
+
+  .ckl__mocklist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    font-family: var(--font-sub);
+    font-size: var(--t-body-sm);
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 60rem) {
+    .ckl__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .ckl__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2rem;
+    }
+
+    .ckl__mock {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ckl__img,
+    .ckl__card:hover .ckl__img {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>

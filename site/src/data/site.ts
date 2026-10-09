@@ -8,8 +8,8 @@
 
 /**
  * Served from `public/images/`. Each file is the original from
- * flyingacefarm.com/wp-content/uploads/ — the mapping the canvas IMAGES note
- * specifies for each slot — downloaded so the page carries its own assets
+ * flyingacefarm.com/wp-content/uploads/ - the mapping the canvas IMAGES note
+ * specifies for each slot - downloaded so the page carries its own assets
  * instead of depending on the live WordPress host. `origin` records where
  * each one came from, for re-fetching when the farm updates a photo.
  */
@@ -60,7 +60,7 @@ export const site = {
 /**
  * In the artboard these are cross-page links. On a single landing page each
  * one has to resolve to a distinct vertical band, otherwise several nav items
- * highlight at once — hence #spirits and #weddings rather than the pillar
+ * highlight at once - hence #spirits and #weddings rather than the pillar
  * cards that share the one grid row.
  */
 export const nav = [
@@ -75,7 +75,7 @@ export const nav = [
 
 /**
  * The four accordion panels. `meta` carries two or three hard details that
- * earn the expanded state — every one of them is already stated elsewhere on
+ * earn the expanded state - every one of them is already stated elsewhere on
  * the canvas (awards bar, hours strip, events and weddings artboards), so
  * nothing here is invented.
  */
@@ -84,7 +84,7 @@ export const pillars = [
     id: 'distillery',
     num: '01',
     title: 'Distillery',
-    lede: 'American Ace bourbon, whiskey and rum — distilled from grain we grow, store and mill on the property.',
+    lede: 'American Ace bourbon, whiskey and rum - distilled from grain we grow, store and mill on the property.',
     meta: ['Double Gold, 2021', 'Tasting room', 'On-site ABC store'],
     cta: 'Explore the spirits',
     /* Straight to the shop rather than the distillery page. The panel itself
@@ -178,7 +178,7 @@ export const fieldsToGlass = {
     { n: '02', title: 'Harvest', body: 'Picked from the fields that surround the distillery.' },
     { n: '03', title: 'Store & Mill', body: 'Stored and milled on the property.' },
     { n: '04', title: 'Distill', body: 'Paired with malted barley and wheat and run off our still.' },
-    { n: '05', title: 'Bottle', body: 'Straight off the still as White Dog — or aged into bourbon.' },
+    { n: '05', title: 'Bottle', body: 'Straight off the still as White Dog - or aged into bourbon.' },
   ],
 };
 

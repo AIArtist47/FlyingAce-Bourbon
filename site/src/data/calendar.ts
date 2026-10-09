@@ -6,7 +6,7 @@
  * full listing, and the artist photo is mirrored into public/images/events/.
  *
  * `date` is ISO so grouping and sorting never depend on the display strings.
- * When the farm publishes a new season, add entries here — the month headings,
+ * When the farm publishes a new season, add entries here - the month headings,
  * the "next up" callout and the counts all derive from this array.
  */
 
@@ -22,7 +22,7 @@ export type EventItem = {
   artist: string;
   /** One line of the artist's own bio, trimmed to a sentence that stands alone. */
   note: string;
-  /** Set where the farm calls it out — drives the accent badge. */
+  /** Set where the farm calls it out - drives the accent badge. */
   badge?: string;
   image: string;
   alt: string;
@@ -56,7 +56,7 @@ export const events: EventItem[] = [
     start: '2:00pm',
     end: '5:00pm',
     artist: 'Alex Kerns',
-    note: 'Known to genre-bend — the Beatles to Tyler Childers to the Americana vibe of his own originals.',
+    note: 'Known to genre-bend - the Beatles to Tyler Childers to the Americana vibe of his own originals.',
     image: `${E}/alex-kerns.jpg`,
     alt: 'Alex Kerns band photo',
     href: 'https://flyingacefarm.com/calendar/live-music-featuring-alex-kerns-2/',
@@ -86,7 +86,7 @@ export const events: EventItem[] = [
     start: '3:00pm',
     end: '6:00pm',
     artist: 'Chris Bowen',
-    note: 'Northern Virginia singer and guitarist — an easy afternoon set to go with a glass of something handcrafted.',
+    note: 'Northern Virginia singer and guitarist - an easy afternoon set to go with a glass of something handcrafted.',
     image: `${E}/chris-bowen.jpg`,
     alt: 'Chris Bowen performing',
     href: 'https://flyingacefarm.com/calendar/live-music-chris-bowen/',
@@ -116,7 +116,7 @@ export const events: EventItem[] = [
     start: '2:00pm',
     end: '5:00pm',
     artist: 'Joey Hafner',
-    note: 'A Lovettsville local — high-energy acoustic sets as a solo artist and as frontman of a party rock cover band.',
+    note: 'A Lovettsville local - high-energy acoustic sets as a solo artist and as frontman of a party rock cover band.',
     badge: 'Lovettsville local',
     image: `${E}/joey-hafner.jpg`,
     alt: 'Joey Hafner playing guitar',
@@ -197,7 +197,7 @@ export const subscribe = [
 ];
 
 /* ---------------------------------------------------------------------- */
-/* Derived — nothing below is hand-maintained                             */
+/* Derived - nothing below is hand-maintained                             */
 /* ---------------------------------------------------------------------- */
 
 const MONTHS = [
