@@ -82,7 +82,6 @@ export const nav = [
 export const pillars = [
   {
     id: 'distillery',
-    num: '01',
     title: 'Distillery',
     lede: 'American Ace bourbon, whiskey and rum - distilled from grain we grow, store and mill on the property.',
     meta: ['Double Gold, 2021', 'Tasting room', 'On-site ABC store'],
@@ -95,7 +94,6 @@ export const pillars = [
   },
   {
     id: 'brewery',
-    num: '02',
     title: 'Brewery',
     lede: 'Fifteen-plus rotating taps and seltzers, five flagships, and a cream ale brewed with our own Bloody Butcher corn.',
     meta: ['Best of Loudoun Beer, 2025', 'Beer to go'],
@@ -105,7 +103,6 @@ export const pillars = [
   },
   {
     id: 'restaurant',
-    num: '03',
     title: 'Monk’s on the Farm',
     lede: 'Monk’s BBQ and smashburgers, Wednesday through Sunday.',
     meta: ['Open Wed – Sun', 'Order online'],
@@ -115,7 +112,6 @@ export const pillars = [
   },
   {
     id: 'events',
-    num: '04',
     title: 'Host Your Event',
     lede: 'Weddings and private parties in the historic barn, the glass-walled pavilion, the farmhouse and the open lawns.',
     meta: ['50′ × 80′ pavilion', 'Farmhouse bridal suite'],

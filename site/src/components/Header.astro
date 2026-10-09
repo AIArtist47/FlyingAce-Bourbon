@@ -56,7 +56,6 @@ const isCurrent = (h: string) => h === Astro.url.pathname;
     </button>
   </div>
 
-  <div class="hdr__progress" data-progress aria-hidden="true"></div>
 </header>
 
 <div class="drawer" id="menu-drawer" data-drawer hidden>
@@ -274,17 +273,6 @@ const isCurrent = (h: string) => h === Astro.url.pathname;
     min-height: 2.75rem;
     align-items: center;
     justify-content: center;
-  }
-
-  .hdr__progress {
-    position: absolute;
-    left: 0;
-    bottom: -1px;
-    height: 2px;
-    width: 100%;
-    background: var(--accent);
-    transform: scaleX(0);
-    transform-origin: left;
   }
 
   /* --- Drawer ---------------------------------------------------------- */

@@ -52,10 +52,6 @@ const outbound = (href: string) => /^https?:\/\//.test(href);
               <span class="panel__spine-title display display--700">{p.title}</span>
             </span>
 
-            <span class="panel__num" aria-hidden="true">
-              {p.num}
-            </span>
-
             <span class="panel__body">
               <span class="panel__title display display--700">{p.title}</span>
               <span class="panel__lede">{p.lede}</span>
@@ -139,15 +135,6 @@ const outbound = (href: string) => /^https?:\/\//.test(href);
      horizontally like any other card. */
   .panel__spine {
     display: none;
-  }
-
-  .panel__num {
-    font-family: var(--font-display);
-    font-size: var(--t-14);
-    font-weight: 700;
-    letter-spacing: var(--ls-wordmark);
-    color: var(--brass);
-    margin-bottom: 0.875rem;
   }
 
   .panel__body {
@@ -291,14 +278,6 @@ const outbound = (href: string) => /^https?:\/\//.test(href);
       letter-spacing: var(--ls-display);
       color: var(--cream);
       white-space: nowrap;
-    }
-
-    .panel__num {
-      position: absolute;
-      top: 1.75rem;
-      left: 1.75rem;
-      margin-bottom: 0;
-      transition: color 420ms var(--ease);
     }
 
     .panel__body {

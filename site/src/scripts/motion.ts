@@ -111,7 +111,7 @@ if (!reduce) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Header: condense, scroll progress, active section                          */
+/* Header: condense, active section                                           */
 /* -------------------------------------------------------------------------- */
 
 const header = document.querySelector<HTMLElement>('[data-header]');
@@ -122,20 +122,6 @@ if (header) {
     end: 99999,
     onToggle: (self) => header.classList.toggle('is-stuck', self.isActive),
   });
-
-  const bar = header.querySelector<HTMLElement>('[data-progress]');
-  if (bar && !reduce) {
-    gsap.to(bar, {
-      scaleX: 1,
-      ease: 'none',
-      scrollTrigger: {
-        start: 0,
-        end: () => document.documentElement.scrollHeight - window.innerHeight,
-        scrub: 0.25,
-        invalidateOnRefresh: true,
-      },
-    });
-  }
 
   /* Underline exactly one nav item: the last target the reader has scrolled
      past. Per-section triggers would light up several at once, because the
