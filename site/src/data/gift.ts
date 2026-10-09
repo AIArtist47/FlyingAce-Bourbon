@@ -62,7 +62,7 @@ export const goodFor = [
   {
     icon: 'store' as const,
     title: 'The ABC Store',
-    body: 'Bottles of the farm’s own bourbon, rye and gin, on site.',
+    body: 'Bottles of the farm’s own bourbon, whiskey and rum, on site.',
   },
 ] as const;
 
