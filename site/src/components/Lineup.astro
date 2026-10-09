@@ -1,5 +1,5 @@
 ---
-import { lineup, lineupFilters } from '../data/distillery';
+import { lineup, lineupFilters, sharedPour } from '../data/distillery';
 ---
 
 <section class="lineup section section--pad" id="lineup" aria-labelledby="lineup-title" data-lineup>
@@ -45,6 +45,33 @@ import { lineup, lineupFilters } from '../data/distillery';
                 <span class="bottle__price">{s.price}</span>
                 <span class="bottle__avail">{s.availability}</span>
               </p>
+
+              {/* Only the three the farm actually sells on SharedPour. The
+                  other five are the on-site ABC store, and a buy button that
+                  led to a shop not carrying the bottle would be worse than
+                  no button. */}
+              {
+                s.buy && (
+                  <p class="bottle__cta">
+                    <a
+                      class="btn btn--solid btn--md bottle__buy"
+                      href={s.buy}
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      Buy Now
+                    </a>
+                    <a
+                      class="arrow-link bottle__coll"
+                      href={sharedPour.collection}
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      View Collection <span class="arrow-link__ico">&#8599;</span>
+                    </a>
+                  </p>
+                )
+              }
             </div>
           </article>
         ))
@@ -146,6 +173,22 @@ import { lineup, lineupFilters } from '../data/distillery';
     flex-direction: column;
     gap: 0.75rem;
     flex-grow: 1;
+  }
+
+  /* Pinned to the foot of the card rather than following the note, so the
+     three that carry it line up with each other however long their tasting
+     notes run. */
+  .bottle__cta {
+    margin: auto 0 0;
+    padding-top: 0.875rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.125rem;
+  }
+
+  .bottle__buy {
+    flex: none;
   }
 
   .bottle__badge {

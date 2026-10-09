@@ -23,9 +23,34 @@ export const lineupFilters: { id: 'all' | SpiritGroup; label: string }[] = [
 
 export type BadgeTone = 'navy' | 'accent' | 'muted';
 
+/**
+ * The farm's direct-to-door shop. Three of the eight bottles are listed
+ * there; the rest are the on-site ABC store only, which is why `buy` is
+ * optional rather than a field every bottle fills in with a guess.
+ */
+export const sharedPour = {
+  collection: 'https://sharedpour.com/collections/american-ace-spirits',
+};
+
+export interface Bottle {
+  id: string;
+  group: SpiritGroup;
+  badge: string;
+  badgeTone: BadgeTone;
+  name: string;
+  note: string;
+  price: string;
+  availability: string;
+  image: string;
+  alt: string;
+  /** Its own page on SharedPour, where the farm sells it online. */
+  buy?: string;
+}
+
 export const lineup = [
   {
     id: 'cask-strength',
+    buy: 'https://sharedpour.com/products/cask-strength-blended-bourbon',
     group: 'blended',
     badge: 'Double Gold',
     badgeTone: 'navy',
@@ -38,6 +63,7 @@ export const lineup = [
   },
   {
     id: '90-proof',
+    buy: 'https://sharedpour.com/products/american-ace-distillery-90-proof-blended-bourbon',
     group: 'blended',
     badge: 'Silver medal',
     badgeTone: 'navy',
@@ -50,6 +76,7 @@ export const lineup = [
   },
   {
     id: 'honey-barrel',
+    buy: 'https://sharedpour.com/products/american-ace-honey-barrel-strength-bourbon-whiskey',
     group: 'limited',
     badge: 'Limited release',
     badgeTone: 'accent',
@@ -120,18 +147,7 @@ export const lineup = [
     image: `${D}/rum.jpg`,
     alt: 'American Ace Rum bottle',
   },
-] satisfies {
-  id: string;
-  group: SpiritGroup;
-  badge: string;
-  badgeTone: BadgeTone;
-  name: string;
-  note: string;
-  price: string;
-  availability: string;
-  image: string;
-  alt: string;
-}[];
+] satisfies Bottle[];
 
 export const howToBuy = [
   {
