@@ -218,9 +218,25 @@ const shots = eventCards.map((c) => ({ id: c.id, src: `${G}/${c.id}.webp` }));
 
   /* --- The two photographs ---------------------------------------------- */
 
+  /* Out of the wrap on the left and into the grid gutter on the right, so
+     the pair runs from the window's edge to the cards instead of sitting in
+     a column.
+
+     The left figure is the wrap's own geometry undone rather than a number
+     that happens to look right: the wrap is 90rem centred with a --gutter
+     inside it, so backing out half the leftover width plus that gutter lands
+     exactly on the window edge at any size. Under 90rem the first term is
+     zero and it reduces to the gutter.
+
+     The section already clips, so there is nothing for the bleed to push
+     into and no sideways scroll. */
   .ec__shots {
     position: relative;
     margin-top: clamp(2rem, 4vw, 3rem);
+    margin-left: calc(-1 * (max(0px, (100vw - var(--maxw)) / 2) + var(--gutter)));
+    /* The grid gap is 4rem; all but the 0.75rem that separates the two
+       photographs is given back, so they stop just short of the cards. */
+    margin-right: calc(0.75rem - 4rem);
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
@@ -304,6 +320,12 @@ const shots = eventCards.map((c) => ({ id: c.id, src: `${G}/${c.id}.webp` }));
        inside each card would be this section's four pictures over again. */
     .ec__inline {
       display: none;
+    }
+
+    /* One column now, so there are no cards to the right to stop short of.
+       It bleeds both ways instead. */
+    .ec__shots {
+      margin-right: calc(-1 * var(--gutter));
     }
   }
 
