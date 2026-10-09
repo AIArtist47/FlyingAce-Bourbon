@@ -1,7 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import { site } from '../data/site';
-import { subscribe, type DecoratedEvent } from '../data/calendar';
+import { type DecoratedEvent } from '../data/calendar';
 import { artistProfiles, eventStandards, eventCategory } from '../data/artists';
 
 interface Props {
@@ -38,9 +38,6 @@ const params = new URLSearchParams({
   location: `${site.street}, ${site.cityState}`,
 });
 const gcal = `https://calendar.google.com/calendar/render?${params}`;
-
-/* The feed, so a reader who wants every show rather than this one has it. */
-const subscribeAll = subscribe[0];
 
 /* Worked out here rather than inline: a template literal with its own braces
    inside an attribute expression is more than the template parser will take. */
@@ -152,10 +149,6 @@ const startsAt = `${show.date}T${startClock.slice(0, 2)}:${startClock.slice(2, 4
             ))
           }
         </ul>
-
-        <a class="ev__sub arrow-link tap-box" href={subscribeAll.href} target="_blank" rel="noopener">
-          Subscribe to every show <span class="arrow-link__ico" aria-hidden="true">&#8599;</span>
-        </a>
       </aside>
     </div>
   </div>
@@ -391,10 +384,6 @@ const startsAt = `${show.date}T${startClock.slice(0, 2)}:${startClock.slice(2, 4
 
   .ev__std svg {
     margin-top: 0.125rem;
-  }
-
-  .ev__sub {
-    margin-top: 0.25rem;
   }
 
   /* --- What else is on ---------------------------------------------------- */
