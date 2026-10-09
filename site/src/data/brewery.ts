@@ -5,7 +5,16 @@
  * Imagery comes from flyingacefarm.com/brewery/ and lives in
  * public/images/brewery/.
  *
- * NOTE: a tap list is perishable. The artboard's draft list and the live site
+ * NOTE: a tap list is perishable, and this one now has three sources that do
+ * not agree. Flying Session, Blue Raspberry Seltzer and Peach Blossom Seltzer
+ * were removed on 2026-10-09 because the farm says they are off the board --
+ * flyingacefarm.com/brewery/ still lists all three, so the website is behind
+ * the taproom rather than the other way round. Four more the farm named as
+ * currently pouring are not added yet because no source carries their ABV,
+ * IBU or tasting note: Sexi Mexi Chili Lime Lager, Sour Approach Sour, Cherry
+ * Limeade Seltzer, Lovettsville Lemonade Seltzer.
+ *
+ * A tap list is perishable. The artboard's draft list and the live site
  * had already drifted apart when this was built (the site was showing Märzen,
  * Berry Blood Orange Sour and Pumpkin Pie Ale; the artboard lists Red Tail,
  * Sombeero and the sours below). The artboard is the source of truth here, as
@@ -74,13 +83,10 @@ export const seasonal = [
   { name: '“Red Tail” Irish Red Ale', body: 'Caramel, vanilla and a touch of roast.', spec: '4.5% · 20 IBU' },
   { name: 'Ultra Light Lager', body: 'Pilsner malt and flaked rice; clean and crisp.', spec: '5.5% · 10 IBU' },
   { name: '“Sombeero” Mexican Amber Lager', body: 'Silver · 2025 Virginia Craft Beer Cup.', spec: '6.4% · 18 IBU' },
-  { name: '“Flying Session” Pale Ale', body: 'Mosaic and Cascade; apricot and cream.', spec: '4.4% · 50 IBU' },
   { name: '“Mayday” DDH New England IPA', body: 'Lotus and Krush; orange creamsicle, passion fruit.', spec: '8.2% · 44 IBU' },
   { name: '“Stormchaser” Irish Stout', body: 'Roasted coffee and dark chocolate; dry finish.', spec: '4.6% · 50 IBU' },
   { name: 'Blueberry Peach Cobbler Sour', body: 'Ripe blueberry and peach with a tart twist.', spec: '5.9% · 10 IBU' },
   { name: '“Cherry Bomb” Sour Ale', body: 'Bright cherry, tangy then lightly sweet.', spec: '5.2% · 10 IBU' },
-  { name: 'Blue Raspberry Seltzer', body: 'Sweet-tart berry, clean and bubbly.', spec: '5.0%' },
-  { name: '“Peach Blossom” Seltzer', body: 'Sun-ripened peach and honeysuckle.', spec: '5.0%' },
   { name: '“Ladies Man” Cider', body: 'Apple-raspberry, subtly sweet.', spec: '7.0% · Fabbioli Cellars' },
   { name: 'Athletic Brewing “Free Wave” / “Run Wild”', body: 'Hazy IPA and sessionable IPA.', spec: 'Non-alcoholic · <0.5%' },
 ];
