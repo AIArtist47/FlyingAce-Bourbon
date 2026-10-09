@@ -45,13 +45,22 @@ const actions = [
 </nav>
 
 <style>
-  /* Nothing at all above this width: on a desktop the header carries the same
-     two links across the top and the page has room for the rest. */
+  /* Nothing anywhere by default. */
   .abar {
     display: none;
   }
 
-  @media (max-width: 48rem) {
+  /* A phone, and only a phone.
+     `hover: none` and `pointer: coarse` are what a touch device reports and a
+     computer does not, so this is iOS and Android rather than "a narrow
+     window". A desktop browser dragged down to 375px keeps the hover it has
+     and gets the page exactly as it was before this bar existed -- which is
+     the point: a thumb bar is for thumbs, and a pointer already has the
+     header across the top.
+     Asked of the device rather than the user agent string, which lies and
+     changes. The width still has to agree, so a tablet in landscape -- which
+     also reports coarse -- is left alone. */
+  @media (max-width: 48rem) and (hover: none) and (pointer: coarse) {
     .abar {
       display: block;
       position: fixed;
@@ -145,8 +154,15 @@ const actions = [
 
 <script>
   /* Shown once the hero has gone by. An observer rather than a scroll
-     listener, like everything else on this site that reacts to position. */
-  const bar = document.querySelector<HTMLElement>('[data-abar]');
+     listener, like everything else on this site that reacts to position.
+
+     Gated on the same query the styles use, so a desktop browser does not
+     keep an observer alive for a bar it is never going to draw. */
+  const ON_A_PHONE = '(max-width: 48rem) and (hover: none) and (pointer: coarse)';
+
+  const bar = window.matchMedia(ON_A_PHONE).matches
+    ? document.querySelector<HTMLElement>('[data-abar]')
+    : null;
   const hero = document.querySelector<HTMLElement>('main > *');
 
   if (bar && hero && 'IntersectionObserver' in window) {
