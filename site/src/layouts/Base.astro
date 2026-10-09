@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import AgeGate from '../components/AgeGate.astro';
+import ActionBar from '../components/ActionBar.astro';
 
 interface Props {
   title: string;
@@ -59,6 +60,11 @@ const ogImage = Astro.site
     <AgeGate />
     <a class="skip" href="#main">Skip to content</a>
     <slot />
+
+    {/* After the slot, so it is the last thing in the tab order rather than
+        something a keyboard reader meets before the page. */}
+    <ActionBar />
+
     <script>
       import '../scripts/motion';
     </script>

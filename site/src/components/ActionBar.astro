@@ -1,0 +1,164 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+
+/**
+ * The three things somebody on a phone is most likely to want, pinned to the
+ * bottom of every page.
+ *
+ * "Book" is the event enquiry, not a table: the farm says plainly in two
+ * places that it takes no reservations, so a booking here can only be a
+ * wedding or a private event.
+ *
+ * It stays out of the way until the hero has gone by. Every hero on this site
+ * already carries its own calls to action, and a bar repeating them over the
+ * top would be the same offer twice on the smallest screen there is.
+ */
+
+/* Each label names its object. "Order" on its own is ambiguous here -- the
+   header offers two of them, food and spirits -- and "Book" on its own reads
+   as a table, which is the one thing this farm does not take. */
+const actions = [
+  { id: 'order', label: 'Order Food', icon: 'store', href: site.orderFood, external: true },
+  { id: 'directions', label: 'Directions', icon: 'pin', href: site.directions, external: true },
+  { id: 'book', label: 'Book Event', icon: 'calendar', href: '/host-your-event#enquire', external: false },
+] as const;
+---
+
+<nav class="abar" aria-label="Order, directions and bookings" data-abar>
+  <ul class="abar__list" role="list">
+    {
+      actions.map((a) => (
+        <li class="abar__cell">
+          <a
+            class={`abar__link abar__link--${a.id}`}
+            href={a.href}
+            {...(a.external ? { target: '_blank', rel: 'noopener' } : {})}
+          >
+            <Icon name={a.icon as any} size={20} stroke="currentColor" width={1.5} />
+            <span class="abar__label">{a.label}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  /* Nothing at all above this width: on a desktop the header carries the same
+     two links across the top and the page has room for the rest. */
+  .abar {
+    display: none;
+  }
+
+  @media (max-width: 48rem) {
+    .abar {
+      display: block;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      /* Above the page and the sticky header, below the drawer at 150 -- an
+         open menu covers this rather than fighting it. */
+      z-index: 120;
+      background: var(--navy);
+      border-top: 1px solid var(--rule-navy);
+      /* The home indicator on a phone sits where this bar does. */
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      transform: translateY(100%);
+      transition: transform 0.45s var(--ease);
+    }
+
+    .abar[data-shown='true'] {
+      transform: translateY(0);
+    }
+
+    .abar__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .abar__cell {
+      min-width: 0;
+    }
+
+    .abar__cell + .abar__cell .abar__link {
+      border-left: 1px solid var(--rule-navy);
+    }
+
+    .abar__link {
+      /* Taller than the 44px minimum, because this is the one control on the
+         page a thumb reaches for without looking. */
+      min-height: 3.5rem;
+      height: 100%;
+      padding: 0.625rem 0.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      text-align: center;
+      color: var(--cream);
+      text-decoration: none;
+      transition: background-color 0.3s var(--ease);
+    }
+
+    /* Ordering is the primary action here, the same way it is the red button
+       in the header. The other two carry the section's own ground. */
+    .abar__link--order {
+      background: var(--accent);
+      color: var(--white);
+    }
+
+    .abar__link:active {
+      background-color: rgba(244, 238, 227, 0.1);
+    }
+
+    .abar__link--order:active {
+      background-color: var(--accent-deep);
+    }
+
+    .abar__label {
+      font-family: var(--font-display);
+      font-size: var(--t-13);
+      font-weight: 700;
+      letter-spacing: var(--ls-caps-sm);
+      text-transform: uppercase;
+      line-height: 1.1;
+    }
+
+    /* The bar covers the foot of the page, so the page gives it back. */
+    :global(body) {
+      padding-bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .abar {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  /* Shown once the hero has gone by. An observer rather than a scroll
+     listener, like everything else on this site that reacts to position. */
+  const bar = document.querySelector<HTMLElement>('[data-abar]');
+  const hero = document.querySelector<HTMLElement>('main > *');
+
+  if (bar && hero && 'IntersectionObserver' in window) {
+    new IntersectionObserver(
+      ([entry]) => {
+        bar.dataset.shown = entry.isIntersecting ? 'false' : 'true';
+      },
+      /* Fires as the hero's last pixel leaves the top of the window. */
+      { threshold: 0 },
+    ).observe(hero);
+  } else if (bar) {
+    /* No observer, no clever timing -- but the bar still belongs there. */
+    bar.dataset.shown = 'true';
+  }
+</script>
