@@ -1,0 +1,524 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+import { subscribe, type DecoratedEvent } from '../data/calendar';
+import { artistProfiles, eventStandards, eventCategory } from '../data/artists';
+
+interface Props {
+  show: DecoratedEvent;
+  prev?: DecoratedEvent;
+  next?: DecoratedEvent;
+}
+
+const { show, prev, next } = Astro.props;
+const profile = artistProfiles[show.artist];
+
+/** "3:00pm" -> "150000", for the Google Calendar template URL. */
+function clock(t: string) {
+  const m = t.trim().toLowerCase().match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/);
+  if (!m) return '000000';
+  let h = Number(m[1]) % 12;
+  if (m[3] === 'pm') h += 12;
+  return `${String(h).padStart(2, '0')}${m[2]}00`;
+}
+
+/* Local floating time, deliberately without a trailing Z: the farm's hours are
+   its own, not the reader's. The same shape the detail panel builds.
+
+   Assembled in steps rather than as one expression: a template literal nested
+   inside another one's interpolation defeats the compiler here, and it
+   reports that as a markup error at a line number the file does not have. */
+const day = show.date.replace(/-/g, '');
+const pageUrl = Astro.site ? new URL(show.path, Astro.site).href : show.path;
+const params = new URLSearchParams({
+  action: 'TEMPLATE',
+  text: `${show.artist} — Live Music at Flying Ace Farm`,
+  dates: `${day}T${clock(show.start)}/${day}T${clock(show.end)}`,
+  details: ['Live music at Flying Ace Farm. Free to attend.', '', pageUrl].join('\n'),
+  location: `${site.street}, ${site.cityState}`,
+});
+const gcal = `https://calendar.google.com/calendar/render?${params}`;
+
+/* The feed, so a reader who wants every show rather than this one has it. */
+const subscribeAll = subscribe[0];
+
+/* Worked out here rather than inline: a template literal with its own braces
+   inside an attribute expression is more than the template parser will take. */
+const startClock = clock(show.start);
+const startsAt = `${show.date}T${startClock.slice(0, 2)}:${startClock.slice(2, 4)}`;
+---
+
+<article class="ev">
+  {/* Asymmetric rather than copy centred over a darkened photograph: the
+      name and the when sit left, the artist sits right, the way every other
+      hero on this site is built. */}
+  <header class="ev__head on-navy">
+    <div class="wrap ev__headin">
+      <div class="ev__copy">
+        <a class="ev__back arrow-link" href="/calendar">
+          <span class="arrow-link__ico" aria-hidden="true">&#8592;</span> All shows
+        </a>
+
+        <p class="eyebrow eyebrow--brass ev__cat">{eventCategory}</p>
+        <h1 class="display ev__name" data-reveal="up">{show.artist}</h1>
+        {profile && <p class="ev__billing">{profile.billing}</p>}
+
+        {/* The three facts somebody came for, before any prose. */}
+        <dl class="ev__facts">
+          <div>
+            <dt class="label">When</dt>
+            <dd class="tnum">
+              <time datetime={startsAt}>
+                {show.weekday} {show.day} {show.month}
+              </time>
+            </dd>
+          </div>
+          <div>
+            <dt class="label">Set</dt>
+            <dd class="tnum">{show.start} &ndash; {show.end}</dd>
+          </div>
+          <div>
+            <dt class="label">Where</dt>
+            <dd>{site.name}, {site.cityState}</dd>
+          </div>
+        </dl>
+
+        <div class="ev__cta">
+          <a class="btn btn--solid btn--lg" href={gcal} target="_blank" rel="noopener">
+            Add to Calendar
+          </a>
+          <a class="btn btn--ghost-light btn--lg" href={site.directions} target="_blank" rel="noopener">
+            Get Directions
+          </a>
+        </div>
+      </div>
+
+      <div class="ev__media" data-reveal="up">
+        <img
+          class="ev__img"
+          src={show.image}
+          alt={show.alt}
+          width="1200"
+          height="1200"
+          fetchpriority="high"
+        />
+        {show.badge && <p class="ev__badge">{show.badge}</p>}
+      </div>
+    </div>
+  </header>
+
+  <div class="ev__body">
+    <div class="wrap ev__grid">
+      <div class="ev__prose">
+        {profile && <p class="lede ev__intro">{profile.intro}</p>}
+        {/* Parenthesised, and on its own lines: an arrow returning bare markup
+            reads as a generic type argument to the TypeScript parser, which
+            fails on the first attribute with "Expected > but found class". */}
+        {
+          profile?.bio.map((para) => (
+            <p class="ev__para">{para}</p>
+          ))
+        }
+
+        {
+          profile && profile.links.length > 0 && (
+            <div class="ev__links">
+              <p class="label">More from {show.artist}</p>
+              <ul class="ev__linklist">
+                {profile.links.map((l) => (
+                  <li>
+                    <a class="arrow-link tap-box" href={l.href} target="_blank" rel="noopener">
+                      {l.label} <span class="arrow-link__ico" aria-hidden="true">&#8599;</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </div>
+
+      {/* The same three standards every show on this calendar runs under, so
+          nobody has to go back to the lineup to find out whether to book. */}
+      <aside class="ev__aside">
+        <p class="label ev__asideh">Good to know</p>
+        <ul class="ev__std">
+          {
+            eventStandards.map((s) => (
+              <li>
+                <Icon name="flag" size={16} stroke="var(--brass)" width={1.5} />
+                <span>{s}</span>
+              </li>
+            ))
+          }
+        </ul>
+
+        <a class="ev__sub arrow-link tap-box" href={subscribeAll.href} target="_blank" rel="noopener">
+          Subscribe to every show <span class="arrow-link__ico" aria-hidden="true">&#8599;</span>
+        </a>
+      </aside>
+    </div>
+  </div>
+
+  {(prev || next) && (
+    <nav class="ev__step" aria-label="Other shows">
+      <div class="wrap ev__stepin">
+        {prev ? (
+          <a class="ev__one ev__one--prev" href={prev.path}>
+            <span class="ev__dir">
+              <span class="ev__arrow" aria-hidden="true">&#8592;</span> Before this
+            </span>
+            <span class="display ev__onename">{prev.artist}</span>
+            <span class="ev__onewhen tnum">{prev.weekday} {prev.day} {prev.month}</span>
+          </a>
+        ) : (
+          <span />
+        )}
+
+        {next && (
+          <a class="ev__one ev__one--next" href={next.path}>
+            <span class="ev__dir">
+              After this <span class="ev__arrow" aria-hidden="true">&#8594;</span>
+            </span>
+            <span class="display ev__onename">{next.artist}</span>
+            <span class="ev__onewhen tnum">{next.weekday} {next.day} {next.month}</span>
+          </a>
+        )}
+      </div>
+    </nav>
+  )}
+</article>
+
+<style>
+  /* --- The band ---------------------------------------------------------- */
+
+  .ev__head {
+    background: var(--navy);
+    color: var(--cream);
+    padding-block: var(--sec-y);
+  }
+
+  .ev__headin {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+
+  .ev__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    --stack-gap: 1.25rem;
+    gap: var(--stack-gap);
+    min-width: 0;
+  }
+
+  .ev__back {
+    color: var(--on-navy);
+  }
+
+  .ev__back:hover {
+    color: var(--cream);
+  }
+
+  /* The shared arrow-link slides its mark right, which is where a link going
+     onward wants it. This one goes back. */
+  .ev__back:hover .arrow-link__ico {
+    transform: translateX(-0.375rem);
+  }
+
+  .ev__cat {
+    margin: 0.5rem 0 0;
+  }
+
+  .ev__name {
+    margin: 0;
+    font-size: var(--t-h2-sm);
+    line-height: var(--lh-display);
+    color: var(--cream);
+  }
+
+  .ev__billing {
+    margin: 0;
+    font-size: var(--t-hero-lede);
+    line-height: var(--lh-body);
+    color: var(--on-navy);
+    max-width: 34ch;
+  }
+
+  .ev__facts {
+    margin: 0.5rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 2.5rem;
+  }
+
+  .ev__facts div {
+    display: grid;
+    gap: 0.3125rem;
+  }
+
+  .ev__facts dt {
+    margin: 0;
+    color: var(--on-navy-3, var(--on-navy));
+  }
+
+  .ev__facts dd {
+    margin: 0;
+    font-size: var(--t-15);
+    font-weight: 600;
+    color: var(--cream);
+  }
+
+  .ev__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    margin-top: 0.75rem;
+  }
+
+  .ev__media {
+    position: relative;
+    overflow: hidden;
+    background: var(--rule-navy);
+    aspect-ratio: 1 / 1;
+  }
+
+  .ev__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ev__badge {
+    position: absolute;
+    left: 0;
+    bottom: 1.25rem;
+    margin: 0;
+    padding: 0.4375rem 1rem;
+    background: var(--accent);
+    color: var(--white);
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: var(--ls-kicker);
+    text-transform: uppercase;
+  }
+
+  /* --- The words ---------------------------------------------------------- */
+
+  .ev__body {
+    background: var(--paper);
+    padding-block: var(--sec-y);
+  }
+
+  .ev__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 18rem;
+    gap: clamp(2.5rem, 5vw, 5rem);
+    align-items: start;
+  }
+
+  .ev__prose > * {
+    max-width: 36rem;
+  }
+
+  .ev__intro {
+    margin: 0 0 1.5rem;
+  }
+
+  .ev__para {
+    margin: 0 0 1.25rem;
+    font-size: var(--t-body);
+    line-height: var(--lh-body);
+    color: var(--ink-soft);
+  }
+
+  .ev__para:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .ev__links {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .ev__linklist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+  }
+
+  /* --- What every show runs under ---------------------------------------- */
+
+  .ev__aside {
+    display: grid;
+    gap: 1rem;
+    padding: 1.75rem;
+    background: var(--sand);
+    border: 1px solid var(--rule);
+  }
+
+  .ev__asideh {
+    margin: 0;
+    color: var(--award);
+  }
+
+  .ev__std {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.875rem;
+  }
+
+  .ev__std li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.625rem;
+    align-items: start;
+    font-size: var(--t-body-sm);
+    line-height: var(--lh-tight);
+    color: var(--ink-soft);
+  }
+
+  .ev__std svg {
+    margin-top: 0.125rem;
+  }
+
+  .ev__sub {
+    margin-top: 0.25rem;
+  }
+
+  /* --- What else is on ---------------------------------------------------- */
+
+  .ev__step {
+    background: var(--navy);
+    color: var(--cream);
+    padding-block: clamp(2.5rem, 4vw, 3.5rem);
+  }
+
+  .ev__stepin {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem clamp(1.5rem, 3vw, 3rem);
+    align-items: start;
+  }
+
+  .ev__one {
+    display: grid;
+    gap: 0.4375rem;
+    text-decoration: none;
+    color: var(--cream);
+    min-width: 0;
+  }
+
+  .ev__one--next {
+    text-align: right;
+    justify-items: end;
+  }
+
+  .ev__dir {
+    font-size: var(--t-12);
+    font-weight: 600;
+    letter-spacing: var(--ls-kicker);
+    text-transform: uppercase;
+    color: var(--on-navy);
+  }
+
+  .ev__arrow {
+    display: inline-block;
+    transition: transform 0.4s var(--ease);
+  }
+
+  .ev__onename {
+    font-size: var(--t-lead);
+    line-height: var(--lh-card);
+    background-image: linear-gradient(var(--brass), var(--brass));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 2px;
+    transition: background-size 0.4s var(--ease);
+  }
+
+  .ev__one--next .ev__onename {
+    background-position: 100% 100%;
+  }
+
+  .ev__onewhen {
+    font-size: var(--t-13);
+    color: var(--on-navy);
+  }
+
+  .ev__one:hover .ev__onename,
+  .ev__one:focus-visible .ev__onename {
+    background-size: 100% 2px;
+  }
+
+  .ev__one--prev:hover .ev__arrow {
+    transform: translateX(-4px);
+  }
+
+  .ev__one--next:hover .ev__arrow {
+    transform: translateX(4px);
+  }
+
+  /* --- Narrow -------------------------------------------------------------- */
+
+  @media (max-width: 62rem) {
+    .ev__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ev__aside {
+      max-width: 28rem;
+    }
+  }
+
+  @media (max-width: 52rem) {
+    .ev__headin {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* The photograph leads on a phone, the way the cards on the lineup do. */
+    .ev__media {
+      order: -1;
+      aspect-ratio: 4 / 3;
+    }
+
+    .ev__name {
+      font-size: var(--t-44);
+    }
+
+    .ev__stepin {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ev__one--next {
+      text-align: left;
+      justify-items: start;
+    }
+
+    .ev__one--next .ev__onename {
+      background-position: 0 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ev__arrow {
+      transition: none;
+    }
+
+    .ev__one--prev:hover .ev__arrow,
+    .ev__one--next:hover .ev__arrow {
+      transform: none;
+    }
+  }
+</style>

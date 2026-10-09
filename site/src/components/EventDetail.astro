@@ -108,9 +108,9 @@ function gcal(e: DecoratedEvent) {
                 <a class="btn btn--solid" href={gcal(e)} target="_blank" rel="noopener">
                   Add to Calendar
                 </a>
-                <a class="btn btn--ghost" href={e.href} target="_blank" rel="noopener">
-                  Full listing
-                </a>
+                {/* The show's own page on this site now, not the WordPress
+                    permalink -- so it stays here, and opens in this tab. */}
+                <a class="btn btn--ghost" href={e.path}>Full listing</a>
               </div>
 
               {/* Step between shows without closing — the reader is browsing a

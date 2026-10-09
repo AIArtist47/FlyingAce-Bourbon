@@ -229,11 +229,33 @@ function parts(iso: string) {
   };
 }
 
-export type DecoratedEvent = EventItem & ReturnType<typeof parts>;
+/**
+ * The address each show gets on this site. The date is part of it because two
+ * of these artists play twice this season and a name alone would collide --
+ * and because a reader who sees the URL can tell which night it is.
+ *
+ * Deliberately not the WordPress permalink, which reads
+ * "live-music-w-john-jp-jones-at-flying-ace-farm-10": the trailing number is
+ * that install's own disambiguation and means nothing here.
+ */
+const slugify = (artist: string, date: string) =>
+  `${artist
+    .toLowerCase()
+    .replace(/[‘’“”']/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')}-${date}`;
+
+export type DecoratedEvent = EventItem & ReturnType<typeof parts> & { slug: string; path: string };
 
 const decorated: DecoratedEvent[] = events
-  .map((e) => ({ ...e, ...parts(e.date) }))
+  .map((e) => {
+    const slug = slugify(e.artist, e.date);
+    return { ...e, ...parts(e.date), slug, path: `/calendar/${slug}` };
+  })
   .sort((a, b) => a.date.localeCompare(b.date));
+
+/** Every show, in order, for the per-show pages and their prev/next. */
+export const allShows = decorated;
 
 export type MonthGroup = { key: string; month: string; year: number; items: DecoratedEvent[] };
 
