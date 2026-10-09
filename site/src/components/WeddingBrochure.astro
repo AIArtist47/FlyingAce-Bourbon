@@ -4,7 +4,7 @@ import { weddingBrochure as b } from '../data/weddings';
 
 <section class="wbro section section--pad" aria-labelledby="wbro-title">
   <div class="wrap wbro__inner">
-    <a class="wbro__frame" href={b.href} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+    <a class="wbro__frame" href={b.href} download tabindex="-1" aria-hidden="true">
       <img
         class="wbro__img"
         src={b.image}
@@ -22,10 +22,12 @@ import { weddingBrochure as b } from '../data/weddings';
       <p class="wbro__body sub__body" data-reveal="up">{b.body}</p>
       {/* The cover above links to the same file, so it is kept out of the tab
           order and the accessibility tree rather than read out twice. */}
-      <a class="btn btn--solid btn--lg wbro__cta" href={b.href} target="_blank" rel="noopener" data-reveal="up">
+      {/* Same origin, so `download` is honoured and the button does what
+          its label says rather than opening the file in a tab. */}
+      <a class="btn btn--solid btn--lg wbro__cta" href={b.href} download data-reveal="up">
         {b.cta}
       </a>
-      <p class="wbro__meta" data-reveal="up">PDF · opens in a new tab</p>
+      <p class="wbro__meta" data-reveal="up">{b.meta}</p>
     </div>
   </div>
 </section>

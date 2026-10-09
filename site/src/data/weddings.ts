@@ -69,7 +69,16 @@ export const weddingBrochure = {
   title: 'The wedding brochure',
   body: 'Spaces, capacities, what is included and how the day runs — the farm’s own trifold, as a PDF.',
   cta: 'Download the brochure',
-  href: 'https://flyingacefarm.com/wp-content/uploads/2024/03/Wedding-Trifold-Brochure.pdf',
+  /* The farm's own trifold, served from this site rather than linked back
+     to the WordPress uploads folder. Two reasons: a cross-origin link
+     cannot actually download -- the browser ignores the download
+     attribute and opens the file instead, so the button was promising
+     something it could not do -- and this was the last thing on the
+     weddings page that broke if that install went away. The file is the
+     one from that URL, byte for byte. */
+  href: '/files/flying-ace-farm-wedding-brochure.pdf',
+  /* What the reader is about to be handed, before they tap it on a phone. */
+  meta: 'PDF · 2 pages · 4 MB',
   image: `${W}/brochure.webp`,
   alt: 'The cover of the Flying Ace Farm wedding brochure',
 };
