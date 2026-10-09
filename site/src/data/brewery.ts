@@ -5,7 +5,16 @@
  * Imagery comes from flyingacefarm.com/brewery/ and lives in
  * public/images/brewery/.
  *
- * NOTE: a tap list is perishable, and this one now has three sources that do
+ * NOTE: the seasonal list below is the live site's Seasonal and Non-Alcoholic
+ * boards, less the three the farm says are off. Märzen, Berry Blood Orange
+ * and Pumpkin Pie were added from it on 2026-10-09, and Free Wave and Run
+ * Wild were split apart: that page gives them their own hops and their own
+ * numbers, so one line between them was losing half of each.
+ *
+ * Red Tail, Sombeero and Mayday are ours and are not on that page. Nobody has
+ * said to drop them, so they stay.
+ *
+ * A tap list is perishable, and this one has three sources that do
  * not agree. Flying Session, Blue Raspberry Seltzer and Peach Blossom Seltzer
  * were removed on 2026-10-09 because the farm says they are off the board --
  * flyingacefarm.com/brewery/ still lists all three, so the website is behind
@@ -82,13 +91,17 @@ export const flagships = [
 export const seasonal = [
   { name: '“Red Tail” Irish Red Ale', body: 'Caramel, vanilla and a touch of roast.', spec: '4.5% · 20 IBU' },
   { name: 'Ultra Light Lager', body: 'Pilsner malt and flaked rice; clean and crisp.', spec: '5.5% · 10 IBU' },
+  { name: 'Märzen Lager', body: 'German malt throughout; caramel and toffee.', spec: '6.0% · 20 IBU' },
+  { name: 'Berry Blood Orange Sour Ale', body: 'Bright berry against bold blood orange.', spec: '5.9% · 10 IBU' },
+  { name: 'Pumpkin Pie Ale', body: 'Pumpkin and warm baking spices.', spec: '5.3% · 10 IBU' },
   { name: '“Sombeero” Mexican Amber Lager', body: 'Silver · 2025 Virginia Craft Beer Cup.', spec: '6.4% · 18 IBU' },
   { name: '“Mayday” DDH New England IPA', body: 'Lotus and Krush; orange creamsicle, passion fruit.', spec: '8.2% · 44 IBU' },
   { name: '“Stormchaser” Irish Stout', body: 'Roasted coffee and dark chocolate; dry finish.', spec: '4.6% · 50 IBU' },
   { name: 'Blueberry Peach Cobbler Sour', body: 'Ripe blueberry and peach with a tart twist.', spec: '5.9% · 10 IBU' },
   { name: '“Cherry Bomb” Sour Ale', body: 'Bright cherry, tangy then lightly sweet.', spec: '5.2% · 10 IBU' },
   { name: '“Ladies Man” Cider', body: 'Apple-raspberry, subtly sweet.', spec: '7.0% · Fabbioli Cellars' },
-  { name: 'Athletic Brewing “Free Wave” / “Run Wild”', body: 'Hazy IPA and sessionable IPA.', spec: 'Non-alcoholic · <0.5%' },
+  { name: '“Free Wave” Hazy IPA', body: 'Amarillo, Citra and Mosaic; juicy and velvety.', spec: 'Non-alcoholic · 0.5% · 55 IBU' },
+  { name: '“Run Wild” IPA', body: 'Five Northwest hops, approachable bitterness.', spec: 'Non-alcoholic · <0.5% · 35 IBU' },
 ];
 
 export const beerToGo = [
