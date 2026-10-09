@@ -15,7 +15,15 @@
 
 import { enquiry } from './events';
 
-export type FormFieldType = 'text' | 'tel' | 'email' | 'date' | 'number' | 'url' | 'select';
+export type FormFieldType =
+  | 'text'
+  | 'tel'
+  | 'email'
+  | 'date'
+  | 'number'
+  | 'url'
+  | 'select'
+  | 'file';
 
 export interface FormField {
   id: string;
@@ -27,6 +35,14 @@ export interface FormField {
   wide?: boolean;
   /** `select` only. The first entry is the empty prompt. */
   options?: readonly string[];
+  /** `file` only. Offered to the picker, and checked again by extension
+      on the server, where a browser's word for a type is not evidence. */
+  accept?: string;
+  /** `file` only. Refused above this in the browser and again on the
+      server. See the note on the resume field for where it comes from. */
+  maxBytes?: number;
+  /** A line under the input, for a limit worth saying before it is hit. */
+  hint?: string;
 }
 
 export type FormKind = 'events' | 'weddings' | 'careers' | 'contact' | 'music';
@@ -136,10 +152,39 @@ export const forms: Record<FormKind, FormSpec> = {
           'Something else',
         ],
       },
+      {
+        id: 'resume',
+        label: 'Resume',
+        type: 'file',
+        /* The live site does not require one either. Someone who has not
+           written one yet should still be able to say hello. */
+        required: false,
+        wide: true,
+        /* The farm's own form takes anything at all. This takes what a resume
+           is actually sent as, documents and a photographed page, and turns
+           away the rest: this one goes to a person's mailbox as an
+           attachment, and an attachment nobody asked for is the oldest way
+           into one.
+
+           Checked by extension on the server too. The type a browser reports
+           is whatever the file was named, so it is a courtesy to the picker
+           rather than a gate. */
+        accept:
+          '.pdf,.doc,.docx,.rtf,.odt,.txt,.jpg,.jpeg,.png,.webp,.heic,' +
+          'application/pdf,application/msword,' +
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document,' +
+          'application/rtf,application/vnd.oasis.opendocument.text,text/plain,image/*',
+        /* The live form says 32 MB. It is a WordPress upload; this one is a
+           request to a Vercel function, which refuses a body over 4.5 MB
+           before any of our code runs, so 32 could only ever have failed at
+           the door. Four leaves room for the rest of the fields and is still
+           several times any resume anyone has written. */
+        maxBytes: 4 * 1024 * 1024,
+        hint: 'PDF, Word, plain text or a photo of one, up to 4 MB. Optional but it helps.',
+      },
     ],
     notes: { label: 'Tell us about yourself and any experience you have', required: false, rows: 5 },
     submit: 'Send Application',
-    foot: 'Have a resume? Reply to our answer with it attached, or send it to the same address.',
   },
 
   contact: {

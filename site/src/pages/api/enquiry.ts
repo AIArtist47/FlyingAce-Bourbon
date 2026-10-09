@@ -14,12 +14,15 @@ import { forms, isFormKind, type FormKind, type FormSpec } from '../../data/form
  * This is the only part of the site that is not built ahead of time. It runs
  * as a single Vercel function; everything else is still static HTML.
  *
- * Two shapes of request arrive here and both are answered in kind:
- *  - fetch() from the form's own script, as JSON, answered as JSON;
- *  - the browser's native POST when that script never loaded, as form data,
- *    answered with a redirect to /inquiry-sent.
+ * Both shapes of request arrive as the form's own data, and the Accept
+ * header is what tells them apart:
+ *  - fetch() from the form's own script asks for JSON and is answered in kind;
+ *  - the browser's native POST, when that script never loaded, does not, and
+ *    is answered with a redirect to /inquiry-sent.
  * The second is what keeps the form working with no JavaScript at all, and it
- * is the reason the markup still carries a real action and method.
+ * is the reason the markup still carries a real action and method. JSON is
+ * still read if something posts it, but nothing here sends it any more: the
+ * careers form carries a file, and JSON cannot.
  */
 
 export const prerender = false;
@@ -36,9 +39,26 @@ const env = (key: string): string | undefined => {
 const MAX_FIELD = 500;
 const MAX_NOTES = 5000;
 
+/* A filename arrives from a stranger and ends up in a mail header and on
+   somebody's disk. Only the last segment, nothing that could start a new
+   header line, and nothing that could climb out of a folder. */
+const safeName = (raw: string): string => {
+  const base = raw.split(/[\\/]/).pop() ?? '';
+  const flat = base
+    .replace(/[\r\n"]+/g, ' ')
+    .replace(/[^\w .()\[\]-]+/g, '_')
+    .replace(/^\.+/, '')
+    .trim()
+    .slice(0, 120);
+  return flat || 'resume';
+};
+
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 type Answers = Record<string, string>;
+
+/** A file someone chose, once it has been measured and read. */
+type Attachment = { filename: string; bytes: Uint8Array };
 
 const clean = (value: unknown, max: number): string =>
   typeof value === 'string' ? value.trim().slice(0, max) : '';
@@ -46,13 +66,62 @@ const clean = (value: unknown, max: number): string =>
 /** A subject is a header. Anything that could break it out gets flattened. */
 const oneLine = (value: string): string => value.replace(/[\r\n]+/g, ' ').trim();
 
-function compose(answers: Answers, spec: FormSpec) {
+/**
+ * The one upload any of these forms takes, off the posted body.
+ *
+ * Both limits are the field's own, so the form and the endpoint cannot drift
+ * apart. The size is checked before the bytes are read. The extension is
+ * checked rather than the type the browser reported, which is only ever a
+ * guess from the same filename and is not evidence of anything.
+ *
+ * Returns undefined when nothing was chosen, which is the ordinary case: no
+ * form on this site requires a file.
+ */
+async function readUpload(
+  body: FormData,
+  spec: FormSpec,
+): Promise<{ file?: Attachment; error?: string }> {
+  for (const field of spec.fields) {
+    if (field.type !== 'file') continue;
+
+    const picked = body.get(field.id);
+    if (!(picked instanceof File) || picked.size === 0) continue;
+
+    if (field.maxBytes && picked.size > field.maxBytes) {
+      const mb = Math.round((field.maxBytes / (1024 * 1024)) * 10) / 10;
+      return { error: `${field.label} must be under ${mb} MB.` };
+    }
+
+    const filename = safeName(picked.name);
+    const allowed = (field.accept ?? '')
+      .split(',')
+      .map((a) => a.trim().toLowerCase())
+      .filter((a) => a.startsWith('.'));
+    const dot = filename.lastIndexOf('.');
+    const ext = dot > 0 ? filename.slice(dot).toLowerCase() : '';
+
+    if (allowed.length && !allowed.includes(ext)) {
+      return { error: `${field.label} should be ${allowed.join(', ')}.` };
+    }
+
+    return { file: { filename, bytes: new Uint8Array(await picked.arrayBuffer()) } };
+  }
+
+  return {};
+}
+
+function compose(answers: Answers, spec: FormSpec, file?: Attachment) {
   const lines: string[] = [];
 
   for (const field of spec.fields) {
+    /* A file is not a value to print. It is named below, with the body,
+       where it reads as what it is. */
+    if (field.type === 'file') continue;
     const value = answers[field.id];
     if (value) lines.push(`${field.label}: ${value}`);
   }
+
+  if (file) lines.push(`Resume: ${file.filename}, attached`);
 
   if (answers.notes) lines.push('', `${spec.notes.label}:`, answers.notes);
 
@@ -64,7 +133,14 @@ function compose(answers: Answers, spec: FormSpec) {
 }
 
 /** One message, before either way of sending it has been chosen. */
-type Message = { from: string; to: string; replyTo: string; subject: string; text: string };
+type Message = {
+  from: string;
+  to: string;
+  replyTo: string;
+  subject: string;
+  text: string;
+  attachment?: Attachment;
+};
 
 /**
  * The farm's own mailbox, over SMTP. This is the route that needs no third
@@ -92,6 +168,9 @@ async function sendOverSmtp(host: string, message: Message): Promise<boolean> {
     replyTo: message.replyTo,
     subject: message.subject,
     text: message.text,
+    attachments: message.attachment
+      ? [{ filename: message.attachment.filename, content: Buffer.from(message.attachment.bytes) }]
+      : undefined,
   });
 
   return true;
@@ -108,6 +187,15 @@ async function sendOverResend(key: string, message: Message): Promise<boolean> {
       reply_to: message.replyTo,
       subject: message.subject,
       text: message.text,
+      /* Resend takes the bytes base64'd over its HTTP API. */
+      attachments: message.attachment
+        ? [
+            {
+              filename: message.attachment.filename,
+              content: Buffer.from(message.attachment.bytes).toString('base64'),
+            },
+          ]
+        : undefined,
     }),
   });
 
@@ -119,7 +207,11 @@ async function sendOverResend(key: string, message: Message): Promise<boolean> {
   return true;
 }
 
-async function send(answers: Answers, spec: FormSpec): Promise<{ ok: boolean; to: string }> {
+async function send(
+  answers: Answers,
+  spec: FormSpec,
+  file?: Attachment,
+): Promise<{ ok: boolean; to: string }> {
   const to = spec.inbox;
 
   const message: Message = {
@@ -131,7 +223,8 @@ async function send(answers: Answers, spec: FormSpec): Promise<{ ok: boolean; to
     subject: oneLine(`${spec.subject} - ${oneLine(`${answers.first} ${answers.last}`.trim())}`),
     /* Plain text on purpose: nothing a stranger typed is ever handed to an
        HTML renderer, so there is nothing to escape and nothing to get wrong. */
-    text: compose(answers, spec),
+    text: compose(answers, spec, file),
+    attachment: file,
   };
 
   /* Whichever set of credentials the deployment has. The mailbox comes first
@@ -161,13 +254,23 @@ async function send(answers: Answers, spec: FormSpec): Promise<{ ok: boolean; to
 
 export const POST: APIRoute = async ({ request, redirect }) => {
   const type = request.headers.get('content-type') ?? '';
-  const asJson = type.includes('application/json');
+  /* What the caller will accept, not what it sent: the form's own script now
+     posts the same multipart body the browser would, and the header is the
+     only thing left that separates them. A browser posting this form on its
+     own asks for HTML and gets the redirect. */
+  const asJson = (request.headers.get('accept') ?? '').includes('application/json');
 
   let raw: Record<string, unknown>;
+  /* Kept whole as well as flattened, because a File does not survive
+     Object.fromEntries into a string map and the upload is read off this. */
+  let body: FormData | null = null;
   try {
-    raw = asJson
-      ? await request.json()
-      : Object.fromEntries(await request.formData());
+    if (type.includes('application/json')) {
+      raw = await request.json();
+    } else {
+      body = await request.formData();
+      raw = Object.fromEntries(body);
+    }
   } catch {
     /* Before the body is parsed there is no form to name, so this one
        goes without a kind and the sent page falls back. */
@@ -209,9 +312,16 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     return reply(asJson, redirect, { ok: false, status: 400, kind, error: 'Please enter a valid email address.' });
   }
 
+  /* Read last of the checks, so a four-megabyte resume is not held in memory
+     while the answer is found to be missing a name. */
+  const upload = body ? await readUpload(body, spec) : {};
+  if (upload.error) {
+    return reply(asJson, redirect, { ok: false, status: 400, kind, error: upload.error });
+  }
+
   let sent: { ok: boolean; to: string };
   try {
-    sent = await send(answers, spec);
+    sent = await send(answers, spec, upload.file);
   } catch (error) {
     console.error('[enquiry] send threw:', error);
     sent = { ok: false, to: spec.inbox };

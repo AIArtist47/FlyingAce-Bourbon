@@ -10,6 +10,11 @@ interface Props {
 
 const { kind = 'events' } = Astro.props;
 const spec = forms[kind];
+
+/* A form carrying a file has to say so in its encoding, or the browser's own
+   POST -- the one that happens when the script below never loaded -- sends
+   the file's name and none of its bytes. */
+const hasFile = spec.fields.some((f) => f.type === 'file');
 ---
 
 <section class="enq section section--pad" id="enquire" aria-labelledby="enq-title">
@@ -42,6 +47,7 @@ const spec = forms[kind];
       class="enq__form"
       action="/api/enquiry"
       method="post"
+      enctype={hasFile ? 'multipart/form-data' : undefined}
       data-enquiry
       data-inbox={spec.inbox}
       novalidate
@@ -72,14 +78,24 @@ const spec = forms[kind];
                 </select>
               ) : (
                 <input
-                  class="field__input"
+                  class={`field__input${f.type === 'file' ? ' field__input--file' : ''}`}
                   id={`q-${f.id}`}
                   name={f.id}
                   type={f.type}
+                  accept={f.accept || undefined}
                   autocomplete={f.autocomplete || undefined}
+                  aria-describedby={f.hint ? `q-${f.id}-hint` : undefined}
                   data-required={f.required ? 'true' : undefined}
                   data-label={f.label}
+                  data-max={f.maxBytes ? String(f.maxBytes) : undefined}
                 />
+              )}
+              {/* Tied to the input by aria-describedby, so the limit is read
+                  out with the field rather than found after the fact. */}
+              {f.hint && (
+                <span class="field__hint" id={`q-${f.id}-hint`}>
+                  {f.hint}
+                </span>
               )}
             </p>
           ))
@@ -260,6 +276,43 @@ const spec = forms[kind];
     resize: vertical;
   }
 
+  /* The native control, kept. It is the one field here a browser already
+     does better than we would: a custom one loses the keyboard, the file
+     name it reports back, and the name a screen reader reads for it. Only
+     the button inside it is restyled, which is all ::file-selector-button
+     allows and all that is wanted. */
+  .field__input--file {
+    padding: 0.4375rem 0.75rem;
+    cursor: pointer;
+  }
+
+  .field__input--file::file-selector-button {
+    margin-right: 0.75rem;
+    padding: 0.3125rem 0.875rem;
+    border: 1px solid var(--rule);
+    background: var(--sand);
+    color: var(--ink);
+    font: inherit;
+    font-size: var(--t-13);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps-sm);
+    cursor: pointer;
+    transition:
+      background-color 0.3s var(--ease),
+      border-color 0.3s var(--ease);
+  }
+
+  .field__input--file:hover::file-selector-button {
+    background: var(--paper);
+    border-color: var(--muted-2);
+  }
+
+  .field__hint {
+    font-size: var(--t-12);
+    line-height: var(--lh-body);
+    color: var(--muted-2);
+  }
+
   .field__input[aria-invalid='true'] {
     border-color: var(--accent);
     box-shadow: inset 0 0 0 1px var(--accent);
@@ -406,21 +459,41 @@ const spec = forms[kind];
         return;
       }
 
+      /* Before the upload rather than after it: a phone on a slow connection
+         should not spend four megabytes to be told no. The server measures
+         it again, because this one is a courtesy. */
+      for (const f of fields) {
+        if (!(f instanceof HTMLInputElement) || f.type !== 'file') continue;
+        const max = Number(f.dataset.max ?? 0);
+        const picked = f.files?.[0];
+        if (max && picked && picked.size > max) {
+          const mb = Math.round((max / (1024 * 1024)) * 10) / 10;
+          fail(f, `${f.dataset.label ?? 'That file'} must be under ${mb} MB.`);
+          return;
+        }
+      }
+
       button.disabled = true;
       label('Sending…');
       say('', 'busy');
 
       /* The endpoint does the sending, so nothing here opens a mail app and
-         nothing leaves the page. Posting as JSON is what tells it to answer
-         in kind rather than redirect -- the browser's own POST, which is what
-         happens if this script never loaded, gets the redirect instead. */
-      const answers = Object.fromEntries(new FormData(form));
+         nothing leaves the page.
 
+         Sent as the form's own data rather than as JSON, which cannot carry
+         the resume on the careers form -- one transport for all five, since
+         the endpoint has always read this shape for the no-script path. The
+         Accept header is what now asks for an answer in kind: the browser's
+         own POST, which is what happens if this script never loaded, does
+         not send it and is redirected instead.
+
+         No content-type is set on purpose. FormData has to name its own
+         boundary, and setting the header by hand drops it. */
       try {
         const response = await fetch(form.action, {
           method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(answers),
+          headers: { accept: 'application/json' },
+          body: new FormData(form),
         });
         const result = (await response.json().catch(() => ({}))) as {
           ok?: boolean;
