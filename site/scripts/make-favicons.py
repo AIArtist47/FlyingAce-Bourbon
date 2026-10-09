@@ -1,57 +1,58 @@
 """Build the favicon set from the farm's own mark.
 
-The mark is drawn light on nothing: #efefef over full transparency, which is
-why it reads in the navy header and would read nowhere else. A tab strip is
-white in most browsers' light theme, so shipped as it stands the favicon
-would be a white plane on white. It goes on the brand navy instead, which is
-what sits behind it everywhere else on the site and is the one treatment
-that reads on a light tab strip and a dark one both.
+The mark ships as supplied: #efefef over transparency, no tile behind it.
+That is a deliberate choice and it has a consequence worth knowing — the
+artwork is near-white, so on a browser's light tab strip there is almost
+nothing to see. It reads on a dark tab strip, on a dark bookmarks bar, and
+on iOS, which flattens a transparent touch icon onto black.
 
-Each size is drawn for itself rather than resampled from one master. A ring
-and a pair of wings are thin lines, and at 16px a straight downscale turns
-them to haze: the small sizes get a thicker stroke and less margin so the
-plane is still a plane. The large ones do not need either.
+Putting it on the brand navy is the one change that would make it read
+everywhere; `TILE` below is all that would take.
+
+Each size is still drawn for itself rather than resampled from one master.
+A ring and a pair of wings are thin lines, and at 16px a straight downscale
+turns them to haze: the small sizes get a thicker stroke and less margin so
+the plane is still a plane.
 """
 import io
 import os
 import sys
-from PIL import Image, ImageEnhance, ImageFilter
+from PIL import Image, ImageFilter
 
 SRC, OUT = sys.argv[1], sys.argv[2]
 
-NAVY = (24, 33, 44, 255)  # --navy  #18212c
-CREAM = (244, 238, 227)   # --cream #f4eee3
+# None ships the mark as supplied. A colour here puts it on a tile instead.
+TILE = None  # e.g. (24, 33, 44, 255) for --navy #18212c
 
 art = Image.open(SRC).convert('RGBA')
 # Trim the artboard's transparent margin, so the roundel is sized by its own
 # edge rather than by whatever space happened to be left around it.
 art = art.crop(art.split()[3].getbbox())
+ink = art.getpixel((art.width // 2, 0))  # whatever colour the mark is drawn in
 alpha = art.split()[3]
-print('artwork cropped to', art.size)
+print(f'artwork {art.size}, ink {ink[:3]}, tile {TILE or "none (transparent)"}')
 
 
-def render(px, pad_frac, dilate, sharpen):
-    mask_src = alpha.filter(ImageFilter.MaxFilter(dilate)) if dilate else alpha
+def render(px, pad_frac, dilate):
+    mask = alpha.filter(ImageFilter.MaxFilter(dilate)) if dilate else alpha
     side = max(art.size)
     pad = round(side * pad_frac)
     canvas = side + pad * 2
 
-    mask = Image.new('L', (canvas, canvas), 0)
-    mask.paste(mask_src, ((canvas - art.width) // 2, (canvas - art.height) // 2))
+    placed = Image.new('L', (canvas, canvas), 0)
+    placed.paste(mask, ((canvas - art.width) // 2, (canvas - art.height) // 2))
 
-    tile = Image.new('RGBA', (canvas, canvas), NAVY)
-    tile.paste(Image.new('RGBA', (canvas, canvas), CREAM + (255,)), (0, 0), mask)
-
-    out = tile.resize((px, px), Image.LANCZOS)
-    return ImageEnhance.Sharpness(out).enhance(1 + sharpen) if sharpen else out
+    base = Image.new('RGBA', (canvas, canvas), TILE or (0, 0, 0, 0))
+    base.paste(Image.new('RGBA', (canvas, canvas), ink[:3] + (255,)), (0, 0), placed)
+    return base.resize((px, px), Image.LANCZOS)
 
 
-#        px   pad    dilate sharpen
+#       px:  pad    dilate
 SPEC = {
-    16:  (0.02, 5, 1.0),   # the standard-DPI tab: all the room it can get
-    32:  (0.06, 3, 0.6),   # what most browsers actually show
-    48:  (0.07, 0, 0.4),
-    180: (0.10, 0, 0.0),   # iOS rounds the corners off this one
+    16:  (0.02, 5),   # the standard-DPI tab: all the room it can get
+    32:  (0.04, 3),   # what most browsers actually show
+    48:  (0.05, 0),
+    180: (0.08, 0),   # iOS rounds the corners off this one
 }
 
 frames = {px: render(px, *SPEC[px]) for px in SPEC}
@@ -59,6 +60,7 @@ frames = {px: render(px, *SPEC[px]) for px in SPEC}
 frames[180].save(f'{OUT}/apple-touch-icon.png')
 frames[32].save(f'{OUT}/favicon-32x32.png')
 frames[16].save(f'{OUT}/favicon-16x16.png')
+
 
 # One .ico carrying all three small sizes, each drawn for itself.
 #
