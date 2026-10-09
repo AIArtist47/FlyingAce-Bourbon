@@ -378,7 +378,8 @@ const { post, newer, older } = Astro.props;
     max-width: 100%;
     font-size: var(--t-lead);
     line-height: var(--lh-card);
-    padding-bottom: 0.3em;
+    /* The same 6px the index holds its rules at. */
+    padding-bottom: 0.375rem;
     background-image: linear-gradient(var(--award), var(--award));
     background-repeat: no-repeat;
     background-position: 0 100%;

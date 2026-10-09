@@ -316,17 +316,23 @@ const [lead, ...rest] = posts;
      last line ever drew one. `clone` gives each fragment its own background,
      so every line of a wrapped headline gets a rule as long as that line.
 
-     The padding is what holds the rule off the type. It is in `em` so it
-     keeps its proportion, and it differs by size below: the same fraction
-     that looks right under 24px card type is too much air under the 64px
-     lead. Padding on an inline box does not move the line it sits on, so
-     none of this shifts the layout. */
+     The padding holds the rule off the type, and it is a fixed length on
+     purpose. In `em` it tracked the headline, and these headlines are fluid:
+     the gap measured 9.6px under the lead at 1500 and 3.9px at 375, while
+     the cards sat at 6.2 and 5.2 -- so no two rules on the page were the
+     same distance from their words, and the lead's gap crossed from larger
+     than the cards' to smaller somewhere in between. One length holds every
+     rule at 6px from 375 up. In rem rather than px so it still answers to a
+     reader who scales their type.
+
+     Padding on an inline box does not move the line it sits on, so none of
+     this shifts the layout. */
   .blink {
     color: inherit;
     text-decoration: none;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
-    padding-bottom: 0.26em;
+    padding-bottom: 0.375rem;
     background-image: linear-gradient(var(--award), var(--award));
     background-repeat: no-repeat;
     background-position: 0 100%;
@@ -334,9 +340,6 @@ const [lead, ...rest] = posts;
     transition: background-size 0.4s var(--ease);
   }
 
-  .blead .blink {
-    padding-bottom: 0.15em;
-  }
 
   .blink::after {
     content: '';
