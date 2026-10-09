@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import DistilleryHero from '../components/DistilleryHero.astro';
 import HowToBuy from '../components/HowToBuy.astro';
 import Lineup from '../components/Lineup.astro';
+import FieldsToGlass from '../components/FieldsToGlass.astro';
 import HomegrownSpirits from '../components/HomegrownSpirits.astro';
 import Cocktails from '../components/Cocktails.astro';
 import TastingHours from '../components/TastingHours.astro';
@@ -20,6 +21,11 @@ import Footer from '../components/Footer.astro';
     <DistilleryHero />
     <HowToBuy />
     <Lineup />
+    {/* The grain story, between the two bottle sections rather than after
+        them: it answers what makes these different, which is the question
+        the lineup above has just raised. It also breaks a run of three sand
+        bands, and every word of it is about the still. */}
+    <FieldsToGlass />
     <HomegrownSpirits />
     <Cocktails />
     <TastingHours />
