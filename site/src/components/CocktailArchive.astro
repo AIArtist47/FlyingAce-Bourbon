@@ -1,13 +1,17 @@
 ---
-import { standby } from '../data/cocktails';
+import { standby, archiveShot } from '../data/cocktails';
 
 /**
- * Everything the room has poured before.
+ * Everything the room has poured before, now with the photographs.
  *
- * Sixty two drinks. No photographs, and that is the point rather than a
- * shortcut: this is a record, not a menu, and nobody scrolls sixty two
- * pictures of a drink they cannot order. Names and builds, set in columns so
- * the whole range can be taken in at once.
+ * The same card as the current list above -- picture, name, build -- because
+ * these are the same kind of thing and it would be odd to describe them two
+ * different ways on one page.
+ *
+ * It is not the same size, though, and that is the point. Sixty two drinks
+ * you cannot order should not out-shout thirteen you can, so the grid runs
+ * one column denser than the one above at every width. Same structure, same
+ * gutters, less weight. The navy ground does the rest.
  */
 ---
 
@@ -16,13 +20,24 @@ import { standby } from '../data/cocktails';
     <p class="eyebrow eyebrow--brass" data-reveal="up">On standby</p>
     <h2 class="display cka__h2" data-reveal="up">Poured before</h2>
     <p class="cka__note" data-reveal="up">
-      What the still has turned out across the seasons. Ask - the bar can often bring one back.
+      Sixty two the still has turned out across the seasons. Ask - the bar can often bring one back.
     </p>
 
     <ul class="cka__grid" role="list">
       {
         standby.map((c) => (
-          <li class="cka__item">
+          <li class="cka__card">
+            <span class="cka__media">
+              <img
+                class="cka__img"
+                src={archiveShot(c.slug)}
+                alt={`${c.title}, poured previously at Flying Ace Farm`}
+                width="600"
+                height="800"
+                loading="lazy"
+                decoding="async"
+              />
+            </span>
             <h3 class="display cka__name">{c.title}</h3>
             <p class="cka__build">{c.build}</p>
           </li>
@@ -53,49 +68,97 @@ import { standby } from '../data/cocktails';
     max-width: 48ch;
   }
 
-  /* Columns rather than one long run: sixty two stacked entries is a scroll,
-     three abreast is a list you can read. A rule over each, not around each
-     -- sixty two boxes would be a wall. */
+  /* Four across where the current list runs three, and the same column gutter
+     so the two sections sit on one rhythm. The row gap is a touch tighter:
+     with sixteen rows, the gap above compounds into a lot of scrolling. */
   .cka__grid {
     list-style: none;
     margin: 2.75rem 0 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.75rem clamp(1.5rem, 3vw, 2.75rem);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2rem clamp(1.25rem, 2.5vw, 2rem);
   }
 
-  .cka__item {
+  .cka__card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     min-width: 0;
-    padding-top: 1rem;
-    border-top: 1px solid var(--rule-navy);
+  }
+
+  .cka__media {
+    display: block;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: var(--rule-navy);
+  }
+
+  .cka__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Held back a little against the live menu's full-strength photographs,
+       and brought up to meet them on hover. */
+    opacity: 0.88;
+    transition:
+      transform 0.6s var(--ease),
+      opacity 0.4s var(--ease);
+  }
+
+  .cka__card:hover .cka__img {
+    opacity: 1;
+    transform: scale(1.03);
   }
 
   .cka__name {
-    margin: 0;
+    margin: 0.125rem 0 0;
     font-size: var(--t-22);
     line-height: var(--lh-card);
     color: var(--cream);
   }
 
   .cka__build {
-    margin: 0.375rem 0 0;
+    margin: 0;
     font-family: var(--font-sub);
     font-size: var(--t-14);
     line-height: var(--lh-body);
     color: var(--on-navy-2);
   }
 
-  @media (max-width: 64rem) {
+  /* Denser than the list above wherever there is room to be. This drops a
+     column at 60rem and 48rem against the list's 60rem and 36rem, which puts
+     the archive at 4 where the list is 3 all the way down to 960, and at 3
+     where the list is 2 from there to 768. Below that both want the same
+     minimum card, so they converge at 2 and then 1 -- matching there is the
+     right answer, not a failure of the idea. The narrowest a card gets in
+     the denser range is 207px at 1000, which still holds a 3:4 photograph,
+     a name and two lines of build. */
+  @media (max-width: 60rem) {
+    .cka__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 48rem) {
     .cka__grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
-  @media (max-width: 44rem) {
+  @media (max-width: 36rem) {
     .cka__grid {
       grid-template-columns: minmax(0, 1fr);
-      gap: 1.25rem;
+      gap: 1.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cka__img,
+    .cka__card:hover .cka__img {
+      transition: none;
+      transform: none;
     }
   }
 </style>
