@@ -46,7 +46,13 @@ const rows = galleryRows.map((row, r) => ({
 ---
 
 <section class="wgal section section--pad" id="gallery" aria-labelledby="wgal-title">
-  <div class="wrap">
+  {/* Decorative, and only that: the same file twice, the second mirrored, so
+      the two corners are a matched pair rather than two different bouquets.
+      Out of the accessibility tree and out of the way of the pointer. */}
+  <img class="wgal__floral wgal__floral--l" src={`${W}/floral-corner.webp`} alt="" width="1000" height="806" loading="lazy" decoding="async" aria-hidden="true" />
+  <img class="wgal__floral wgal__floral--r" src={`${W}/floral-corner.webp`} alt="" width="1000" height="806" loading="lazy" decoding="async" aria-hidden="true" />
+
+  <div class="wrap wgal__head">
     {/* The lettermark is the heading, so it stays an h2 and carries what it
         actually says as its alt — both lines, not just the brass one — so the
         section's accessible name is the whole phrase, as it reads. */}
@@ -106,8 +112,86 @@ const rows = galleryRows.map((row, r) => ({
      and the cream page lets them fight each other. .on-navy only sets the
      selection and focus colours — the background has to be stated. */
   .wgal {
+    position: relative;
     background: var(--navy);
     overflow: hidden;
+  }
+
+  /* --- The corners ------------------------------------------------------
+     White peonies and pink ranunculus are a bright thing to put on a navy
+     ground: at full strength the ink runs 25x the background's luminance at
+     its mean and 65x at its brightest petal, which reads as a sticker laid
+     on the section rather than part of it.
+
+     Measured down instead. At 0.45 the mean sits about 6x the navy and the
+     brightest petal about 12x -- present, soft, and still colour rather than
+     a grey ghost. The slight desaturation takes the candy out of the pink so
+     it sits with the brass in the lettermark below.
+
+     The mask is the other half of the blend: without it the bouquet stops on
+     the edge of its own box. Anchored at the corner, it carries full opacity
+     through the flowers and dissolves before the crop, so the thing fades
+     into the navy instead of ending. It flips with the element, so the
+     mirrored copy needs no mask of its own. */
+  .wgal__floral {
+    position: absolute;
+    top: 0;
+    z-index: 0;
+    width: clamp(8rem, 23vw, 27rem);
+    height: auto;
+    opacity: 0.45;
+    filter: saturate(0.9);
+    pointer-events: none;
+    -webkit-mask-image: radial-gradient(125% 125% at 0% 0%, #000 42%, transparent 86%);
+    mask-image: radial-gradient(125% 125% at 0% 0%, #000 42%, transparent 86%);
+  }
+
+  .wgal__floral--l {
+    left: 0;
+  }
+
+  .wgal__floral--r {
+    right: 0;
+    transform: scaleX(-1);
+  }
+
+  /* Absolutely positioned siblings paint over static ones, so the heading and
+     the rows have to claim the layer above rather than hope for it. */
+  .wgal__head,
+  .wrows {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* On a phone the two corners and the lettermark are all competing for one
+     375px line: at 23vw each they ran into the mark by 22px a side, and a
+     script face crossed by flowers is just hard to read.
+
+     Shrinking them was the wrong answer -- at 29vw and 0.4 they were not
+     legible as flowers at all, just a smudge in the corner. So they stay a
+     real size and the heading drops below them instead.
+
+     Capped, though. A bare 38vw is 143px on a 375 screen but 291px by 766 --
+     larger than the desktop rule gives at that same width, which is backwards,
+     and it left the heading stranded a long way below them. The clamp holds
+     the bouquet between 128 and 208px across the whole range.
+
+     The clearance is derived from that same value rather than guessed: 0.806
+     is the image's own aspect, and 2rem is the section's top padding less the
+     gap wanted under the flowers. Measured, it holds a steady 64px between
+     the flowers and the mark from 360 right up to the breakpoint. */
+  @media (max-width: 48rem) {
+    .wgal {
+      --corner: clamp(8rem, 38vw, 13rem);
+    }
+
+    .wgal__floral {
+      width: var(--corner);
+    }
+
+    .wgal__head {
+      margin-top: max(0px, calc(var(--corner) * 0.806 - 2rem));
+    }
   }
 
   /* Sized by height, since a script mark is read at its x-height rather than
