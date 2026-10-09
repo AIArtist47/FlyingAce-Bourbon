@@ -29,6 +29,16 @@ const ogImage = Astro.site
     {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="theme-color" content="#18212C" />
 
+    {/* The farm's roundel, on the navy it is drawn to sit on. The mark itself
+        is light on nothing -- that is how it reads in the header -- so the
+        tile behind it is what keeps it visible on a white tab strip as well
+        as a dark one. The .ico is there for the bare /favicon.ico a browser
+        asks for whether or not it is told to, and carries 16, 32 and 48. */}
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
