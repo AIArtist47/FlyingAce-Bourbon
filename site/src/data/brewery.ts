@@ -101,7 +101,7 @@ export const beerToGo = [
   },
   {
     title: 'Crowlers',
-    price: 'Starting at $9.99',
+    price: 'Starting at $8.99',
     body: '16 oz crowlers of any beer on tap, available to go only.',
     image: `${B}/crowlers.jpg`,
     alt: 'Flying Ace Farm tap handles and crowler cans',
