@@ -18,6 +18,13 @@ export const careersHero = {
   eyebrow: 'Careers',
   title: 'Join our team',
   lede: 'Bartenders, kitchen staff and front of house. Tell us which room you want to be in and we will come back to you.',
+  /* The farm's own hiring photograph, taken off the "We're Hiring" band on
+     its home page. It shows the job rather than the farm: somebody in the
+     brewery, in the hoodie, with the aircraft parked behind him. */
+  image: {
+    src: '/images/careers/hero.webp',
+    alt: 'A brewer in a Flying Ace hoodie working at an open brew kettle, the farm’s P-51 Mustang parked behind him',
+  },
 };
 
 /**

@@ -5,9 +5,11 @@ interface Props {
   lede: string;
   /** Anchor for the page's own call to action, where it has one. */
   cta?: { text: string; href: string };
+  /** A photograph behind the band. Without one it stays flat navy. */
+  image?: { src: string; alt: string };
 }
 
-const { eyebrow, title, lede, cta } = Astro.props;
+const { eyebrow, title, lede, cta, image } = Astro.props;
 
 /**
  * The hero for the pages that have no photograph of their own.
@@ -17,10 +19,30 @@ const { eyebrow, title, lede, cta } = Astro.props;
  * behind them. So this is the same navy band the photographed heroes stand
  * in, built out of type alone, with an optional panel beside it for whatever
  * that page wants within reach -- a phone number, a booking notice.
+ *
+ * A page that does have a photograph worth showing passes one, and the band
+ * picks up the media and scrim the other heroes use. The scrim is not
+ * decoration: see the note on it below.
  */
 ---
 
-<section class="phero on-navy" id="top">
+<section class={`phero on-navy${image ? ' phero--shot' : ''}`} id="top">
+  {
+    image && (
+      <div class="phero__media">
+        <img
+          class="phero__img"
+          src={image.src}
+          alt={image.alt}
+          width="2000"
+          height="1020"
+          fetchpriority="high"
+        />
+        <span class="phero__scrim" aria-hidden="true" />
+      </div>
+    )
+  }
+
   <div class="phero__inner wrap">
     <div class="phero__copy">
       <p class="eyebrow eyebrow--brass" data-reveal="up">{eyebrow}</p>
@@ -47,6 +69,7 @@ const { eyebrow, title, lede, cta } = Astro.props;
 
 <style>
   .phero {
+    position: relative;
     background: var(--navy);
     color: var(--cream);
     /* Shorter than the photographed heroes: there is no picture to give room
@@ -56,7 +79,67 @@ const { eyebrow, title, lede, cta } = Astro.props;
     align-items: center;
   }
 
+  /* With a photograph it stands at the same height as every other shot hero,
+     or the picture is cut to a letterbox that shows nothing. */
+  .phero--shot {
+    min-height: 30rem;
+    /* The media sits at a negative z-index; without a stacking context here
+       it escapes to the root one and paints behind this section's own navy,
+       and the photograph never shows. */
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .phero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+  }
+
+  .phero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Holds the brewer and the kettle in frame as the band gets wider; the
+       empty floor on the left is what gets given up. */
+    object-position: 62% 52%;
+  }
+
+  /* Heaviest where the words are, clearing to the right so the brewer still
+     reads as a photograph.
+
+     Measured, not guessed: the left of this picture is blown-out window light
+     whose brightest pixels are pure white, so the scrim is what makes the
+     copy legible rather than the photograph being kind.
+
+     The stops are where they are because of one case. An earlier version held
+     0.90 only to 42%, which is fine at 1440 and wider, but between about 960
+     and 1050 -- just past the breakpoint below, where the copy is still a
+     column but the band is narrow -- the lede's longest line reached into the
+     clearing zone and measured 4.26:1 against the 4.5 it needs. Holding 0.90
+     out to 58% fixes that band without flattening the brewer on the right.
+
+     Sampled over the real glyph boxes, not the block boxes: at 970, 1010,
+     1440 and 1920 the lede runs 7.95 to 9.92, the eyebrow 8.37 to 8.59 and
+     the headline 12.43 to 12.98. Stacked, under the vertical scrim below,
+     they are 9.69, 8.28 and 13.05. Change the picture, the crop or the copy
+     width and this wants measuring again. */
+  .phero__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      rgba(14, 20, 28, 0.94) 0%,
+      rgba(14, 20, 28, 0.9) 58%,
+      rgba(14, 20, 28, 0.66) 80%,
+      rgba(14, 20, 28, 0.5) 100%
+    );
+  }
+
   .phero__inner {
+    /* Above the media, which sits at a negative z-index. */
+    position: relative;
     width: 100%;
     display: flex;
     align-items: center;
@@ -105,6 +188,20 @@ const { eyebrow, title, lede, cta } = Astro.props;
   }
 
   @media (max-width: 60rem) {
+    /* Stacked, the copy is the full width of the band, so it runs out over
+       the cleared end of the gradient above -- which sits at about 0.50 where
+       the brass eyebrow needs 0.76 over this picture's blown-out whites. The
+       left-to-right scrim only works while the copy is a left-hand column, so
+       below this width it becomes a vertical one that is heavy throughout:
+       0.88 at its lightest, which holds the eyebrow at 7.0:1. */
+    .phero__scrim {
+      background: linear-gradient(
+        180deg,
+        rgba(14, 20, 28, 0.95) 0%,
+        rgba(14, 20, 28, 0.88) 100%
+      );
+    }
+
     .phero__inner {
       flex-direction: column;
       align-items: stretch;
