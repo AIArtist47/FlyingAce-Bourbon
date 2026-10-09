@@ -1,5 +1,5 @@
 ---
-import { posts, sections, sectionSlug, readable, blogIntro as intro } from '../data/blog';
+import { posts, sections, sectionSlug, blogIntro as intro } from '../data/blog';
 
 const [lead, ...rest] = posts;
 ---
@@ -64,11 +64,7 @@ const [lead, ...rest] = posts;
         </a>
 
         <div class="blead__copy">
-          <p class="bmeta">
-            <span class="bmeta__section">{lead.section}</span>
-            <span class="bmeta__sep" aria-hidden="true">·</span>
-            <time class="bmeta__date" datetime={lead.date}>{readable(lead.date)}</time>
-          </p>
+          <p class="bmeta">{lead.section}</p>
 
           <h2 class="display blead__title">
             <a class="blink" href={`/blog/${lead.slug}`}>{lead.title}</a>
@@ -104,15 +100,7 @@ const [lead, ...rest] = posts;
                   />
                 </a>
 
-                <p class="bmeta">
-                  <span class="bmeta__section">{p.section}</span>
-                  <span class="bmeta__sep" aria-hidden="true">
-                    ·
-                  </span>
-                  <time class="bmeta__date" datetime={p.date}>
-                    {readable(p.date)}
-                  </time>
-                </p>
+                <p class="bmeta">{p.section}</p>
 
                 <h3 class="display bcard__title">
                   <a class="blink" href={`/blog/${p.slug}`}>
@@ -287,24 +275,19 @@ const [lead, ...rest] = posts;
 
   /* --- Shared card parts -------------------------------------------------- */
 
+  /* The section a post is filed under, and nothing else. The date used to
+     sit beside it behind a middot; it is on the post itself, where someone
+     reading the piece can see how old it is, and in the datetime the post
+     carries for a crawler. On an index it was fifteen dates competing with
+     fifteen headlines for the same glance, and the list is not ordered by
+     anything a reader can act on. */
   .bmeta {
     margin: 0;
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
     font-size: var(--t-12);
     font-weight: 600;
     letter-spacing: var(--ls-kicker);
     text-transform: uppercase;
-  }
-
-  .bmeta__section {
     color: var(--award);
-  }
-
-  .bmeta__sep,
-  .bmeta__date {
-    color: var(--muted-2);
   }
 
   /* The title carries the link, so the accessible name is the headline and
