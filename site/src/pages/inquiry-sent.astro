@@ -56,11 +56,11 @@ const inbox = enquiry.events;
         <dl class="sent__direct">
           <div>
             <dt class="label">{failed ? 'Or email us' : 'Sent to'}</dt>
-            <dd><a href={`mailto:${inbox}`}>{inbox}</a></dd>
+            <dd><a class="tap-box" href={`mailto:${inbox}`}>{inbox}</a></dd>
           </div>
           <div>
             <dt class="label">Prefer to talk</dt>
-            <dd><a href={site.phoneHref}>{site.phone}</a></dd>
+            <dd><a class="tap-box" href={site.phoneHref}>{site.phone}</a></dd>
           </div>
         </dl>
 

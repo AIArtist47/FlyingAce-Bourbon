@@ -95,6 +95,10 @@
      separate from, so it wants a line box that fits the letters. */
   --lh-label: 1.1;
 
+  /* What a thumb needs. The buttons already stand this tall; the links that
+     did not are brought up to it below. */
+  --tap: 2.75rem; /* 44px */
+
   /* One distance from a label to the heading it leads, anywhere on the site.
      The leftover leading under the heading scales with its size, so this lands
      at about 19px under a 57px heading and 28 under the 132px hero -- tight,
@@ -701,5 +705,49 @@ a:hover .arrow-link__ico {
   .sec-head {
     align-items: flex-start;
     gap: 1.5rem;
+  }
+}
+
+/* ==========================================================================
+   Touch targets
+   ==========================================================================
+
+   A line of 13px text is a 17 to 22 pixel tap target, which is half what a
+   thumb needs and a third of what it wants. Every one of these is fine under
+   a cursor -- a mouse lands on a pixel -- so the whole section is asked of
+   the device rather than of the window: `hover: none` and `pointer: coarse`
+   are what a touch screen reports and a computer does not.
+
+   Two mechanisms, because the links come in two shapes.                   */
+
+@media (hover: none) and (pointer: coarse) {
+  /* One: a link that is its own line can simply stand taller. The text does
+     not move inside it -- the box grows around the ink, centred -- so the
+     only thing that changes is how much of the line answers to a thumb. */
+  .tap-box {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+  }
+
+  /* Two: a link inside a sentence cannot grow without pushing the sentence
+     around it. This gives it a 44px strip centred on its own text, drawn by
+     a pseudo-element, so the hit area is there and the layout is untouched.
+
+     Only for links that stand alone in their paragraph. Two of these within
+     44px of each other would overlap, and overlapping targets are worse than
+     small ones -- the wrong one wins. */
+  .tap-strip {
+    position: relative;
+  }
+
+  .tap-strip::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: var(--tap);
+    transform: translateY(-50%);
   }
 }

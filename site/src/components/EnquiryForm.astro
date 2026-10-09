@@ -21,11 +21,11 @@ const { page = 'events' } = Astro.props;
       <dl class="enq__direct" data-reveal="up">
         <div>
           <dt class="label">Email us</dt>
-          <dd><a href={`mailto:${q.events}`}>{q.events}</a></dd>
+          <dd><a class="tap-box" href={`mailto:${q.events}`}>{q.events}</a></dd>
         </div>
         <div>
           <dt class="label">Prefer to talk</dt>
-          <dd><a href={site.phoneHref}>{site.phone}</a></dd>
+          <dd><a class="tap-box" href={site.phoneHref}>{site.phone}</a></dd>
         </div>
       </dl>
     </div>

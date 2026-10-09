@@ -17,7 +17,7 @@ import SocialIcon from './SocialIcon.astro';
         <p class="ft__addr">
           {site.street}<br />
           {site.cityState}<br />
-          <a class="ft__phone" href={site.phoneHref}>{site.phone}</a>
+          <a class="ft__phone tap-box" href={site.phoneHref}>{site.phone}</a>
         </p>
         <ul class="ft__social">
           {
@@ -64,7 +64,7 @@ import SocialIcon from './SocialIcon.astro';
         <p class="kicker ft__kicker">Explore</p>
         {
           exploreLinks.map((l) => (
-            <a class="ft__link" href={l.href}>
+            <a class="ft__link tap-box" href={l.href}>
               {l.label}
             </a>
           ))
@@ -79,7 +79,7 @@ import SocialIcon from './SocialIcon.astro';
       <p class="ft__meta">
         <span>ACSA Member</span>
         <span class="ft__powered">
-          Powered by <a class="ft__by" href="#">Sipn Enterprises Inc.</a>
+          Powered by <a class="ft__by tap-strip" href="#">Sipn Enterprises Inc.</a>
         </span>
       </p>
     </div>
@@ -279,6 +279,19 @@ import SocialIcon from './SocialIcon.astro';
   @media (max-width: 36rem) {
     .ft__cols {
       grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  /* The seven explore links sat at a 28px pitch -- 22px of link and 6px of
+     gap -- which is one thumb across two of them. Standing each one up to
+     44px is the spacing: the gap goes, because the links now carry it
+     themselves, and the column grows by about a thumb's width in total. */
+  @media (hover: none) and (pointer: coarse) {
+    .ft__explore {
+      gap: 0;
+      /* The links are as wide as their words -- "Blog" was 30px across. On a
+         phone the row is what a thumb aims at, so the link becomes the row. */
+      align-items: stretch;
     }
   }
 </style>

@@ -61,7 +61,7 @@ const shown = venues.filter((v) => v.id !== 'outdoors');
                 <p class="vcard__meta">{v.meta}</p>
                 <p class="vcard__text">{v.body}</p>
                 {v.tour && (
-                  <a class="vcard__tour" href={v.tour} target="_blank" rel="noopener">
+                  <a class="vcard__tour tap-box" href={v.tour} target="_blank" rel="noopener">
                     View 3D tour <span class="arrow-link__ico">&#8599;</span>
                   </a>
                 )}
