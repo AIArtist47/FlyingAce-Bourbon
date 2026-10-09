@@ -408,7 +408,10 @@ const startsAt = `${show.date}T${startClock.slice(0, 2)}:${startClock.slice(2, 4
 
   .ev__one {
     display: grid;
-    gap: 0.4375rem;
+    /* The name carries 0.3em of its own padding under it for the hover rule,
+       so the row gap is a little tighter than it looks and the three lines
+       stay evenly spaced. */
+    gap: 0.3125rem;
     padding: 1.125rem 1.25rem 1.25rem;
     background: var(--navy);
     text-decoration: none;
@@ -435,9 +438,24 @@ const startsAt = `${show.date}T${startClock.slice(0, 2)}:${startClock.slice(2, 4
     transition: transform 0.4s var(--ease);
   }
 
+  /* The hover rule is painted as a background on this element, so the element
+     has to be the width of the name and nothing more.
+
+     It was not. As a grid item it stretched to the column, so the box was
+     408px against 107px of actual lettering and the brass line ran a clear
+     300px past the end of the artist's name into empty card. `justify-self`
+     shrinks it to its text; `max-width` keeps a long name inside the card.
+
+     The line then needs somewhere to sit. With line-height 1 the box stops
+     at the foot of the capitals, so the rule was drawn against them. The
+     padding opens a gap of about 5px at this size, and being in `em` it
+     holds that proportion if the type ever changes. */
   .ev__onename {
+    justify-self: start;
+    max-width: 100%;
     font-size: var(--t-lead);
     line-height: var(--lh-card);
+    padding-bottom: 0.3em;
     background-image: linear-gradient(var(--brass), var(--brass));
     background-repeat: no-repeat;
     background-position: 0 100%;

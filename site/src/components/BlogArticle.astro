@@ -342,7 +342,15 @@ const { post, newer, older } = Astro.props;
   .bnext__one {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    /* The title paints its hover rule as a background, so it has to be the
+       width of the words. Stretched, the newer-post card measured 681px of
+       box against 404px of lettering and the line ran 276px past the end of
+       the headline. The older-post card already shrank, through the
+       flex-end below -- this is the same thing for the other side. */
+    align-items: flex-start;
+    /* A little tighter than it reads: the title now carries 0.3em of its own
+       padding beneath it to hold the rule off the type. */
+    gap: 0.375rem;
     text-decoration: none;
     color: var(--ink);
     min-width: 0;
@@ -367,8 +375,10 @@ const { post, newer, older } = Astro.props;
   }
 
   .bnext__title {
+    max-width: 100%;
     font-size: var(--t-lead);
     line-height: var(--lh-card);
+    padding-bottom: 0.3em;
     background-image: linear-gradient(var(--award), var(--award));
     background-repeat: no-repeat;
     background-position: 0 100%;
