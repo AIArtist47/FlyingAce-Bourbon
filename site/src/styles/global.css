@@ -110,6 +110,67 @@
      writing a bare 1 instead. */
   --lh-card: 1;
 
+  /* --- A heading that carries a hover rule -------------------------------
+     Three components draw the rule as a background on the heading itself,
+     and all three had the same two faults.
+
+     The rule was flushed to the foot of the background's box, and where
+     that box ends has nothing to do with where the letters end. So the gap
+     tracked the type instead of staying put, and padding only added to it.
+     --rule-y and --rule-y-block lift the rule back off the baseline, which
+     is where a reader sees the letters stop: an em that scales and a rem
+     that does not cancel out, and every rule on the site sits --rule-gap
+     under its words at every size. The two differ because the box does. An
+     inline box is the font's own content area and ends 0.29em below the
+     baseline. A block box ends at the foot of its line box, which is half
+     its leading plus the descent -- so it moves when --lh-ruled does, and
+     is written to follow it.
+
+     Then the line has to have somewhere to put the rule. Oswald's content
+     box is 1.48em, so a heading at --lh-display or --lh-card is already
+     taller than its own line box: with box-decoration-break painting a rule
+     per line, every line of a wrapped headline drew one straight through
+     the capitals underneath. Caps have no descenders, so there was nothing
+     to reclaim and no offset could have fixed it -- the leading has to be
+     there.
+
+     --lh-ruled is that leading, and it is stated as what it is for rather
+     than as a ratio: the capitals, then the gap, the rule and the clearance
+     under it, which are three fixed distances. A ratio cannot hold them. At
+     one tight enough for the 64px lead the 20px cards collided, and at one
+     loose enough for the cards the lead read as body copy -- which is the
+     same trap the gap itself was in before --rule-y. Written this way it
+     comes out at 1.37 on a 20px card title, where the rule needs most of
+     what it is given, and tightens to about 0.99 by the 64px lead, which is
+     where the rest of the display scale already sits. Every ruled heading
+     on the site clears by the same 5px at every size.
+
+     Only the headings that carry a rule take it, so --lh-display and
+     --lh-card are untouched. */
+  --rule-gap: 0.25rem; /* 4px, baseline to rule */
+  --rule-weight: 2px;
+  --rule-clear: 0.3125rem; /* 5px, rule to the capitals below it */
+  --lh-ruled: calc(
+    0.82em + var(--rule-gap) + var(--rule-weight) + var(--rule-clear)
+  );
+  /* Where the background box ends, measured from the baseline, and so how
+     far back the rule has to come. An inline box ends at the font's descent;
+     a block box ends at the foot of its line box, half a leading and a
+     descent below. The weight comes off both because a background at 100%
+     is placed by its bottom edge, not its top: left in, the rule hung its
+     own thickness too high and measured 2px under the letters rather than
+     four. */
+  --rule-y: calc(
+    100% - (0.29em - var(--rule-weight) - var(--rule-gap))
+  );
+  --rule-y-block: calc(
+    100% -
+      (
+        var(--lh-ruled) / 2 - 0.45em - var(--rule-weight) -
+          var(--rule-gap)
+      )
+  );
+
   /* --- Tracking ---------------------------------------------------------
      Components had been setting this by hand in seven different values
      (0.04 / 0.06 / 0.08 / 0.1 / 0.12 / 0.14 / 0.2em) while four tokens sat

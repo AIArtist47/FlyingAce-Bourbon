@@ -447,19 +447,20 @@ const startsAt = `${show.date}T${startClock.slice(0, 2)}:${startClock.slice(2, 4
      shrinks it to its text; `max-width` keeps a long name inside the card.
 
      The line then needs somewhere to sit. With line-height 1 the box stops
-     at the foot of the capitals, so the rule was drawn against them. The
-     padding opens a gap of about 5px at this size, and being in `em` it
-     holds that proportion if the type ever changes. */
+     at the foot of the capitals, so the rule was drawn against them. It now
+     takes the leading and the offset every hover rule on the site takes --
+     see --rule-y-block in global.css. The padding this used to carry was
+     measured from the foot of the box rather than from the baseline, which
+     put the brass 11px under the name here against 6 on the blog. */
   .ev__onename {
     justify-self: start;
     max-width: 100%;
     font-size: var(--t-lead);
-    line-height: var(--lh-card);
-    padding-bottom: 0.3em;
+    line-height: var(--lh-ruled);
     background-image: linear-gradient(var(--brass), var(--brass));
     background-repeat: no-repeat;
-    background-position: 0 100%;
-    background-size: 0% 2px;
+    background-position: 0 var(--rule-y-block);
+    background-size: 0% var(--rule-weight);
     transition: background-size 0.4s var(--ease);
   }
 
@@ -470,7 +471,7 @@ const startsAt = `${show.date}T${startClock.slice(0, 2)}:${startClock.slice(2, 4
 
   .ev__one:hover .ev__onename,
   .ev__one:focus-visible .ev__onename {
-    background-size: 100% 2px;
+    background-size: 100% var(--rule-weight);
   }
 
   .ev__one--prev:hover .ev__arrow {

@@ -339,18 +339,19 @@ const { post, newer, older } = Astro.props;
     align-items: start;
   }
 
+  /* A block, not a flex column. The title paints its hover rule as a
+     background, so the box has to be the width of the words: as a flex item
+     it was blockified and stretched, and the newer-post card measured 681px
+     of box against 404px of lettering, with the brass running 276px past the
+     end of the headline. That was answered with align-items, which shrank
+     the box but left it a block -- and a block takes one background across
+     all of its lines, so once these titles wrapped, at 375 both of them do,
+     only the last line was ever underlined.
+
+     Left inline the title is the width of its own words with nothing
+     declared, and box-decoration-break gives each line its own rule. */
   .bnext__one {
-    display: flex;
-    flex-direction: column;
-    /* The title paints its hover rule as a background, so it has to be the
-       width of the words. Stretched, the newer-post card measured 681px of
-       box against 404px of lettering and the line ran 276px past the end of
-       the headline. The older-post card already shrank, through the
-       flex-end below -- this is the same thing for the other side. */
-    align-items: flex-start;
-    /* A little tighter than it reads: the title now carries 0.3em of its own
-       padding beneath it to hold the rule off the type. */
-    gap: 0.375rem;
+    display: block;
     text-decoration: none;
     color: var(--ink);
     min-width: 0;
@@ -358,10 +359,12 @@ const { post, newer, older } = Astro.props;
 
   .bnext__one--next {
     text-align: right;
-    align-items: flex-end;
   }
 
   .bnext__dir {
+    display: block;
+    /* What the flex gap used to hold. */
+    margin-bottom: 0.375rem;
     font-size: var(--t-12);
     font-weight: 600;
     letter-spacing: var(--ls-kicker);
@@ -375,25 +378,24 @@ const { post, newer, older } = Astro.props;
   }
 
   .bnext__title {
-    max-width: 100%;
     font-size: var(--t-lead);
-    line-height: var(--lh-card);
-    /* The same 6px the index holds its rules at. */
-    padding-bottom: 0.375rem;
+    line-height: var(--lh-ruled);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
     background-image: linear-gradient(var(--award), var(--award));
     background-repeat: no-repeat;
-    background-position: 0 100%;
-    background-size: 0% 2px;
+    background-position: 0 var(--rule-y);
+    background-size: 0% var(--rule-weight);
     transition: background-size 0.4s var(--ease);
   }
 
   .bnext__one--next .bnext__title {
-    background-position: 100% 100%;
+    background-position: 100% var(--rule-y);
   }
 
   .bnext__one:hover .bnext__title,
   .bnext__one:focus-visible .bnext__title {
-    background-size: 100% 2px;
+    background-size: 100% var(--rule-weight);
   }
 
   .bnext__one--prev:hover .bnext__arrow {
@@ -419,7 +421,7 @@ const { post, newer, older } = Astro.props;
     }
 
     .bnext__one--next .bnext__title {
-      background-position: 0 100%;
+      background-position: 0 var(--rule-y);
     }
   }
 
