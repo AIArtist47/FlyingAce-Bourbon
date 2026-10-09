@@ -45,6 +45,10 @@ export interface Bottle {
   alt: string;
   /** Its own page on SharedPour, where the farm sells it online. */
   buy?: string;
+  /** False keeps it out of the featured trio. Not shown anywhere: the page
+      no longer prints stock state, but it should still not promote a bottle
+      nobody can buy. */
+  inStock?: boolean;
 }
 
 export const lineup = [
@@ -90,12 +94,13 @@ export const lineup = [
   {
     id: 'rum-barrel',
     group: 'limited',
-    badge: 'Limited · Out of stock',
-    badgeTone: 'muted',
+    badge: 'Limited release',
+    badgeTone: 'accent',
     name: 'Rum Barrel Straight Bourbon',
     note: 'Finished in a once-used rum cask. Vanilla, allspice, molasses, crème brûlée and gingerbread.',
     price: '$79.99',
-    availability: 'Out of stock',
+    availability: '',
+    inStock: false,
     image: `${D}/rum-barrel.jpg`,
     alt: 'Rum Barrel single barrel bottle',
   },
@@ -114,7 +119,7 @@ export const lineup = [
   {
     id: 'christmas-blend',
     group: 'limited',
-    badge: 'Limited · Low inventory',
+    badge: 'Limited release',
     badgeTone: 'accent',
     name: 'Christmas Blend',
     note: 'Four-grain blend finished in maple syrup barrels. Maple, caramelized sugar, vanilla and toasted oak.',
@@ -201,7 +206,7 @@ export const FEATURE_COUNT = 3;
  * Drawn once per build - every deploy features a different trio. Flip this to
  * a per-visit shuffle if you would rather it change on every page load.
  */
-export const featured = shuffle(lineup.filter((s) => s.availability !== 'Out of stock')).slice(
+export const featured = shuffle(lineup.filter((s) => s.inStock !== false)).slice(
   0,
   FEATURE_COUNT,
 );

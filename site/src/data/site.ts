@@ -107,7 +107,7 @@ export const pillars = [
     id: 'restaurant',
     num: '03',
     title: 'Monk’s on the Farm',
-    lede: 'Monk’s BBQ, smashburgers and fried chicken, weekly specials Wednesday through Sunday.',
+    lede: 'Monk’s BBQ, smashburgers and fried chicken, weekly specials run Wednesday through Friday.',
     meta: ['Open Wed – Sun', 'Order online'],
     cta: 'Menu & ordering',
     href: '/restaurant',

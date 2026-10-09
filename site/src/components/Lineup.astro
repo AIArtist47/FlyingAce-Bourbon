@@ -43,7 +43,7 @@ import { lineup, lineupFilters, sharedPour } from '../data/distillery';
               <p class="bottle__note">{s.note}</p>
               <p class="bottle__foot">
                 <span class="bottle__price">{s.price}</span>
-                <span class="bottle__avail">{s.availability}</span>
+                {s.availability && <span class="bottle__avail">{s.availability}</span>}
               </p>
 
               {/* Only the three the farm actually sells on SharedPour. The
