@@ -135,51 +135,51 @@ const startsAt = `${show.date}T${startClock.slice(0, 2)}:${startClock.slice(2, 4
         }
       </div>
 
-      {/* The same three standards every show on this calendar runs under, so
-          nobody has to go back to the lineup to find out whether to book. */}
-      <aside class="ev__aside">
-        <p class="label ev__asideh">Good to know</p>
-        <ul class="ev__std">
-          {
-            eventStandards.map((s) => (
-              <li>
-                <Icon name="flag" size={16} stroke="var(--brass)" width={1.5} />
-                <span>{s}</span>
-              </li>
-            ))
-          }
-        </ul>
-      </aside>
-    </div>
-  </div>
+      {/* The side column: what every show runs under, then what is on either
+          side of this one. The neighbours used to be a full-width band under
+          the whole page; they belong with the other at-a-glance facts rather
+          than at the bottom of the article. */}
+      <div class="ev__side">
+        <aside class="ev__aside">
+          <p class="label ev__asideh">Good to know</p>
+          <ul class="ev__std">
+            {
+              eventStandards.map((s) => (
+                <li>
+                  <Icon name="flag" size={16} stroke="var(--brass)" width={1.5} />
+                  <span>{s}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </aside>
 
-  {(prev || next) && (
-    <nav class="ev__step" aria-label="Other shows">
-      <div class="wrap ev__stepin">
-        {prev ? (
-          <a class="ev__one ev__one--prev" href={prev.path}>
-            <span class="ev__dir">
-              <span class="ev__arrow" aria-hidden="true">&#8592;</span> Before this
-            </span>
-            <span class="display ev__onename">{prev.artist}</span>
-            <span class="ev__onewhen tnum">{prev.weekday} {prev.day} {prev.month}</span>
-          </a>
-        ) : (
-          <span />
-        )}
+        {(prev || next) && (
+          <nav class="ev__step" aria-label="Other shows">
+            {prev && (
+              <a class="ev__one ev__one--prev" href={prev.path}>
+                <span class="ev__dir">
+                  <span class="ev__arrow" aria-hidden="true">&#8592;</span> Before this
+                </span>
+                <span class="display ev__onename">{prev.artist}</span>
+                <span class="ev__onewhen tnum">{prev.weekday} {prev.day} {prev.month}</span>
+              </a>
+            )}
 
-        {next && (
-          <a class="ev__one ev__one--next" href={next.path}>
-            <span class="ev__dir">
-              After this <span class="ev__arrow" aria-hidden="true">&#8594;</span>
-            </span>
-            <span class="display ev__onename">{next.artist}</span>
-            <span class="ev__onewhen tnum">{next.weekday} {next.day} {next.month}</span>
-          </a>
+            {next && (
+              <a class="ev__one ev__one--next" href={next.path}>
+                <span class="ev__dir">
+                  After this <span class="ev__arrow" aria-hidden="true">&#8594;</span>
+                </span>
+                <span class="display ev__onename">{next.artist}</span>
+                <span class="ev__onewhen tnum">{next.weekday} {next.day} {next.month}</span>
+              </a>
+            )}
+          </nav>
         )}
       </div>
-    </nav>
-  )}
+    </div>
+  </div>
 </article>
 
 <style>
@@ -349,6 +349,15 @@ const startsAt = `${show.date}T${startClock.slice(0, 2)}:${startClock.slice(2, 4
     gap: 0.5rem 2rem;
   }
 
+  /* --- The side column ---------------------------------------------------- */
+
+  .ev__side {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+    min-width: 0;
+  }
+
   /* --- What every show runs under ---------------------------------------- */
 
   .ev__aside {
@@ -388,30 +397,29 @@ const startsAt = `${show.date}T${startClock.slice(0, 2)}:${startClock.slice(2, 4
 
   /* --- What else is on ---------------------------------------------------- */
 
+  /* Stacked, not side by side: in an 18rem column two cards next to each
+     other would be 8rem each, which is narrower than most of these artists'
+     names. Each is its own navy card so the pair reads as a different kind
+     of thing from the sand panel above them. */
   .ev__step {
-    background: var(--navy);
-    color: var(--cream);
-    padding-block: clamp(2.5rem, 4vw, 3.5rem);
-  }
-
-  .ev__stepin {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2rem clamp(1.5rem, 3vw, 3rem);
-    align-items: start;
+    gap: 0.625rem;
   }
 
   .ev__one {
     display: grid;
     gap: 0.4375rem;
+    padding: 1.125rem 1.25rem 1.25rem;
+    background: var(--navy);
     text-decoration: none;
     color: var(--cream);
     min-width: 0;
+    transition: background-color 0.35s var(--ease);
   }
 
-  .ev__one--next {
-    text-align: right;
-    justify-items: end;
+  .ev__one:hover,
+  .ev__one:focus-visible {
+    background: var(--ink-soft);
   }
 
   .ev__dir {
@@ -435,10 +443,6 @@ const startsAt = `${show.date}T${startClock.slice(0, 2)}:${startClock.slice(2, 4
     background-position: 0 100%;
     background-size: 0% 2px;
     transition: background-size 0.4s var(--ease);
-  }
-
-  .ev__one--next .ev__onename {
-    background-position: 100% 100%;
   }
 
   .ev__onewhen {
@@ -466,7 +470,10 @@ const startsAt = `${show.date}T${startClock.slice(0, 2)}:${startClock.slice(2, 4
       grid-template-columns: minmax(0, 1fr);
     }
 
-    .ev__aside {
+    /* On the cap rather than the panel: once the grid is one column the
+       neighbours sit under the panel, and capping only the panel left them
+       running the full width of the page beneath a 28rem box. */
+    .ev__side {
       max-width: 28rem;
     }
   }
@@ -486,18 +493,6 @@ const startsAt = `${show.date}T${startClock.slice(0, 2)}:${startClock.slice(2, 4
       font-size: var(--t-44);
     }
 
-    .ev__stepin {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    .ev__one--next {
-      text-align: left;
-      justify-items: start;
-    }
-
-    .ev__one--next .ev__onename {
-      background-position: 0 100%;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
