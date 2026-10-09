@@ -55,6 +55,32 @@ const safeName = (raw: string): string => {
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
+/**
+ * The same-origin check Astro's own would make, done where it can work.
+ *
+ * Against the Host the request actually arrived on, not a URL rebuilt inside
+ * the function, which behind a proxy is not the one the browser asked for.
+ *
+ * A request carrying no Origin at all is let through to the checks below. A
+ * browser always sends one on a cross-site POST, which is the thing being
+ * guarded against; what it leaves out are the cases that were never the
+ * threat. There is no session and no cookie here either, so the most this
+ * protects is the farm's inbox from a form posted off another page.
+ */
+function sameOrigin(request: Request): boolean {
+  const origin = request.headers.get('origin');
+  if (!origin) return true;
+
+  const host = request.headers.get('host');
+  if (!host) return false;
+
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
+}
+
 type Answers = Record<string, string>;
 
 /** A file someone chose, once it has been measured and read. */
@@ -253,6 +279,10 @@ async function send(
 }
 
 export const POST: APIRoute = async ({ request, redirect }) => {
+  if (!sameOrigin(request)) {
+    return new Response('Cross-site posts are not accepted here.', { status: 403 });
+  }
+
   const type = request.headers.get('content-type') ?? '';
   /* What the caller will accept, not what it sent: the form's own script now
      posts the same multipart body the browser would, and the header is the

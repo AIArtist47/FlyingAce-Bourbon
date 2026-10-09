@@ -10,6 +10,18 @@ export default defineConfig({
      function. */
   output: 'static',
   adapter: vercel(),
+  /* Astro's own cross-origin check matches the Origin header against the URL
+     the function reconstructs for itself, and behind Vercel's proxy those do
+     not agree: every form-encoded POST to /api/enquiry came back 403 whatever
+     Origin it carried, which is to say the no-JavaScript fallback has never
+     once worked in production. It went unnoticed because the form's script
+     posted JSON, a content type the check exempts.
+
+     The check is worth having, so it moves rather than goes: the endpoint
+     makes the same comparison against the Host header, which is the one thing
+     the proxy passes through intact. Those two routes are the only ones that
+     are not static, and only one of them takes a POST. */
+  security: { checkOrigin: false },
   build: { inlineStylesheets: 'auto' },
   devToolbar: { enabled: false },
   vite: {
