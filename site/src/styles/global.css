@@ -349,11 +349,6 @@ input {
   position: relative;
 }
 
-/* Nothing behind the age gate should scroll while it is up. */
-html:has(.gate[open]) {
-  overflow: hidden;
-}
-
 .section--pad {
   padding-block: var(--sec-y);
 }
@@ -504,7 +499,6 @@ html:has(.gate[open]) {
 /* Subtitles of an h2-titled block, same role as the ledes above. */
 .sub__body,
 .dnote__body,
-.gate__lede,
 .tile__body {
   font-family: var(--font-sub);
   font-weight: 500;
