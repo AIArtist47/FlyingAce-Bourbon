@@ -1,5 +1,5 @@
 ---
-import { img, site } from '../data/site';
+import { img } from '../data/site';
 
 const headline = 'Take off to Flying Ace Farm';
 const words = headline.split(' ');
@@ -55,9 +55,13 @@ const words = headline.split(' ');
           directions, the map, the questions -- is what this button was always
           promising anyway. */}
       <a class="btn btn--solid btn--xl" href="/visit">Plan Your Visit</a>
-      <a class="btn btn--ghost-light btn--xl" href={site.spiritsShop} target="_blank" rel="noopener">
-        Explore Our Spirits
-      </a>
+      {/* The distillery page, not the shop. This is the first thing the
+          site says about the spirits, and sending it straight to a third
+          party's checkout asks somebody to buy a bourbon before anything
+          here has told them what it is. /distillery carries the bottles,
+          the awards and the tasting room, and its own buy links go on to
+          Shared Pour from there. */}
+      <a class="btn btn--ghost-light btn--xl" href="/distillery">Explore Our Spirits</a>
     </div>
   </div>
 </section>
