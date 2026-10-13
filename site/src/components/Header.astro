@@ -2,6 +2,14 @@
 import Icon from './Icon.astro';
 import { nav, site, img } from '../data/site';
 
+/* The bar's own list. Book an Event goes to /host-your-event, so the nav
+   link to the same page is dropped from the bar rather than shown twice --
+   and the bar is the one place that has no room for both: it caps at
+   --maxw, and the brand, six links and three buttons together came to
+   1480px against the 1312 it has to give, which put the buttons on a
+   second row. The drawer keeps the full list; it scrolls. */
+const barNav = nav.filter((item) => item.href !== '/host-your-event');
+
 /**
  * Most nav items are sections of the home page. On the home page they stay
  * bare hashes so the Lenis smooth-scroll handler picks them up; anywhere else
@@ -30,7 +38,7 @@ const isCurrent = (h: string) => h === Astro.url.pathname;
     <nav class="hdr__nav" aria-label="Main" data-nav>
       <span class="hdr__island" data-nav-island aria-hidden="true"></span>
       {
-        nav.map((item) => (
+        barNav.map((item) => (
           <a
             class:list={['hdr__link', { 'is-active': isCurrent(item.href) }]}
             href={href(item.href)}
@@ -49,6 +57,12 @@ const isCurrent = (h: string) => h === Astro.url.pathname;
       <a class="btn btn--ghost" href={site.spiritsShop} target="_blank" rel="noopener">
         Order Spirits
       </a>
+      {/* The only one of the three that stays on the site, so no target and
+          no rel. It goes to the page rather than straight to its form: the
+          page's own CTA is what hands somebody to #enquire, and a booking
+          button that opens on a form has skipped the part that tells them
+          what they are booking. */}
+      <a class="btn btn--ghost" href="/host-your-event">Book an Event</a>
     </div>
 
     <button class="hdr__burger" type="button" aria-label="Open menu" aria-expanded="false" data-menu-open>
@@ -101,6 +115,9 @@ const isCurrent = (h: string) => h === Astro.url.pathname;
       >
         Order Spirits
       </a>
+      <a class="btn btn--ghost-light btn--xl" href="/host-your-event" data-drawer-link>
+        Book an Event
+      </a>
     </div>
 
     <a class="drawer__phone tap-box" href={site.phoneHref}>{site.phone}</a>
@@ -130,7 +147,7 @@ const isCurrent = (h: string) => h === Astro.url.pathname;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 0.75rem 1.75rem;
+    gap: 0.75rem 1.5rem;
     /* Wrapping keeps the bar intact when a reader scales text to 200%:
        the row stacks instead of pushing the page into horizontal scroll. */
     flex-wrap: wrap;
@@ -256,10 +273,18 @@ const isCurrent = (h: string) => h === Astro.url.pathname;
     text-decoration-color: var(--accent);
   }
 
+  /* Tighter than the shared .btn, which sets 1.625rem a side. Three of
+     these have to sit beside the nav inside --maxw, and 1.25rem is what
+     buys back the last of the width without taking the buttons below the
+     44px they need to stay a comfortable target. */
   .hdr__cta {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.625rem;
     flex-wrap: wrap;
+  }
+
+  .hdr__cta .btn {
+    padding-inline: 1.125rem;
   }
 
   .hdr__burger {
@@ -358,8 +383,17 @@ const isCurrent = (h: string) => h === Astro.url.pathname;
 
   /* --- Breakpoints ----------------------------------------------------- */
 
-  @media (max-width: 78.125rem) {
-    /* 1250px - nav would collide with the CTA pair */
+  /* 1439px. The bar holds the brand, five links and three buttons, and
+     inside --maxw that comes to 1276px against the 1302 it has to give. It
+     does not survive the gutter closing in below 1440, so the nav steps
+     aside for the burger there.
+
+     This was 1250px, and it was wrong before the third button existed: two
+     buttons and six links needed 1276px too, and at 1366 the bar had only
+     1235 to give, so it quietly wrapped to two rows anywhere between about
+     1250 and 1410. Raising it does not cost a working nav -- it ends a
+     broken one. */
+  @media (max-width: 89.9375rem) {
     .hdr__nav {
       display: none;
     }
