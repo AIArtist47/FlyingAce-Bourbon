@@ -86,10 +86,14 @@ export const pillars = [
     lede: 'American Ace bourbon, whiskey and rum - distilled from grain we grow, store and mill on the property.',
     meta: ['Double Gold, 2021', 'Tasting room', 'On-site ABC store'],
     cta: 'Explore the spirits',
-    /* Straight to the shop rather than the distillery page. The panel itself
-       is the link, so the whole card goes off-site; /distillery is still in
-       the nav on every page. */
-    href: site.spiritsShop,
+    /* The distillery page rather than the shop, for the reason the hero's
+       Explore Our Spirits now goes there too: the whole panel is the link,
+       so this took a reader off the site entirely before anything here had
+       told them what the bourbon is. /distillery carries the bottles, the
+       awards and the tasting room, and its own buy links go on to Shared
+       Pour from there. Pillars reads outbound off the href, so dropping the
+       external URL is also what drops the target and the rel. */
+    href: '/distillery',
     image: img.distillery,
   },
   {
